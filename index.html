@@ -1,0 +1,2741 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كلية مزايا الجامعة - المرحلة الأولى مسائي</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --gray-color: #7f8c8d;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --border-radius: 8px;
+            --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+            direction: rtl;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* تسجيل الدخول */
+        .login-modal {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .login-content {
+            background: linear-gradient(135deg, var(--primary-color), #1a2530);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+            animation: slideUp 0.5s ease;
+            border: 3px solid var(--secondary-color);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .login-header p {
+            color: #ddd;
+            opacity: 0.8;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #ddd;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius);
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Cairo', sans-serif;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .login-error {
+            color: #ff6b6b;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .login-error.show {
+            display: block;
+        }
+
+        .close-login {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .close-login:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .stay-logged-container {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .stay-logged-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #ddd;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .stay-logged-label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        /* شريط الإعلانات المعدل */
+        .announcement-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .announcement-modal.show {
+            display: flex;
+        }
+
+        .announcement-content {
+            background: linear-gradient(135deg, var(--warning-color), #e67e22);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: slideUp 0.5s ease;
+            border: 5px solid white;
+        }
+
+        .announcement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .announcement-icon {
+            font-size: 2rem;
+            color: white;
+        }
+
+        .announcement-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .announcement-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            padding: 0 10px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .close-announcement {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 50%;
+            transition: var(--transition);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 15px;
+            left: 15px;
+        }
+
+        .close-announcement:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        /* إشعارات المواعيد المهمة */
+        .important-dates {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .dates-btn {
+            background: linear-gradient(135deg, var(--accent-color), #c0392b);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 1.3rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .dates-btn:hover {
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .dates-btn::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 20px;
+            height: 20px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            border: 3px solid white;
+            display: none;
+            animation: pulse 1.5s infinite;
+        }
+
+        .dates-btn.has-updates::after {
+            display: block;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .dates-panel {
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 280px;
+            display: none;
+            animation: slideUp 0.3s ease;
+        }
+
+        .dates-panel.show {
+            display: block;
+        }
+
+        .dates-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dates-header h3 {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        .dates-list {
+            padding: 15px;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .date-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .date-item:last-child {
+            border-bottom: none;
+        }
+
+        .date-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 0.9rem;
+        }
+
+        .date-value {
+            color: var(--secondary-color);
+            font-weight: 600;
+            background: rgba(52, 152, 219, 0.1);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .date-item.important .date-value {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--accent-color);
+        }
+
+        /* إشعار تنبيه المواعيد */
+        .date-alert {
+            position: fixed;
+            bottom: 90px;
+            left: 20px;
+            background: linear-gradient(135deg, var(--warning-color), #e67e22);
+            color: white;
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            z-index: 999;
+            max-width: 280px;
+            display: none;
+            animation: slideInLeft 0.5s ease;
+            border-right: 4px solid var(--accent-color);
+        }
+
+        .date-alert.show {
+            display: block;
+        }
+
+        .date-alert-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .date-alert-header i {
+            font-size: 1.5rem;
+            animation: bellRing 0.5s ease;
+        }
+
+        @keyframes bellRing {
+            0%, 100% { transform: rotate(0); }
+            25% { transform: rotate(15deg); }
+            75% { transform: rotate(-15deg); }
+        }
+
+        .date-alert-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .date-alert-content {
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        /* زر الإعلانات */
+        .announcement-notification {
+            position: fixed;
+            bottom: 20px;
+            left: 90px;
+            z-index: 1000;
+        }
+
+        .announcement-btn {
+            background: linear-gradient(135deg, var(--warning-color), #e67e22);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 1.3rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .announcement-btn:hover {
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .announcement-btn::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 20px;
+            height: 20px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            border: 3px solid white;
+            display: none;
+            animation: pulse 1.5s infinite;
+        }
+
+        .announcement-btn.has-updates::after {
+            display: block;
+        }
+
+        /* الشريط الجانبي المعدل */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 260px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--primary-color), #1a2530);
+            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-header h3 {
+            color: white;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .sidebar-header p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.8rem;
+        }
+
+        .sidebar-menu {
+            padding: 15px 0;
+            flex: 1;
+        }
+
+        .sidebar-item {
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: var(--transition);
+            border-right: 3px solid transparent;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-right-color: var(--secondary-color);
+        }
+
+        .sidebar-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .sidebar-item.active {
+            background: rgba(52, 152, 219, 0.2);
+            border-right-color: var(--secondary-color);
+            color: white;
+        }
+
+        /* زر تسجيل الخروج في الشريط الجانبي */
+        .logout-sidebar {
+            background: rgba(231, 76, 60, 0.2);
+            color: #ff6b6b;
+            border: none;
+            padding: 12px 20px;
+            margin: 10px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .logout-sidebar:hover {
+            background: rgba(231, 76, 60, 0.3);
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        .back-to-subjects {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--secondary-color);
+            border: none;
+            padding: 10px 15px;
+            margin: 10px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .back-to-subjects:hover {
+            background: rgba(52, 152, 219, 0.2);
+            transform: translateX(-5px);
+        }
+
+        /* شعار التحميل - بدون أيقونات */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-container {
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 25px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: containerEntrance 1s ease-out;
+        }
+
+        .loading-title {
+            color: white;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 30px;
+            text-shadow: 
+                0 2px 10px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(52, 152, 219, 0.4);
+            background: linear-gradient(135deg, #ffffff 0%, #3498db 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleFloat 3s ease-in-out infinite;
+            letter-spacing: 1px;
+        }
+
+        .loading-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.5rem;
+            margin-bottom: 50px;
+            font-weight: 500;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            animation: subtitleFade 2s ease-in-out;
+        }
+
+        .loading-progress-container {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin: 40px auto;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .loading-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, 
+                #3498db 0%, 
+                #2ecc71 25%, 
+                #f1c40f 50%, 
+                #e74c3c 75%, 
+                #9b59b6 100%);
+            border-radius: 10px;
+            position: relative;
+            transition: width 0.3s ease;
+            box-shadow: 
+                0 0 20px rgba(52, 152, 219, 0.5),
+                0 0 40px rgba(52, 152, 219, 0.3);
+        }
+
+        .loading-progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.4), 
+                transparent);
+            animation: progressShine 2s infinite;
+        }
+
+        .loading-percentage {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 20px 0;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            animation: percentagePulse 1.5s infinite alternate;
+        }
+
+        .loading-steps {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 30px;
+            padding: 0 10px;
+        }
+
+        .loading-step {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            text-align: center;
+            flex: 1;
+            padding: 10px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .loading-step.active {
+            color: white;
+            font-weight: 600;
+        }
+
+        .loading-step.completed {
+            color: #2ecc71;
+        }
+
+        .loading-step::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .loading-step.active::after {
+            background: #3498db;
+            box-shadow: 0 0 10px #3498db;
+            width: 12px;
+            height: 12px;
+        }
+
+        .loading-step.completed::after {
+            background: #2ecc71;
+            box-shadow: 0 0 10px #2ecc71;
+        }
+
+        .loading-college {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.2rem;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 500;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        @keyframes containerEntrance {
+            0% {
+                transform: translateY(50px) scale(0.9);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes titleFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes subtitleFade {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes progressShine {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        @keyframes percentagePulse {
+            0% {
+                transform: scale(1);
+                text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            }
+            100% {
+                transform: scale(1.05);
+                text-shadow: 0 2px 20px rgba(52, 152, 219, 0.6);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loading-wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            overflow: hidden;
+            opacity: 0.3;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 100" xmlns="http://www.w3.org/2000/svg"><path d="M0 70 Q300 20 600 70 T1200 70 V100 H0 Z" fill="%233498db"/></svg>') repeat-x;
+            animation: waveMove 10s linear infinite;
+            opacity: 0.6;
+        }
+
+        .wave:nth-child(2) {
+            animation-delay: -5s;
+            opacity: 0.4;
+        }
+
+        @keyframes waveMove {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* شريط البحث */
+        .search-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 999;
+        }
+
+        .search-btn {
+            background: var(--secondary-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-btn:hover {
+            background: #2980b9;
+            transform: rotate(15deg);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* الصورة في الأعلى */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .hero .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h2 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            line-height: 1.3;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 12px 30px;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* قسم المواد الدراسية - مصغر */
+        .subjects {
+            background-color: white;
+            padding: 50px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            right: 50%;
+            transform: translateX(50%);
+            width: 60px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            border-radius: 2px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--gray-color);
+            margin-bottom: 40px;
+            font-size: 1rem;
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .subject-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            border-top: 3px solid var(--success-color);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+            border-top-color: var(--accent-color);
+        }
+
+        .subject-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--success-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .subject-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .subject-icon {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(39, 174, 96, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: var(--success-color);
+            font-size: 1.3rem;
+        }
+
+        .subject-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+            line-height: 1.3;
+        }
+
+        .subject-card p {
+            color: var(--gray-color);
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .subject-code {
+            display: inline-block;
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success-color);
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        /* تأثيرات ظهور المحاضرات */
+        .lectures-container {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .lectures-container.show {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .lectures-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .lecture-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .lecture-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .lecture-header {
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary-color), #1a2530);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .lecture-header h3 {
+            font-size: 1rem;
+            line-height: 1.3;
+        }
+
+        .subject-badge {
+            background-color: var(--secondary-color);
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .lecture-body {
+            padding: 15px;
+        }
+
+        .lecture-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            color: var(--gray-color);
+            font-size: 0.8rem;
+        }
+
+        .lecture-desc {
+            color: #555;
+            margin-bottom: 15px;
+            line-height: 1.4;
+            font-size: 0.9rem;
+        }
+
+        .download-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 10px;
+            background-color: var(--success-color);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .download-btn:hover {
+            background-color: #219653;
+            transform: translateY(-2px);
+        }
+
+        /* الشريط العلوي */
+        .navbar {
+            background-color: white;
+            box-shadow: var(--box-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: none;
+            animation: slideDown 0.5s ease;
+        }
+
+        .navbar.show {
+            display: block;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo img {
+            height: 50px;
+            width: auto;
+        }
+
+        .logo h1 {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 3px;
+        }
+
+        .logo p {
+            color: var(--gray-color);
+            font-size: 0.8rem;
+        }
+
+        .menu-toggle {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .menu-toggle:hover {
+            background: #2980b9;
+            transform: rotate(15deg);
+        }
+
+        /* زر إخفاء المحاضرات */
+        .close-lectures {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            margin: 25px auto 0;
+            display: block;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .close-lectures:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        /* قسم التواصل مع المطور */
+        .developer-contact {
+            background-color: white;
+            padding: 50px 0;
+            text-align: center;
+            display: none;
+        }
+
+        .developer-card {
+            background: linear-gradient(135deg, var(--primary-color), #1a2530);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 450px;
+            margin: 0 auto;
+            box-shadow: var(--box-shadow);
+            text-align: center;
+        }
+
+        .developer-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+        }
+
+        .developer-name {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .developer-role {
+            font-size: 1rem;
+            color: #ddd;
+            margin-bottom: 15px;
+        }
+
+        .developer-phone {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px 25px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 15px;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .developer-phone:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .developer-email {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* تذييل الصفحة */
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 30px 0 15px;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .footer-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .footer-logo img {
+            height: 50px;
+            margin-bottom: 10px;
+        }
+
+        .footer-logo h3 {
+            font-size: 1.2rem;
+            margin-bottom: 3px;
+        }
+
+        .footer-logo p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 0.8rem;
+        }
+
+        /* رسائل مؤقتة */
+        .message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100%);
+            background: var(--success-color);
+            color: white;
+            padding: 12px 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            z-index: 3000;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .message.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .message.error {
+            background: var(--accent-color);
+        }
+
+        /* تحسينات للشاشات الصغيرة */
+        @media (max-width: 992px) {
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .subjects-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+            
+            .lectures-list {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .loading-title {
+                font-size: 2.8rem;
+            }
+            
+            .loading-subtitle {
+                font-size: 1.3rem;
+            }
+            
+            .loading-percentage {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                right: -100%;
+                width: 100%;
+            }
+            
+            .sidebar.active {
+                right: 0;
+            }
+            
+            .subjects-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 15px;
+            }
+            
+            .subject-card {
+                padding: 15px;
+            }
+            
+            .subject-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 1.2rem;
+            }
+            
+            .lectures-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero {
+                padding: 60px 0;
+            }
+            
+            .hero h2 {
+                font-size: 1.6rem;
+            }
+            
+            .important-dates {
+                bottom: 15px;
+                left: 15px;
+            }
+            
+            .announcement-notification {
+                bottom: 15px;
+                left: 80px;
+            }
+            
+            .date-alert {
+                bottom: 85px;
+                left: 15px;
+                max-width: 250px;
+            }
+            
+            .loading-container {
+                padding: 30px 20px;
+            }
+            
+            .loading-title {
+                font-size: 2.2rem;
+            }
+            
+            .loading-subtitle {
+                font-size: 1.1rem;
+                margin-bottom: 30px;
+            }
+            
+            .loading-percentage {
+                font-size: 1.8rem;
+            }
+            
+            .loading-steps {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .loading-step {
+                font-size: 0.8rem;
+                flex: 0 0 calc(33.333% - 20px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-content {
+                padding: 30px 20px;
+            }
+            
+            .subject-card {
+                padding: 12px;
+            }
+            
+            .subject-card h3 {
+                font-size: 1rem;
+            }
+            
+            .subjects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h2 {
+                font-size: 1.4rem;
+            }
+            
+            .hero p {
+                font-size: 0.9rem;
+            }
+            
+            .dates-panel {
+                width: 250px;
+            }
+            
+            .important-dates {
+                bottom: 10px;
+                left: 10px;
+            }
+            
+            .announcement-notification {
+                bottom: 10px;
+                left: 70px;
+            }
+            
+            .date-alert {
+                bottom: 80px;
+                left: 10px;
+                max-width: 220px;
+            }
+            
+            .loading-container {
+                padding: 20px 15px;
+            }
+            
+            .loading-title {
+                font-size: 1.8rem;
+                margin-bottom: 20px;
+            }
+            
+            .loading-subtitle {
+                font-size: 1rem;
+                margin-bottom: 25px;
+            }
+            
+            .loading-percentage {
+                font-size: 1.5rem;
+            }
+            
+            .loading-progress-container {
+                height: 8px;
+            }
+            
+            .loading-steps {
+                display: none;
+            }
+            
+            .loading-college {
+                font-size: 1rem;
+                margin-top: 25px;
+            }
+        }
+
+        /* تأثيرات عامة */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- نموذج تسجيل الدخول -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-content">
+            <button class="close-login" id="closeLogin">&times;</button>
+            <div class="login-header">
+                <h2><i class="fas fa-user-graduate"></i> تسجيل دخول الطالب</h2>
+                <p>أدخل بيانات الدخول الخاصة بك</p>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username"><i class="fas fa-user"></i> اسم المستخدم</label>
+                    <input type="text" id="username" class="form-control" placeholder="أدخل اسم المستخدم" required>
+                </div>
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-lock"></i> كلمة المرور</label>
+                    <input type="password" id="password" class="form-control" placeholder="أدخل كلمة المرور" required>
+                </div>
+                <div class="stay-logged-container">
+                    <label class="stay-logged-label">
+                        <input type="checkbox" id="stayLoggedIn">
+                        <span>ابقني متصلاً</span>
+                    </label>
+                </div>
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                </button>
+                <div class="login-error" id="loginError">
+                    <i class="fas fa-exclamation-circle"></i> اسم المستخدم أو كلمة المرور غير صحيحة
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- شريط الإعلانات -->
+    <div class="announcement-modal" id="announcementModal">
+        <div class="announcement-content">
+            <div class="announcement-header">
+                <div class="announcement-icon">
+                    <i class="fas fa-bullhorn"></i>
+                </div>
+                <h3 class="announcement-title">إعلان هام</h3>
+            </div>
+            <p class="announcement-text" id="announcementText">جارٍ تحميل الإعلان...</p>
+            <button class="close-announcement" id="closeAnnouncement" title="إغلاق الإعلان">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- شعار التحميل (جاري تحميل الصفحة) -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-container">
+            <h1 class="loading-title">جاري تحميل الصفحة</h1>
+            <p class="loading-subtitle">من فضلك انتظر قليلاً...</p>
+            
+            <div class="loading-progress-container">
+                <div class="loading-progress-bar" id="loadingProgressBar"></div>
+            </div>
+            
+            <div class="loading-percentage" id="loadingPercentage">0%</div>
+            
+            <div class="loading-steps">
+                <div class="loading-step completed" id="step1">التهيئة</div>
+                <div class="loading-step" id="step2">تحميل البيانات</div>
+                <div class="loading-step" id="step3">جاري الإعداد</div>
+                <div class="loading-step" id="step4">جاهز</div>
+            </div>
+            
+            <p class="loading-college">كلية مزايا الجامعة - المرحلة الأولى مسائي</p>
+        </div>
+        
+        <div class="loading-wave">
+            <div class="wave"></div>
+            <div class="wave"></div>
+        </div>
+    </div>
+
+    <!-- إشعارات المواعيد المهمة -->
+    <div class="important-dates" id="importantDates">
+        <button class="dates-btn" id="datesBtn" title="المواعيد المهمة">
+            <i class="fas fa-calendar-alt"></i>
+        </button>
+        <div class="dates-panel" id="datesPanel">
+            <div class="dates-header">
+                <h3><i class="fas fa-calendar-star"></i> المواعيد المهمة</h3>
+                <button class="close-dates" id="closeDates">&times;</button>
+            </div>
+            <div class="dates-list" id="datesList">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>جاري تحميل المواعيد...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- زر الإعلانات -->
+    <div class="announcement-notification" id="announcementNotification">
+        <button class="announcement-btn" id="announcementBtn" title="الإعلانات">
+            <i class="fas fa-bullhorn"></i>
+        </button>
+    </div>
+
+    <!-- إشعار تنبيه المواعيد -->
+    <div class="date-alert" id="dateAlert">
+        <div class="date-alert-header">
+            <i class="fas fa-bell"></i>
+            <div class="date-alert-title">موعد مهم قادم!</div>
+        </div>
+        <div class="date-alert-content" id="dateAlertContent"></div>
+    </div>
+
+    <!-- الشريط الجانبي -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="user-avatar" id="userAvatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <h3 id="sidebarUsername">اسم المستخدم</h3>
+            <p id="sidebarEmail">طالب - المرحلة الأولى</p>
+        </div>
+        
+        <div class="sidebar-menu">
+            <div class="sidebar-item active" id="homeBtn">
+                <i class="fas fa-home"></i>
+                <span>الرئيسية</span>
+            </div>
+            <div class="sidebar-item" id="subjectsBtn">
+                <i class="fas fa-book"></i>
+                <span>المواد الدراسية</span>
+            </div>
+            <div class="sidebar-item" id="developerBtn">
+                <i class="fas fa-code"></i>
+                <span>المطور</span>
+            </div>
+        </div>
+        
+        <button class="back-to-subjects" id="backToSubjects">
+            <i class="fas fa-arrow-right"></i>
+            <span>العودة للمواد</span>
+        </button>
+        
+        <button class="logout-sidebar" id="logoutSidebar">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>تسجيل الخروج</span>
+        </button>
+    </div>
+
+    <!-- شريط البحث -->
+    <div class="search-container">
+        <button class="search-btn" id="searchBtn" title="بحث">
+            <i class="fas fa-search"></i>
+        </button>
+    </div>
+
+    <!-- الشريط العلوي -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <img src="https://www.mpu.edu.iq/logo.png" alt="شعار الكلية" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyOCIgZmlsbD0iIzJjM2U1MCIvPjx0ZXh0IHg9IjMwIiB5PSIzNSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+7ZWYPC90ZXh0Pjwvc3ZnPg=='">
+                <div>
+                    <h1>كلية مزايا الجامعة</h1>
+                    <p>المرحلة الأولى - الدراسة المسائية</p>
+                </div>
+            </div>
+            
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="main-content" id="mainContent">
+        <!-- الصورة في الأعلى -->
+        <header class="hero" id="homeSection">
+            <div class="container">
+                <div class="hero-content">
+                    <h2>نظام المحاضرات الإلكتروني</h2>
+                    <p>منصة متكاملة لتحميل ومشاهدة محاضرات المواد الدراسية للطلبة المسائيين</p>
+                    <a href="#subjects" class="btn">استعرض المواد الدراسية <i class="fas fa-arrow-down"></i></a>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <!-- قسم المواد الدراسية -->
+            <section id="subjects" class="subjects">
+                <h2 class="section-title">المواد الدراسية</h2>
+                <p class="section-subtitle">المواد المقررة للفصل الدراسي الحالي</p>
+                <div class="subjects-grid" id="subjectsList">
+                    <div class="loading">جار تحميل المواد الدراسية...</div>
+                </div>
+            </section>
+
+            <!-- قسم المحاضرات (يظهر عند الضغط على مادة) -->
+            <div class="lectures-container" id="lecturesContainer">
+                <h2 class="section-title">المحاضرات</h2>
+                <p class="section-subtitle" id="lecturesSubtitle">محاضرات المادة المحددة</p>
+                
+                <div class="lectures-list" id="lecturesList">
+                    <!-- سيتم إضافة المحاضرات هنا -->
+                </div>
+                
+                <button class="close-lectures" id="closeLectures">
+                    <i class="fas fa-times"></i> إخفاء المحاضرات
+                </button>
+            </div>
+
+            <!-- قسم التواصل مع المطور -->
+            <section id="developer" class="developer-contact">
+                <h2 class="section-title">التواصل مع المطور</h2>
+                <div class="developer-card">
+                    <div class="developer-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3 class="developer-name">محمد علاء</h3>
+                    <p class="developer-role">مطور برمجيات</p>
+                    <div class="developer-phone">
+                        <i class="fas fa-phone"></i>
+                        <span>07821531234</span>
+                    </div>
+                    <p class="developer-email">
+                        <i class="fas fa-envelope"></i>
+                        للتواصل الفني والدعم
+                    </p>
+                </div>
+            </section>
+        </div>
+
+        <!-- تذييل الصفحة -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-logo">
+                        <img src="https://www.mpu.edu.iq/logo.png" alt="شعار الكلية" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyOCIgZmlsbD0iIzJjM2U1MCIvPjx0ZXh0IHg9IjMwIiB5PSIzNSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+7ZWYPC90ZXh0Pjwvc3ZnPg=='">
+                        <h3>كلية مزايا الجامعة</h3>
+                        <p>نظام المحاضرات الإلكتروني</p>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>جميع الحقوق محفوظة &copy; <span id="currentYear"></span> للمطور محمد علاء</p>
+                    <p>تم تطوير هذا الموقع لخدمة طلبة المرحلة الأولى - الدراسة المسائية</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBFdxj6p-DAGrr-To_WZBxIk_FDX67Ygm0",
+            authDomain: "mazaya-c7569.firebaseapp.com",
+            projectId: "mazaya-c7569",
+            storageBucket: "mazaya-c7569.appspot.com",
+            messagingSenderId: "989358281766",
+            appId: "1:989358281766:web:9d5d28ce94a2d5599c02e7",
+            measurementId: "G-Y0DDXS79SG"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // عناصر DOM
+        const loginModal = document.getElementById('loginModal');
+        const closeLogin = document.getElementById('closeLogin');
+        const loginForm = document.getElementById('loginForm');
+        const loginError = document.getElementById('loginError');
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        const mainContent = document.getElementById('mainContent');
+        const navbar = document.getElementById('navbar');
+        const userAvatar = document.getElementById('userAvatar');
+        const sidebarUsername = document.getElementById('sidebarUsername');
+        const sidebarEmail = document.getElementById('sidebarEmail');
+        const subjectsList = document.getElementById('subjectsList');
+        const lecturesContainer = document.getElementById('lecturesContainer');
+        const lecturesList = document.getElementById('lecturesList');
+        const lecturesSubtitle = document.getElementById('lecturesSubtitle');
+        const closeLectures = document.getElementById('closeLectures');
+        const currentYear = document.getElementById('currentYear');
+        const datesBtn = document.getElementById('datesBtn');
+        const datesPanel = document.getElementById('datesPanel');
+        const closeDates = document.getElementById('closeDates');
+        const datesList = document.getElementById('datesList');
+        const dateAlert = document.getElementById('dateAlert');
+        const dateAlertContent = document.getElementById('dateAlertContent');
+        const backToSubjects = document.getElementById('backToSubjects');
+        const logoutSidebar = document.getElementById('logoutSidebar');
+        const announcementModal = document.getElementById('announcementModal');
+        const announcementText = document.getElementById('announcementText');
+        const closeAnnouncement = document.getElementById('closeAnnouncement');
+        const announcementBtn = document.getElementById('announcementBtn');
+        const loadingScreen = document.getElementById('loadingScreen');
+        const loadingProgressBar = document.getElementById('loadingProgressBar');
+        const loadingPercentage = document.getElementById('loadingPercentage');
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const step3 = document.getElementById('step3');
+        const step4 = document.getElementById('step4');
+        
+        // عناصر الشريط الجانبي
+        const homeBtn = document.getElementById('homeBtn');
+        const subjectsBtn = document.getElementById('subjectsBtn');
+        const developerBtn = document.getElementById('developerBtn');
+
+        // بيانات التطبيق
+        let currentUser = null;
+        let allSubjects = [];
+        let currentSubjectLectures = [];
+        let allAnnouncements = [];
+        let allImportantDates = [];
+        let upcomingDateAlert = null;
+        let currentAnnouncementId = null;
+        let hasNewAnnouncement = false;
+        let hasNewDateNotification = false;
+        let isLoading = true;
+        let progress = 0;
+
+        // إعداد السنة الحالية
+        currentYear.textContent = new Date().getFullYear();
+
+        // بدء شاشة التحميل
+        function startLoadingScreen() {
+            console.log("🚀 بدء تحميل الموقع...");
+            isLoading = true;
+            progress = 0;
+            updateLoadingProgress(10);
+            
+            // التحقق من حالة تسجيل الدخول مع التقدم
+            setTimeout(() => {
+                updateLoadingProgress(30);
+                checkLoginStatus();
+            }, 800);
+        }
+
+        // تحديث تقدم التحميل
+        function updateLoadingProgress(newProgress) {
+            progress = newProgress;
+            loadingProgressBar.style.width = `${progress}%`;
+            loadingPercentage.textContent = `${progress}%`;
+            
+            // تحديث الخطوات
+            if (progress >= 25) {
+                step2.classList.add('active');
+                step1.classList.add('completed');
+            }
+            if (progress >= 50) {
+                step3.classList.add('active');
+                step2.classList.add('completed');
+            }
+            if (progress >= 75) {
+                step4.classList.add('active');
+                step3.classList.add('completed');
+            }
+            if (progress >= 100) {
+                step4.classList.add('completed');
+            }
+        }
+
+        // إخفاء شاشة التحميل
+        function hideLoadingScreen() {
+            setTimeout(() => {
+                updateLoadingProgress(100);
+                
+                setTimeout(() => {
+                    loadingScreen.classList.add('hidden');
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                        isLoading = false;
+                        console.log("✅ تم إخفاء شاشة التحميل");
+                    }, 800);
+                }, 500);
+            }, 300);
+        }
+
+        // التحقق من حالة تسجيل الدخول عند تحميل الصفحة
+        function checkLoginStatus() {
+            const savedUser = localStorage.getItem('loggedInUser');
+            const stayLogged = localStorage.getItem('stayLoggedIn') === 'true';
+            
+            updateLoadingProgress(40);
+            
+            if (savedUser && stayLogged) {
+                try {
+                    const userData = JSON.parse(savedUser);
+                    currentUser = userData;
+                    updateLoadingProgress(60);
+                    showMainContent(userData);
+                    console.log("✅ تم استعادة جلسة المستخدم من localStorage");
+                } catch (error) {
+                    console.error("❌ خطأ في تحليل بيانات المستخدم:", error);
+                    clearLoginData();
+                    updateLoadingProgress(80);
+                    hideLoadingScreen();
+                }
+            } else {
+                // إظهار نموذج تسجيل الدخول فقط
+                updateLoadingProgress(70);
+                loginModal.style.display = 'flex';
+                hideMainContent();
+                hideLoadingScreen();
+            }
+        }
+
+        // إظهار المحتوى الرئيسي
+        function showMainContent(userData) {
+            updateLoadingProgress(75);
+            loginModal.style.display = 'none';
+            
+            // تحديث معلومات المستخدم
+            updateUserInfo(userData);
+            
+            updateLoadingProgress(80);
+            
+            // تحميل البيانات الأساسية
+            Promise.all([
+                loadSubjects(),
+                loadAnnouncements(),
+                loadImportantDates()
+            ]).then(() => {
+                updateLoadingProgress(90);
+                
+                // إعداد المستمعين للوقت الحقيقي
+                setupRealtimeListeners();
+                
+                updateLoadingProgress(95);
+                
+                // إظهار الشريط العلوي
+                setTimeout(() => {
+                    navbar.classList.add('show');
+                    updateLoadingProgress(100);
+                    
+                    // إخفاء شاشة التحميل
+                    hideLoadingScreen();
+                    
+                    // عرض رسالة ترحيب
+                    setTimeout(() => {
+                        showMessage(`مرحباً ${userData.name} في نظام المحاضرات الإلكتروني`, "success");
+                    }, 500);
+                    
+                    // عرض إشعار للمواعيد الجديدة
+                    setTimeout(() => {
+                        checkForNewDateNotifications();
+                    }, 1000);
+                }, 300);
+            }).catch(error => {
+                console.error("❌ خطأ في تحميل البيانات:", error);
+                updateLoadingProgress(100);
+                hideLoadingScreen();
+                showMessage("حدث خطأ في تحميل البيانات", "error");
+            });
+        }
+
+        // إخفاء المحتوى الرئيسي
+        function hideMainContent() {
+            navbar.classList.remove('show');
+            sidebar.classList.remove('active');
+        }
+
+        // تحديث معلومات المستخدم
+        function updateUserInfo(userData) {
+            if (userData && userData.name) {
+                // تحديث الشريط الجانبي فقط
+                sidebarUsername.textContent = userData.name;
+                sidebarEmail.textContent = userData.email || 'طالب - المرحلة الأولى';
+                
+                // إضافة الحرف الأول من الاسم كصورة بديلة
+                const firstLetter = userData.name.charAt(0);
+                userAvatar.innerHTML = firstLetter;
+                userAvatar.style.fontSize = '1.8rem';
+                userAvatar.style.fontWeight = 'bold';
+            }
+        }
+
+        // تسجيل الدخول
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const stayLogged = document.getElementById('stayLoggedIn').checked;
+            
+            if (!username || !password) {
+                showMessage("يرجى ملء جميع الحقول", "error");
+                return;
+            }
+            
+            try {
+                // البحث عن الطالب في قاعدة البيانات
+                const querySnapshot = await db.collection("students")
+                    .where("username", "==", username)
+                    .where("password", "==", password)
+                    .limit(1)
+                    .get();
+                
+                if (querySnapshot.empty) {
+                    loginError.textContent = "اسم المستخدم أو كلمة المرور غير صحيحة";
+                    loginError.classList.add('show');
+                    return;
+                }
+                
+                // المستخدم موجود وكلمة المرور صحيحة
+                const userDoc = querySnapshot.docs[0];
+                const userData = {
+                    id: userDoc.id,
+                    name: userDoc.data().name,
+                    username: userDoc.data().username,
+                    email: userDoc.data().email || ""
+                };
+                
+                currentUser = userData;
+                
+                // حفظ بيانات المستخدم إذا اختار "ابقني متصلاً"
+                if (stayLogged) {
+                    localStorage.setItem('loggedInUser', JSON.stringify(userData));
+                    localStorage.setItem('stayLoggedIn', 'true');
+                } else {
+                    localStorage.setItem('loggedInUser', JSON.stringify(userData));
+                    localStorage.setItem('stayLoggedIn', 'false');
+                }
+                
+                // تحديث واجهة المستخدم
+                showMainContent(userData);
+                loginError.classList.remove('show');
+                loginForm.reset();
+                
+                // تسجيل نشاط الدخول
+                await db.collection("loginLogs").add({
+                    username: username,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    action: "login"
+                });
+                
+            } catch (error) {
+                console.error("❌ خطأ في تسجيل الدخول:", error);
+                showMessage("حدث خطأ في الاتصال بالخادم", "error");
+            }
+        });
+
+        // تسجيل الخروج
+        async function logout() {
+            if (currentUser) {
+                // تسجيل نشاط الخروج
+                try {
+                    await db.collection("loginLogs").add({
+                        username: currentUser.username,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                        action: "logout"
+                    });
+                } catch (error) {
+                    console.error("❌ خطأ في تسجيل نشاط الخروج:", error);
+                }
+            }
+            
+            clearLoginData();
+            showMessage("✅ تم تسجيل الخروج بنجاح!", "success");
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        }
+
+        // مسح بيانات تسجيل الدخول
+        function clearLoginData() {
+            currentUser = null;
+            localStorage.removeItem('loggedInUser');
+            localStorage.removeItem('stayLoggedIn');
+            hideMainContent();
+            loginModal.style.display = 'flex';
+        }
+
+        // تحميل المواد الدراسية
+        async function loadSubjects() {
+            try {
+                console.log("📚 جاري تحميل المواد الدراسية...");
+                const querySnapshot = await db.collection("subjects").get();
+                
+                if (querySnapshot.empty) {
+                    subjectsList.innerHTML = `
+                        <div class="no-subjects" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                            <i class="fas fa-book" style="font-size: 3rem; color: var(--gray-color); margin-bottom: 20px;"></i>
+                            <h3>لا توجد مواد دراسية حالياً</h3>
+                            <p>سيتم إضافة المواد الدراسية قريباً</p>
+                        </div>
+                    `;
+                    return [];
+                }
+                
+                allSubjects = [];
+                let subjectsHTML = '';
+                
+                querySnapshot.forEach((doc) => {
+                    const subject = { id: doc.id, ...doc.data() };
+                    allSubjects.push(subject);
+                    
+                    subjectsHTML += `
+                        <div class="subject-card" data-code="${subject.code}" onclick="showLectures('${subject.code}')">
+                            <div class="subject-icon">
+                                <i class="${subject.icon || 'fas fa-book'}"></i>
+                            </div>
+                            <h3>${subject.name}</h3>
+                            <p>${subject.description || 'مادة دراسية'}</p>
+                            <span class="subject-code">${subject.code}</span>
+                        </div>
+                    `;
+                });
+                
+                subjectsList.innerHTML = subjectsHTML;
+                console.log(`✅ تم تحميل ${allSubjects.length} مادة`);
+                return allSubjects;
+                
+            } catch (error) {
+                console.error("❌ خطأ في تحميل المواد:", error);
+                subjectsList.innerHTML = `
+                    <div class="error" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--accent-color);">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                        <h3>حدث خطأ في تحميل المواد الدراسية</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+                return [];
+            }
+        }
+
+        // تحميل الإعلانات
+        async function loadAnnouncements() {
+            try {
+                console.log("📢 جاري تحميل الإعلانات...");
+                const querySnapshot = await db.collection("announcements").get();
+                
+                allAnnouncements = [];
+                querySnapshot.forEach((doc) => {
+                    allAnnouncements.push({ id: doc.id, ...doc.data() });
+                });
+                
+                if (allAnnouncements.length === 0) {
+                    console.log("📢 لا توجد إعلانات");
+                    return;
+                }
+                
+                // البحث عن الإعلانات النشطة
+                const activeAnnouncements = allAnnouncements.filter(a => a.isActive === true);
+                
+                if (activeAnnouncements.length === 0) {
+                    console.log("📢 لا توجد إعلانات نشطة");
+                    return;
+                }
+                
+                // فرز الإعلانات حسب التاريخ (الأحدث أولاً)
+                activeAnnouncements.sort((a, b) => {
+                    const dateA = a.createdAt ? a.createdAt.toDate() : new Date(0);
+                    const dateB = b.createdAt ? b.createdAt.toDate() : new Date(0);
+                    return dateB - dateA;
+                });
+                
+                const latestAnnouncement = activeAnnouncements[0];
+                currentAnnouncementId = latestAnnouncement.id;
+                
+                console.log("📢 الإعلان الأحدث:", latestAnnouncement.message);
+                
+                // تحديث نص الإعلان
+                announcementText.textContent = latestAnnouncement.message;
+                
+                // التحقق إذا كان هذا الإعلان قد تم عرضه مسبقاً
+                const lastSeenAnnouncementId = localStorage.getItem('lastSeenAnnouncementId');
+                
+                if (lastSeenAnnouncementId === currentAnnouncementId) {
+                    console.log("📢 الإعلان تم عرضه مسبقاً");
+                    hasNewAnnouncement = false;
+                } else {
+                    console.log("📢 إعلان جديد - جاهز للعرض");
+                    hasNewAnnouncement = true;
+                    
+                    // إظهار نقطة التنبيه على زر الإعلانات
+                    announcementBtn.classList.add('has-updates');
+                }
+                
+            } catch (error) {
+                console.error("❌ خطأ في تحميل الإعلانات:", error);
+            }
+        }
+
+        // تحميل المواعيد المهمة مع التنبيهات
+        async function loadImportantDates() {
+            try {
+                const querySnapshot = await db.collection("importantDates").orderBy("date").get();
+                
+                allImportantDates = [];
+                
+                if (querySnapshot.empty) {
+                    datesList.innerHTML = `
+                        <div class="date-item">
+                            <div class="date-title">لا توجد مواعيد حالياً</div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let datesHTML = '';
+                const now = new Date();
+                let upcomingDates = [];
+                
+                querySnapshot.forEach((doc) => {
+                    const dateData = doc.data();
+                    const date = new Date(dateData.date);
+                    const isImportant = dateData.important || false;
+                    
+                    // حساب الفرق بالأيام
+                    const diffTime = date - now;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    
+                    allImportantDates.push({
+                        ...dateData,
+                        date: date,
+                        diffDays: diffDays
+                    });
+                    
+                    datesHTML += `
+                        <div class="date-item ${isImportant ? 'important' : ''}">
+                            <div class="date-title">${dateData.title}</div>
+                            <div class="date-value">
+                                ${date.toLocaleDateString('ar-IQ')}
+                                ${diffDays >= 0 ? `(${diffDays} يوم)` : '(منتهي)'}
+                            </div>
+                        </div>
+                    `;
+                    
+                    // جمع المواعيد القادمة في الأسبوعين القادمين
+                    if (diffDays > 0 && diffDays <= 14) {
+                        upcomingDates.push({
+                            title: dateData.title,
+                            date: date,
+                            diffDays: diffDays,
+                            isImportant: isImportant
+                        });
+                    }
+                });
+                
+                datesList.innerHTML = datesHTML;
+                
+                // التحقق من وجود مواعيد قريبة وعرض التنبيه
+                if (upcomingDates.length > 0) {
+                    // فرز المواعيد حسب القرب
+                    upcomingDates.sort((a, b) => a.diffDays - b.diffDays);
+                    const closestDate = upcomingDates[0];
+                    
+                    // عرض تنبيه إذا كان الموعد في الأيام الثلاثة القادمة
+                    if (closestDate.diffDays <= 3) {
+                        upcomingDateAlert = closestDate;
+                        showDateAlert(closestDate);
+                    }
+                    
+                    // التحقق من وجود مواعيد جديدة لم يتم عرضها من قبل
+                    checkForNewDateNotifications();
+                    
+                } else {
+                    datesBtn.classList.remove('has-updates');
+                }
+                
+            } catch (error) {
+                console.error("❌ خطأ في تحميل المواعيد:", error);
+                datesList.innerHTML = `
+                    <div class="date-item">
+                        <div class="date-title">خطأ في تحميل المواعيد</div>
+                        <div class="date-value">حدث خطأ</div>
+                    </div>
+                `;
+            }
+        }
+
+        // التحقق من الإشعارات الجديدة للمواعيد
+        function checkForNewDateNotifications() {
+            const now = new Date();
+            const lastDateCheck = localStorage.getItem('lastDateCheck') || 0;
+            
+            // إذا مر أكثر من ساعة منذ آخر فحص
+            if (now - new Date(parseInt(lastDateCheck)) > 60 * 60 * 1000) {
+                // التحقق من وجود مواعيد قريبة (خلال 7 أيام)
+                const upcomingDates = allImportantDates.filter(date => 
+                    date.diffDays > 0 && date.diffDays <= 7
+                );
+                
+                if (upcomingDates.length > 0) {
+                    hasNewDateNotification = true;
+                    
+                    // إظهار نقطة تنبيه حمراء على زر المواعيد
+                    datesBtn.classList.add('has-updates');
+                    
+                    // حفظ وقت الفحص الحالي
+                    localStorage.setItem('lastDateCheck', now.getTime());
+                    
+                    // عرض إشعار للمستخدم
+                    setTimeout(() => {
+                        showMessage(`📅 لديك ${upcomingDates.length} موعد قريب في الأيام المقبلة`, "success");
+                    }, 1500);
+                }
+            }
+        }
+
+        // عرض الإعلان
+        function showAnnouncement() {
+            if (hasNewAnnouncement) {
+                announcementModal.classList.add('show');
+                document.body.style.overflow = 'hidden';
+                announcementBtn.classList.remove('has-updates');
+                
+                // حفظ معرف الإعلان كآخر إعلان تمت رؤيته
+                if (currentAnnouncementId) {
+                    localStorage.setItem('lastSeenAnnouncementId', currentAnnouncementId);
+                }
+                
+                hasNewAnnouncement = false;
+            }
+        }
+
+        // عرض تنبيه الموعد
+        function showDateAlert(dateInfo) {
+            let message = "";
+            
+            if (dateInfo.diffDays === 0) {
+                message = `اليوم هو موعد: ${dateInfo.title}`;
+            } else if (dateInfo.diffDays === 1) {
+                message = `غداً: ${dateInfo.title}`;
+            } else {
+                message = `بعد ${dateInfo.diffDays} أيام: ${dateInfo.title}`;
+            }
+            
+            if (dateInfo.isImportant) {
+                message += " ⚠️ (مهم)";
+            }
+            
+            dateAlertContent.textContent = message;
+            
+            // عرض التنبيه بعد 2 ثواني
+            setTimeout(() => {
+                dateAlert.classList.add('show');
+                
+                // إخفاء التنبيف بعد 8 ثواني
+                setTimeout(() => {
+                    dateAlert.classList.remove('show');
+                }, 8000);
+            }, 2000);
+        }
+
+        // عرض محاضرات مادة محددة
+        window.showLectures = async function(subjectCode) {
+            try {
+                // إخفاء قسم المواد مؤقتاً
+                document.getElementById('subjects').style.display = 'none';
+                document.getElementById('developer').style.display = 'none';
+                
+                // البحث عن المادة المحددة
+                const subject = allSubjects.find(s => s.code === subjectCode);
+                lecturesSubtitle.textContent = `محاضرات مادة ${subject?.name || subjectCode}`;
+                
+                // تحميل المحاضرات
+                const querySnapshot = await db.collection("lectures")
+                    .where("subjectCode", "==", subjectCode)
+                    .get();
+                
+                currentSubjectLectures = [];
+                
+                if (querySnapshot.empty) {
+                    lecturesList.innerHTML = `
+                        <div class="no-lectures" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--gray-color);">
+                            <i class="fas fa-file-pdf" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                            <h3>لا توجد محاضرات متاحة لهذه المادة حالياً</h3>
+                            <p>سيتم رفع المحاضرات قريباً</p>
+                        </div>
+                    `;
+                } else {
+                    let lecturesHTML = '';
+                    let lectureIndex = 0;
+                    
+                    querySnapshot.forEach((doc) => {
+                        const lecture = { id: doc.id, ...doc.data() };
+                        currentSubjectLectures.push(lecture);
+                        
+                        // تأخير ظهور كل محاضرة
+                        const animationDelay = lectureIndex * 0.1;
+                        lectureIndex++;
+                        
+                        lecturesHTML += `
+                            <div class="lecture-card" style="animation-delay: ${animationDelay}s">
+                                <div class="lecture-header">
+                                    <h3>${lecture.title}</h3>
+                                    <span class="subject-badge">${lecture.subjectCode}</span>
+                                </div>
+                                <div class="lecture-body">
+                                    <div class="lecture-info">
+                                        <span><i class="far fa-calendar-alt"></i> ${lecture.uploadDate || 'غير محدد'}</span>
+                                        <span><i class="far fa-file-pdf"></i> ${lecture.fileSize || 'غير معروف'}</span>
+                                    </div>
+                                    <p class="lecture-desc">${lecture.description || 'لا يوجد وصف'}</p>
+                                    <a href="${lecture.fileUrl}" class="download-btn" download target="_blank">
+                                        <i class="fas fa-download"></i> تحميل المحاضرة
+                                    </a>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    lecturesList.innerHTML = lecturesHTML;
+                }
+                
+                // إظهار قسم المحاضرات بتأثير
+                lecturesContainer.classList.add('show');
+                lecturesContainer.scrollIntoView({ behavior: 'smooth' });
+                
+                // إخفاء الشريط الجانبي
+                sidebar.classList.remove('active');
+                
+            } catch (error) {
+                console.error("❌ خطأ في تحميل المحاضرات:", error);
+                showMessage("حدث خطأ في تحميل المحاضرات", "error");
+            }
+        };
+
+        // إغلاق قسم المحاضرات
+        closeLectures.addEventListener('click', function() {
+            lecturesContainer.classList.remove('show');
+            setTimeout(() => {
+                document.getElementById('subjects').style.display = 'block';
+                document.getElementById('subjects').scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+        });
+
+        // إدارة الشريط الجانبي
+        menuToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+            
+            // إزالة إشعار المواعيد عند فتح الشريط الجانبي
+            if (hasNewDateNotification && datesBtn.classList.contains('has-updates')) {
+                datesBtn.classList.remove('has-updates');
+                hasNewDateNotification = false;
+            }
+        });
+
+        // إغلاق الشريط الجانبي عند النقر خارجها
+        document.addEventListener('click', function(e) {
+            if (!sidebar.contains(e.target) && !menuToggle.contains(e.target) && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // إدارة الإعلانات
+        announcementBtn.addEventListener('click', function() {
+            showAnnouncement();
+        });
+
+        closeAnnouncement.addEventListener('click', function() {
+            announcementModal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        });
+
+        // إدارة المواعيد المهمة
+        datesBtn.addEventListener('click', function() {
+            datesPanel.classList.toggle('show');
+            
+            // إزالة إشعار المواعيد عند النقر على الزر
+            if (hasNewDateNotification && datesBtn.classList.contains('has-updates')) {
+                datesBtn.classList.remove('has-updates');
+                hasNewDateNotification = false;
+            }
+        });
+
+        closeDates.addEventListener('click', function() {
+            datesPanel.classList.remove('show');
+        });
+
+        // إغلاق لوحة الإعلانات عند النقر خارجها
+        announcementModal.addEventListener('click', function(e) {
+            if (e.target === announcementModal) {
+                closeAnnouncement.click();
+            }
+        });
+
+        // إغلاق لوحة المواعيد عند النقر خارجها
+        document.addEventListener('click', function(e) {
+            if (!datesPanel.contains(e.target) && !datesBtn.contains(e.target) && datesPanel.classList.contains('show')) {
+                datesPanel.classList.remove('show');
+            }
+        });
+
+        // التنقل من الشريط الجانبي
+        homeBtn.addEventListener('click', function() {
+            setActiveSidebarItem(homeBtn);
+            document.getElementById('homeSection').scrollIntoView({ behavior: 'smooth' });
+            sidebar.classList.remove('active');
+        });
+
+        subjectsBtn.addEventListener('click', function() {
+            setActiveSidebarItem(subjectsBtn);
+            document.getElementById('subjects').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('subjects').style.display = 'block';
+            document.getElementById('developer').style.display = 'none';
+            lecturesContainer.classList.remove('show');
+            sidebar.classList.remove('active');
+        });
+
+        developerBtn.addEventListener('click', function() {
+            setActiveSidebarItem(developerBtn);
+            document.getElementById('developer').style.display = 'block';
+            document.getElementById('subjects').style.display = 'none';
+            lecturesContainer.classList.remove('show');
+            document.getElementById('developer').scrollIntoView({ behavior: 'smooth' });
+            sidebar.classList.remove('active');
+        });
+
+        // زر تسجيل الخروج في الشريط الجانبي
+        logoutSidebar.addEventListener('click', logout);
+
+        // زر العودة للمواد من الشريط الجانبي
+        backToSubjects.addEventListener('click', function() {
+            closeLectures.click();
+            setActiveSidebarItem(subjectsBtn);
+            sidebar.classList.remove('active');
+        });
+
+        // تعيين العنصر النشط في الشريط الجانبي
+        function setActiveSidebarItem(activeItem) {
+            const items = document.querySelectorAll('.sidebar-item');
+            items.forEach(item => item.classList.remove('active'));
+            activeItem.classList.add('active');
+        }
+
+        // إعداد المستمعين للوقت الحقيقي
+        function setupRealtimeListeners() {
+            // الاستماع للتحديثات في الإعلانات
+            db.collection("announcements").onSnapshot(() => {
+                loadAnnouncements();
+            });
+
+            // الاستماع للتحديثات في المواعيد
+            db.collection("importantDates").onSnapshot(() => {
+                loadImportantDates();
+                
+                // عرض إشعار عند إضافة موعد جديد
+                setTimeout(() => {
+                    showMessage("📅 تم تحديث المواعيد المهمة", "success");
+                }, 1000);
+            });
+
+            // الاستماع للتحديثات في المحاضرات
+            db.collection("lectures").onSnapshot(() => {
+                // إعادة تحميل المحاضرات إذا كان هناك قسم محاضرات مفتوح
+                if (lecturesContainer.classList.contains('show')) {
+                    const activeSubject = lecturesSubtitle.textContent.replace('محاضرات مادة ', '');
+                    const subject = allSubjects.find(s => s.name === activeSubject);
+                    if (subject) {
+                        showLectures(subject.code);
+                    }
+                }
+            });
+        }
+
+        // عرض رسائل مؤقتة
+        function showMessage(message, type = "success") {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(messageDiv);
+            
+            // إظهار الرسالة
+            setTimeout(() => {
+                messageDiv.classList.add('show');
+            }, 100);
+            
+            // إخفاء الرسالة بعد 3 ثواني
+            setTimeout(() => {
+                messageDiv.classList.remove('show');
+                setTimeout(() => {
+                    messageDiv.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // إضافة أحداث للأزرار
+        document.getElementById('closeLogin').addEventListener('click', () => {
+            loginModal.style.display = 'none';
+        });
+
+        // بدء تحميل الموقع
+        document.addEventListener("DOMContentLoaded", function() {
+            startLoadingScreen();
+        });
+    </script>
+</body>
+</html>
