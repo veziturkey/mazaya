@@ -368,10 +368,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: var(--transition);
         }
 
-        .date-item:last-child {
-            border-bottom: none;
+        .date-item.removing {
+            opacity: 0.5;
+            background-color: #ffeaea;
+            transform: translateX(-10px);
         }
 
         .date-title {
@@ -880,6 +883,13 @@
             border-top-color: var(--accent-color);
         }
 
+        .subject-card.removing {
+            opacity: 0.5;
+            background-color: #ffeaea;
+            transform: scale(0.95);
+            pointer-events: none;
+        }
+
         .subject-icon {
             width: 50px;
             height: 50px;
@@ -927,6 +937,13 @@
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .lecture-card.removing {
+            opacity: 0.5;
+            background-color: #ffeaea;
+            transform: scale(0.95);
+            pointer-events: none;
         }
 
         .lecture-card:hover {
@@ -1105,6 +1122,13 @@
             box-shadow: var(--box-shadow);
             transition: var(--transition);
             border-top: 3px solid var(--secondary-color);
+        }
+
+        .channel-card.removing {
+            opacity: 0.5;
+            background-color: #ffeaea;
+            transform: scale(0.95);
+            pointer-events: none;
         }
 
         .channel-card:hover {
@@ -1417,6 +1441,46 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
+        /* إشعار التحديث الفوري */
+        .realtime-update {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--success-color), #219653);
+            color: white;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 999;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            animation: slideInRight 0.5s ease;
+        }
+
+        .realtime-update.show {
+            display: flex;
+        }
+
+        .realtime-update.updating {
+            background: linear-gradient(135deg, var(--warning-color), #e67e22);
+        }
+
+        .realtime-update.deleting {
+            background: linear-gradient(135deg, var(--accent-color), #c0392b);
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
         /* تحسينات للشاشات الصغيرة */
         @media (max-width: 768px) {
             .install-content {
@@ -1438,6 +1502,14 @@
                 width: 25px;
                 height: 25px;
                 font-size: 0.9rem;
+            }
+            
+            .realtime-update {
+                bottom: 80px;
+                right: 10px;
+                left: 10px;
+                text-align: center;
+                justify-content: center;
             }
         }
 
@@ -1551,6 +1623,18 @@
                 transform: translateY(0);
             }
         }
+
+        /* تأثيرات الحذف */
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+        }
     </style>
 </head>
 <body>
@@ -1633,6 +1717,12 @@
         <button class="announcement-btn" id="announcementBtn" title="الإعلانات">
             <i class="fas fa-bullhorn"></i>
         </button>
+    </div>
+
+    <!-- إشعار التحديث الفوري -->
+    <div class="realtime-update" id="realtimeUpdate">
+        <i class="fas fa-sync-alt fa-spin"></i>
+        <span>جاري تحديث البيانات...</span>
     </div>
 
     <!-- إشعار تثبيت التطبيق (محدث ومحسن) -->
@@ -1953,6 +2043,7 @@
         const loadingScreen = document.getElementById('loadingScreen');
         const loadingProgressBar = document.getElementById('loadingProgressBar');
         const loadingPercentage = document.getElementById('loadingPercentage');
+        const realtimeUpdate = document.getElementById('realtimeUpdate');
         
         // عناصر إشعار التثبيت
         const installNotification = document.getElementById('installNotification');
@@ -1971,10 +2062,25 @@
         let currentSubjectLectures = [];
         let allAnnouncements = [];
         let allImportantDates = [];
+        let allChannels = [];
         let isLoading = true;
         let progress = 0;
         let deferredPrompt = null;
         let installPromptShown = false;
+        
+        // تخزين العناصر المعروضة
+        let displayedSubjects = new Map(); // id -> element
+        let displayedDates = new Map(); // id -> element
+        let displayedChannels = new Map(); // id -> element
+        let displayedLectures = new Map(); // id -> element
+        let displayedAnnouncements = new Map(); // id -> element
+        
+        // مراقبين في الوقت الحقيقي
+        let subjectsListener = null;
+        let lecturesListener = null;
+        let announcementsListener = null;
+        let datesListener = null;
+        let channelsListener = null;
         
         // اكتشاف الجهاز
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -2020,6 +2126,614 @@
         floatingInstallBtn.addEventListener('click', () => {
             showInstallPrompt();
         });
+
+        // عرض إشعار التحديث
+        function showUpdateNotification(message, type = "updating") {
+            realtimeUpdate.innerHTML = `<i class="fas fa-sync-alt fa-spin"></i> <span>${message}</span>`;
+            realtimeUpdate.className = `realtime-update ${type}`;
+            realtimeUpdate.classList.add('show');
+            
+            // إخفاء الإشعار بعد 3 ثواني
+            setTimeout(() => {
+                realtimeUpdate.classList.remove('show');
+            }, 3000);
+        }
+
+        // إيقاف جميع المراقبين
+        function stopAllListeners() {
+            if (subjectsListener) subjectsListener();
+            if (lecturesListener) lecturesListener();
+            if (announcementsListener) announcementsListener();
+            if (datesListener) datesListener();
+            if (channelsListener) channelsListener();
+            
+            subjectsListener = null;
+            lecturesListener = null;
+            announcementsListener = null;
+            datesListener = null;
+            channelsListener = null;
+            
+            console.log('🛑 تم إيقاف جميع المراقبين');
+        }
+
+        // بدء المراقبة الفورية لجميع البيانات
+        function startRealtimeListeners() {
+            console.log('🔄 بدء المراقبة الفورية للبيانات...');
+            
+            // مراقبة المواد الدراسية
+            subjectsListener = db.collection("subjects")
+                .onSnapshot((snapshot) => {
+                    snapshot.docChanges().forEach((change) => {
+                        const docId = change.doc.id;
+                        const docData = change.doc.data();
+                        
+                        if (change.type === "added") {
+                            console.log(`➕ مادة مضافة: ${docData.name}`);
+                            showUpdateNotification("تمت إضافة مادة دراسية جديدة", "success");
+                            
+                            // إضافة المادة الجديدة إلى القائمة
+                            if (!displayedSubjects.has(docId)) {
+                                addSubjectToDisplay(docId, docData);
+                            }
+                        }
+                        
+                        if (change.type === "modified") {
+                            console.log(`✏️ مادة معدلة: ${docData.name}`);
+                            showUpdateNotification("تم تعديل مادة دراسية", "success");
+                            
+                            // تحديث المادة المعدلة
+                            updateSubjectInDisplay(docId, docData);
+                        }
+                        
+                        if (change.type === "removed") {
+                            console.log(`🗑️ مادة محذوفة: ${docData.name || docId}`);
+                            // تمت إزالة showUpdateNotification هنا
+                            
+                            // حذف المادة من العرض
+                            removeSubjectFromDisplay(docId);
+                        }
+                    });
+                }, (error) => {
+                    console.error("❌ خطأ في مراقبة المواد:", error);
+                });
+
+            // مراقبة الإعلانات
+            announcementsListener = db.collection("announcements")
+                .where("isActive", "==", true)
+                .onSnapshot((snapshot) => {
+                    snapshot.docChanges().forEach((change) => {
+                        const docId = change.doc.id;
+                        const docData = change.doc.data();
+                        
+                        if (change.type === "added") {
+                            console.log(`📢 إعلان مضاف: ${docData.message.substring(0, 50)}...`);
+                            showUpdateNotification("تمت إضافة إعلان جديد", "success");
+                            
+                            // حفظ الإعلان
+                            displayedAnnouncements.set(docId, docData);
+                            
+                            // عرض الإعلان الجديد
+                            setTimeout(() => {
+                                announcementText.textContent = docData.message;
+                                announcementModal.classList.add('show');
+                                localStorage.setItem('lastSeenAnnouncementId', docId);
+                            }, 1000);
+                        }
+                        
+                        if (change.type === "modified") {
+                            console.log(`✏️ إعلان معدل: ${docData.message.substring(0, 50)}...`);
+                            showUpdateNotification("تم تعديل إعلان", "success");
+                            
+                            // تحديث الإعلان
+                            displayedAnnouncements.set(docId, docData);
+                        }
+                        
+                        if (change.type === "removed") {
+                            console.log(`🗑️ إعلان محذوف: ${docId}`);
+                            // تمت إزالة showUpdateNotification هنا
+                            
+                            // إزالة الإعلان من الذاكرة
+                            displayedAnnouncements.delete(docId);
+                            
+                            // إذا كان هذا الإعلان معروضاً حالياً، إغلاقه
+                            if (localStorage.getItem('lastSeenAnnouncementId') === docId) {
+                                announcementModal.classList.remove('show');
+                                localStorage.removeItem('lastSeenAnnouncementId');
+                            }
+                        }
+                    });
+                }, (error) => {
+                    console.error("❌ خطأ في مراقبة الإعلانات:", error);
+                });
+
+            // مراقبة المواعيد المهمة
+            datesListener = db.collection("importantDates")
+                .orderBy("date")
+                .onSnapshot((snapshot) => {
+                    snapshot.docChanges().forEach((change) => {
+                        const docId = change.doc.id;
+                        const docData = change.doc.data();
+                        
+                        if (change.type === "added") {
+                            console.log(`📅 موعد مضاف: ${docData.title}`);
+                            showUpdateNotification("تمت إضافة موعد مهم", "success");
+                            
+                            // إضافة الموعد الجديد
+                            if (!displayedDates.has(docId)) {
+                                addDateToDisplay(docId, docData);
+                            }
+                            
+                            // إظهار إشعار في زر المواعيد
+                            datesBtn.classList.add('has-updates');
+                        }
+                        
+                        if (change.type === "modified") {
+                            console.log(`✏️ موعد معدل: ${docData.title}`);
+                            showUpdateNotification("تم تعديل موعد مهم", "success");
+                            
+                            // تحديث الموعد
+                            updateDateInDisplay(docId, docData);
+                        }
+                        
+                        if (change.type === "removed") {
+                            console.log(`🗑️ موعد محذوف: ${docData.title || docId}`);
+                            // تمت إزالة showUpdateNotification هنا
+                            
+                            // حذف الموعد من العرض
+                            removeDateFromDisplay(docId);
+                        }
+                    });
+                }, (error) => {
+                    console.error("❌ خطأ في مراقبة المواعيد:", error);
+                });
+
+            // مراقبة المحاضرات
+            lecturesListener = db.collection("lectures")
+                .onSnapshot((snapshot) => {
+                    snapshot.docChanges().forEach((change) => {
+                        const docId = change.doc.id;
+                        const docData = change.doc.data();
+                        
+                        if (change.type === "added") {
+                            console.log(`📚 محاضرة مضافة: ${docData.title} - ${docData.subjectCode}`);
+                            showUpdateNotification(`تمت إضافة محاضرة جديدة لـ ${docData.subjectCode}`, "success");
+                            
+                            // إذا كان المستخدم يشاهد محاضرات هذا المادة، قم بتحديثها
+                            if (lecturesContainer.classList.contains('show') && 
+                                lecturesSubtitle.textContent.includes(docData.subjectCode)) {
+                                loadLecturesForSubjectRealtime(docData.subjectCode);
+                            }
+                        }
+                        
+                        if (change.type === "modified") {
+                            console.log(`✏️ محاضرة معدلة: ${docData.title}`);
+                            showUpdateNotification(`تم تعديل محاضرة لـ ${docData.subjectCode}`, "success");
+                            
+                            // إذا كان المستخدم يشاهد محاضرات هذا المادة، قم بتحديثها
+                            if (lecturesContainer.classList.contains('show') && 
+                                lecturesSubtitle.textContent.includes(docData.subjectCode)) {
+                                loadLecturesForSubjectRealtime(docData.subjectCode);
+                            }
+                        }
+                        
+                        if (change.type === "removed") {
+                            console.log(`🗑️ محاضرة محذوفة: ${docData.title || docId}`);
+                            // تمت إزالة showUpdateNotification هنا
+                            
+                            // إذا كان المستخدم يشاهد محاضرات هذا المادة، قم بتحديثها
+                            if (lecturesContainer.classList.contains('show') && 
+                                lecturesSubtitle.textContent.includes(docData.subjectCode)) {
+                                loadLecturesForSubjectRealtime(docData.subjectCode);
+                            }
+                        }
+                    });
+                }, (error) => {
+                    console.error("❌ خطأ في مراقبة المحاضرات:", error);
+                });
+
+            // مراقبة القنوات
+            channelsListener = db.collection("channels")
+                .onSnapshot((snapshot) => {
+                    snapshot.docChanges().forEach((change) => {
+                        const docId = change.doc.id;
+                        const docData = change.doc.data();
+                        
+                        if (change.type === "added") {
+                            console.log(`📡 قناة مضافة: ${docData.name}`);
+                            showUpdateNotification("تمت إضافة قناة جديدة", "success");
+                            
+                            // إضافة القناة الجديدة
+                            if (!displayedChannels.has(docId)) {
+                                addChannelToDisplay(docId, docData);
+                            }
+                        }
+                        
+                        if (change.type === "modified") {
+                            console.log(`✏️ قناة معدلة: ${docData.name}`);
+                            showUpdateNotification("تم تعديل قناة", "success");
+                            
+                            // تحديث القناة
+                            updateChannelInDisplay(docId, docData);
+                        }
+                        
+                        if (change.type === "removed") {
+                            console.log(`🗑️ قناة محذوفة: ${docData.name || docId}`);
+                            // تمت إزالة showUpdateNotification هنا
+                            
+                            // حذف القناة من العرض
+                            removeChannelFromDisplay(docId);
+                        }
+                    });
+                }, (error) => {
+                    console.error("❌ خطأ في مراقبة القنوات:", error);
+                });
+
+            console.log('✅ بدء المراقبة الفورية للبيانات بنجاح');
+        }
+
+        // إضافة مادة للعرض
+        function addSubjectToDisplay(docId, subjectData) {
+            const subjectCard = document.createElement('div');
+            subjectCard.className = 'subject-card';
+            subjectCard.dataset.id = docId;
+            subjectCard.dataset.code = subjectData.code;
+            subjectCard.innerHTML = `
+                <div class="subject-icon">
+                    <i class="${subjectData.icon || 'fas fa-book'}"></i>
+                </div>
+                <h3>${subjectData.name}</h3>
+                <p>${subjectData.description || 'مادة دراسية'}</p>
+                <span class="subject-code">${subjectData.code}</span>
+            `;
+            
+            subjectCard.addEventListener('click', () => {
+                showLecturesRealtime(subjectData.code);
+            });
+            
+            subjectsList.appendChild(subjectCard);
+            displayedSubjects.set(docId, subjectCard);
+            
+            // إضافة تأثير ظهور
+            subjectCard.style.opacity = '0';
+            subjectCard.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                subjectCard.style.transition = 'all 0.5s ease';
+                subjectCard.style.opacity = '1';
+                subjectCard.style.transform = 'translateY(0)';
+            }, 10);
+        }
+
+        // تحديث مادة في العرض
+        function updateSubjectInDisplay(docId, subjectData) {
+            const subjectCard = displayedSubjects.get(docId);
+            if (subjectCard) {
+                const icon = subjectCard.querySelector('.subject-icon i');
+                const title = subjectCard.querySelector('h3');
+                const description = subjectCard.querySelector('p');
+                const codeSpan = subjectCard.querySelector('.subject-code');
+                
+                if (icon) icon.className = `${subjectData.icon || 'fas fa-book'}`;
+                if (title) title.textContent = subjectData.name;
+                if (description) description.textContent = subjectData.description || 'مادة دراسية';
+                if (codeSpan) codeSpan.textContent = subjectData.code;
+                
+                // تأثير التحديث
+                subjectCard.classList.add('updating');
+                setTimeout(() => {
+                    subjectCard.classList.remove('updating');
+                }, 1000);
+            }
+        }
+
+        // حذف مادة من العرض
+        function removeSubjectFromDisplay(docId) {
+            const subjectCard = displayedSubjects.get(docId);
+            if (subjectCard) {
+                // تأثير الحذف
+                subjectCard.classList.add('removing');
+                
+                setTimeout(() => {
+                    subjectCard.style.transition = 'all 0.5s ease';
+                    subjectCard.style.opacity = '0';
+                    subjectCard.style.transform = 'scale(0.8)';
+                    
+                    setTimeout(() => {
+                        subjectCard.remove();
+                        displayedSubjects.delete(docId);
+                        
+                        // إذا لم يتبقى مواد، عرض رسالة
+                        if (displayedSubjects.size === 0) {
+                            subjectsList.innerHTML = `
+                                <div class="no-subjects" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                                    <i class="fas fa-book" style="font-size: 3rem; color: var(--gray-color); margin-bottom: 20px;"></i>
+                                    <h3>لا توجد مواد دراسية حالياً</h3>
+                                    <p>سيتم إضافة المواد الدراسية قريباً</p>
+                                </div>
+                            `;
+                        }
+                    }, 500);
+                }, 10);
+            }
+        }
+
+        // إضافة موعد للعرض
+        function addDateToDisplay(docId, dateData) {
+            const date = new Date(dateData.date);
+            const isImportant = dateData.important || false;
+            
+            const dateItem = document.createElement('div');
+            dateItem.className = `date-item ${isImportant ? 'important' : ''}`;
+            dateItem.dataset.id = docId;
+            dateItem.innerHTML = `
+                <div class="date-title">${dateData.title}</div>
+                <div class="date-value">${date.toLocaleDateString('ar-IQ')}</div>
+            `;
+            
+            datesList.appendChild(dateItem);
+            displayedDates.set(docId, dateItem);
+        }
+
+        // تحديث موعد في العرض
+        function updateDateInDisplay(docId, dateData) {
+            const dateItem = displayedDates.get(docId);
+            if (dateItem) {
+                const date = new Date(dateData.date);
+                const isImportant = dateData.important || false;
+                
+                dateItem.className = `date-item ${isImportant ? 'important' : ''}`;
+                dateItem.innerHTML = `
+                    <div class="date-title">${dateData.title}</div>
+                    <div class="date-value">${date.toLocaleDateString('ar-IQ')}</div>
+                `;
+            }
+        }
+
+        // حذف موعد من العرض
+        function removeDateFromDisplay(docId) {
+            const dateItem = displayedDates.get(docId);
+            if (dateItem) {
+                // تأثير الحذف
+                dateItem.classList.add('removing');
+                
+                setTimeout(() => {
+                    dateItem.remove();
+                    displayedDates.delete(docId);
+                    
+                    // إذا لم يتبقى مواعيد، عرض رسالة
+                    if (displayedDates.size === 0) {
+                        datesList.innerHTML = `
+                            <div class="date-item">
+                                <div class="date-title">لا توجد مواعيد حالياً</div>
+                            </div>
+                        `;
+                    }
+                }, 500);
+            }
+        }
+
+        // إضافة قناة للعرض
+        function addChannelToDisplay(docId, channelData) {
+            const channelCard = document.createElement('div');
+            channelCard.className = 'channel-card';
+            channelCard.dataset.id = docId;
+            channelCard.innerHTML = `
+                <div class="channel-icon">
+                    <i class="${channelData.icon || 'fas fa-link'}"></i>
+                </div>
+                <h3>${channelData.name}</h3>
+                <p>${channelData.description || 'قناة رسمية'}</p>
+                <a href="${channelData.url}" target="_blank" class="channel-link">
+                    <i class="fas fa-external-link-alt"></i> زيارة القناة
+                </a>
+            `;
+            
+            channelsContainer.appendChild(channelCard);
+            displayedChannels.set(docId, channelCard);
+        }
+
+        // تحديث قناة في العرض
+        function updateChannelInDisplay(docId, channelData) {
+            const channelCard = displayedChannels.get(docId);
+            if (channelCard) {
+                const icon = channelCard.querySelector('.channel-icon i');
+                const title = channelCard.querySelector('h3');
+                const description = channelCard.querySelector('p');
+                const link = channelCard.querySelector('a');
+                
+                if (icon) icon.className = `${channelData.icon || 'fas fa-link'}`;
+                if (title) title.textContent = channelData.name;
+                if (description) description.textContent = channelData.description || 'قناة رسمية';
+                if (link) link.href = channelData.url;
+            }
+        }
+
+        // حذف قناة من العرض
+        function removeChannelFromDisplay(docId) {
+            const channelCard = displayedChannels.get(docId);
+            if (channelCard) {
+                // تأثير الحذف
+                channelCard.classList.add('removing');
+                
+                setTimeout(() => {
+                    channelCard.remove();
+                    displayedChannels.delete(docId);
+                    
+                    // إذا لم يتبقى قنوات، عرض رسالة
+                    if (displayedChannels.size === 0) {
+                        channelsContainer.innerHTML = `
+                            <div class="no-channels" style="text-align: center; padding: 40px;">
+                                <i class="fas fa-satellite-dish" style="font-size: 3rem; color: var(--gray-color); margin-bottom: 20px;"></i>
+                                <h3>لا توجد قنوات حالياً</h3>
+                                <p>سيتم إضافة القنوات الرسمية قريباً</p>
+                            </div>
+                        `;
+                    }
+                }, 500);
+            }
+        }
+
+        // تحميل المحاضرات لمادة محددة (وقت حقيقي)
+        async function loadLecturesForSubjectRealtime(subjectCode) {
+            try {
+                const querySnapshot = await db.collection("lectures")
+                    .where("subjectCode", "==", subjectCode)
+                    .get();
+                
+                currentSubjectLectures = [];
+                displayedLectures.clear();
+                
+                if (querySnapshot.empty) {
+                    lecturesList.innerHTML = `
+                        <div class="no-lectures" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--gray-color);">
+                            <i class="fas fa-file-pdf" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                            <h3>لا توجد محاضرات متاحة لهذه المادة حالياً</h3>
+                            <p>سيتم رفع المحاضرات قريباً</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let lecturesHTML = '';
+                let lecturesArray = [];
+                
+                querySnapshot.forEach((doc) => {
+                    const lecture = { id: doc.id, ...doc.data() };
+                    lecturesArray.push(lecture);
+                });
+                
+                // ترتيب المحاضرات تنازلياً حسب التاريخ
+                lecturesArray.sort((a, b) => {
+                    const dateA = a.createdAt ? a.createdAt.toDate() : new Date(0);
+                    const dateB = b.createdAt ? b.createdAt.toDate() : new Date(0);
+                    return dateB - dateA;
+                });
+                
+                // إضافة المحاضرات بعد الترتيب
+                lecturesArray.forEach((lecture, index) => {
+                    const animationDelay = index * 0.1;
+                    
+                    lecturesHTML += `
+                        <div class="lecture-card" data-id="${lecture.id}" style="animation-delay: ${animationDelay}s">
+                            <div class="lecture-header">
+                                <h3>${lecture.title}</h3>
+                                <span class="subject-badge">${lecture.subjectCode}</span>
+                            </div>
+                            <div class="lecture-body">
+                                <div class="lecture-info">
+                                    <span><i class="far fa-calendar-alt"></i> ${lecture.uploadDate || 'غير محدد'}</span>
+                                    <span><i class="far fa-file-pdf"></i> ${lecture.fileSize || 'غير معروف'}</span>
+                                </div>
+                                <p class="lecture-desc">${lecture.description || 'لا يوجد وصف'}</p>
+                                <a href="${lecture.fileUrl}" class="download-btn" download target="_blank">
+                                    <i class="fas fa-download"></i> تحميل المحاضرة
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                lecturesList.innerHTML = lecturesHTML;
+                
+                // حفظ المحاضرات المعروضة
+                document.querySelectorAll('.lecture-card').forEach(card => {
+                    const id = card.dataset.id;
+                    displayedLectures.set(id, card);
+                });
+                
+            } catch (error) {
+                console.error("❌ خطأ في تحميل المحاضرات:", error);
+            }
+        }
+
+        // تحميل البيانات الأولية
+        async function loadInitialData() {
+            try {
+                // تحميل المواد الدراسية
+                const subjectsSnapshot = await db.collection("subjects").get();
+                subjectsSnapshot.forEach((doc) => {
+                    addSubjectToDisplay(doc.id, doc.data());
+                    allSubjects.push({ id: doc.id, ...doc.data() });
+                });
+                
+                // تحميل المواعيد
+                const datesSnapshot = await db.collection("importantDates").orderBy("date").get();
+                datesSnapshot.forEach((doc) => {
+                    addDateToDisplay(doc.id, doc.data());
+                    allImportantDates.push({ id: doc.id, ...doc.data() });
+                });
+                
+                // تحميل القنوات
+                const channelsSnapshot = await db.collection("channels").get();
+                channelsSnapshot.forEach((doc) => {
+                    addChannelToDisplay(doc.id, doc.data());
+                    allChannels.push({ id: doc.id, ...doc.data() });
+                });
+                
+                // تحميل الإعلانات النشطة
+                const announcementsSnapshot = await db.collection("announcements")
+                    .where("isActive", "==", true)
+                    .get();
+                
+                announcementsSnapshot.forEach((doc) => {
+                    displayedAnnouncements.set(doc.id, doc.data());
+                    allAnnouncements.push({ id: doc.id, ...doc.data() });
+                });
+                
+                // عرض أحدث إعلان إذا كان جديداً
+                if (allAnnouncements.length > 0) {
+                    allAnnouncements.sort((a, b) => {
+                        const dateA = a.createdAt ? a.createdAt.toDate() : new Date(0);
+                        const dateB = b.createdAt ? b.createdAt.toDate() : new Date(0);
+                        return dateB - dateA;
+                    });
+                    
+                    const latestAnnouncement = allAnnouncements[0];
+                    announcementText.textContent = latestAnnouncement.message;
+                    
+                    const lastSeenAnnouncementId = localStorage.getItem('lastSeenAnnouncementId');
+                    if (lastSeenAnnouncementId !== latestAnnouncement.id) {
+                        setTimeout(() => {
+                            announcementModal.classList.add('show');
+                            localStorage.setItem('lastSeenAnnouncementId', latestAnnouncement.id);
+                        }, 2000);
+                    }
+                }
+                
+                console.log(`✅ تم تحميل البيانات الأولية:
+                - ${allSubjects.length} مادة
+                - ${allImportantDates.length} موعد
+                - ${allChannels.length} قناة
+                - ${allAnnouncements.length} إعلان`);
+                
+            } catch (error) {
+                console.error("❌ خطأ في تحميل البيانات الأولية:", error);
+            }
+        }
+
+        // عرض محاضرات مادة محددة
+        window.showLecturesRealtime = function(subjectCode) {
+            try {
+                // إخفاء الأقسام الأخرى
+                document.getElementById('subjects').style.display = 'none';
+                document.getElementById('developer').style.display = 'none';
+                document.getElementById('channels').style.display = 'none';
+                
+                // البحث عن المادة المحددة
+                const subject = allSubjects.find(s => s.code === subjectCode);
+                lecturesSubtitle.textContent = `محاضرات مادة ${subject?.name || subjectCode}`;
+                
+                // تحميل المحاضرات
+                loadLecturesForSubjectRealtime(subjectCode);
+                
+                lecturesContainer.classList.add('show');
+                lecturesContainer.scrollIntoView({ behavior: 'smooth' });
+                sidebar.classList.remove('active');
+                
+            } catch (error) {
+                console.error("❌ خطأ في تحميل المحاضرات:", error);
+                showMessage("حدث خطأ في تحميل المحاضرات", "error");
+            }
+        };
 
         // عرض إشعار التثبيت
         function showInstallPrompt() {
@@ -2235,46 +2949,61 @@
             
             updateLoadingProgress(80);
             
-            // تحميل البيانات الأساسية
-            Promise.all([
-                loadSubjects(),
-                loadAnnouncements(),
-                loadImportantDates(),
-                loadChannels()
-            ]).then(() => {
-                updateLoadingProgress(90);
-                
-                updateLoadingProgress(95);
-                
-                setTimeout(() => {
-                    navbar.classList.add('show');
-                    updateLoadingProgress(100);
+            // تحميل البيانات الأساسية أول مرة
+            loadInitialData()
+                .then(() => {
+                    updateLoadingProgress(90);
                     
-                    hideLoadingScreen();
+                    updateLoadingProgress(95);
                     
                     setTimeout(() => {
-                        showMessage(`مرحباً ${userData.name} في تطبيق CET`, "success");
+                        navbar.classList.add('show');
+                        updateLoadingProgress(100);
                         
-                        // عرض إشعار التثبيت بعد تسجيل الدخول
+                        hideLoadingScreen();
+                        
+                        // بدء المراقبة الفورية
+                        startRealtimeListeners();
+                        
                         setTimeout(() => {
-                            if (!isStandalone && !localStorage.getItem('installDismissed')) {
-                                showInstallPrompt();
-                            }
-                        }, 2000);
-                    }, 500);
-                }, 300);
-            }).catch(error => {
-                console.error("❌ خطأ في تحميل البيانات:", error);
-                updateLoadingProgress(100);
-                hideLoadingScreen();
-                showMessage("حدث خطأ في تحميل البيانات", "error");
-            });
+                            showMessage(`مرحباً ${userData.name} في تطبيق CET`, "success");
+                            
+                            // عرض إشعار التثبيت بعد تسجيل الدخول
+                            setTimeout(() => {
+                                if (!isStandalone && !localStorage.getItem('installDismissed')) {
+                                    showInstallPrompt();
+                                }
+                            }, 2000);
+                        }, 500);
+                    }, 300);
+                })
+                .catch(error => {
+                    console.error("❌ خطأ في تحميل البيانات:", error);
+                    updateLoadingProgress(100);
+                    hideLoadingScreen();
+                    showMessage("حدث خطأ في تحميل البيانات", "error");
+                });
         }
 
         // إخفاء المحتوى الرئيسي
         function hideMainContent() {
             navbar.classList.remove('show');
             sidebar.classList.remove('active');
+            
+            // إيقاف المراقبة الفورية
+            stopAllListeners();
+            
+            // مسح البيانات المعروضة
+            displayedSubjects.clear();
+            displayedDates.clear();
+            displayedChannels.clear();
+            displayedLectures.clear();
+            displayedAnnouncements.clear();
+            
+            allSubjects = [];
+            allImportantDates = [];
+            allChannels = [];
+            allAnnouncements = [];
         }
 
         // تحديث معلومات المستخدم
@@ -2372,6 +3101,9 @@
                 }
             }
             
+            // إيقاف المراقبة الفورية
+            stopAllListeners();
+            
             clearLoginData();
             showMessage("✅ تم تسجيل الخروج بنجاح!", "success");
             setTimeout(() => {
@@ -2387,269 +3119,6 @@
             hideMainContent();
             loginModal.style.display = 'flex';
         }
-
-        // تحميل المواد الدراسية
-        async function loadSubjects() {
-            try {
-                const querySnapshot = await db.collection("subjects").get();
-                
-                allSubjects = [];
-                
-                if (querySnapshot.empty) {
-                    subjectsList.innerHTML = `
-                        <div class="no-subjects" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-                            <i class="fas fa-book" style="font-size: 3rem; color: var(--gray-color); margin-bottom: 20px;"></i>
-                            <h3>لا توجد مواد دراسية حالياً</h3>
-                            <p>سيتم إضافة المواد الدراسية قريباً</p>
-                        </div>
-                    `;
-                    return [];
-                }
-                
-                let subjectsHTML = '';
-                
-                querySnapshot.forEach((doc) => {
-                    const subject = { id: doc.id, ...doc.data() };
-                    allSubjects.push(subject);
-                    
-                    subjectsHTML += `
-                        <div class="subject-card" data-code="${subject.code}" onclick="showLectures('${subject.code}')">
-                            <div class="subject-icon">
-                                <i class="${subject.icon || 'fas fa-book'}"></i>
-                            </div>
-                            <h3>${subject.name}</h3>
-                            <p>${subject.description || 'مادة دراسية'}</p>
-                            <span class="subject-code">${subject.code}</span>
-                        </div>
-                    `;
-                });
-                
-                subjectsList.innerHTML = subjectsHTML;
-                console.log(`✅ تم تحميل ${allSubjects.length} مادة`);
-                return allSubjects;
-                
-            } catch (error) {
-                console.error("❌ خطأ في تحميل المواد:", error);
-                subjectsList.innerHTML = `
-                    <div class="error" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--accent-color);">
-                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 20px;"></i>
-                        <h3>حدث خطأ في تحميل المواد الدراسية</h3>
-                        <p>${error.message}</p>
-                    </div>
-                `;
-                return [];
-            }
-        }
-
-        // تحميل القنوات الرسمية
-        async function loadChannels() {
-            try {
-                const querySnapshot = await db.collection("channels").get();
-                
-                if (querySnapshot.empty) {
-                    channelsContainer.innerHTML = `
-                        <div class="no-channels" style="text-align: center; padding: 40px;">
-                            <i class="fas fa-satellite-dish" style="font-size: 3rem; color: var(--gray-color); margin-bottom: 20px;"></i>
-                            <h3>لا توجد قنوات حالياً</h3>
-                            <p>سيتم إضافة القنوات الرسمية قريباً</p>
-                        </div>
-                    `;
-                    return [];
-                }
-                
-                let channelsHTML = '';
-                
-                querySnapshot.forEach((doc) => {
-                    const channel = doc.data();
-                    
-                    channelsHTML += `
-                        <div class="channel-card">
-                            <div class="channel-icon">
-                                <i class="${channel.icon || 'fas fa-link'}"></i>
-                            </div>
-                            <h3>${channel.name}</h3>
-                            <p>${channel.description || 'قناة رسمية'}</p>
-                            <a href="${channel.url}" target="_blank" class="channel-link">
-                                <i class="fas fa-external-link-alt"></i> زيارة القناة
-                            </a>
-                        </div>
-                    `;
-                });
-                
-                channelsContainer.innerHTML = channelsHTML;
-                console.log(`✅ تم تحميل ${querySnapshot.size} قناة`);
-                
-            } catch (error) {
-                console.error("❌ خطأ في تحميل القنوات:", error);
-                channelsContainer.innerHTML = `
-                    <div class="error" style="text-align: center; padding: 40px; color: var(--accent-color);">
-                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 20px;"></i>
-                        <h3>حدث خطأ في تحميل القنوات</h3>
-                        <p>${error.message}</p>
-                    </div>
-                `;
-            }
-        }
-
-        // تحميل الإعلانات
-        async function loadAnnouncements() {
-            try {
-                const querySnapshot = await db.collection("announcements").get();
-                
-                allAnnouncements = [];
-                querySnapshot.forEach((doc) => {
-                    allAnnouncements.push({ id: doc.id, ...doc.data() });
-                });
-                
-                if (allAnnouncements.length === 0) {
-                    console.log("📢 لا توجد إعلانات");
-                    return;
-                }
-                
-                const activeAnnouncements = allAnnouncements.filter(a => a.isActive === true);
-                
-                if (activeAnnouncements.length === 0) {
-                    console.log("📢 لا توجد إعلانات نشطة");
-                    return;
-                }
-                
-                activeAnnouncements.sort((a, b) => {
-                    const dateA = a.createdAt ? a.createdAt.toDate() : new Date(0);
-                    const dateB = b.createdAt ? b.createdAt.toDate() : new Date(0);
-                    return dateB - dateA;
-                });
-                
-                const latestAnnouncement = activeAnnouncements[0];
-                announcementText.textContent = latestAnnouncement.message;
-                
-                const lastSeenAnnouncementId = localStorage.getItem('lastSeenAnnouncementId');
-                
-                if (lastSeenAnnouncementId !== latestAnnouncement.id) {
-                    setTimeout(() => {
-                        announcementModal.classList.add('show');
-                        localStorage.setItem('lastSeenAnnouncementId', latestAnnouncement.id);
-                    }, 2000);
-                }
-                
-            } catch (error) {
-                console.error("❌ خطأ في تحميل الإعلانات:", error);
-            }
-        }
-
-        // تحميل المواعيد المهمة
-        async function loadImportantDates() {
-            try {
-                const querySnapshot = await db.collection("importantDates").orderBy("date").get();
-                
-                allImportantDates = [];
-                
-                if (querySnapshot.empty) {
-                    datesList.innerHTML = `
-                        <div class="date-item">
-                            <div class="date-title">لا توجد مواعيد حالياً</div>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                let datesHTML = '';
-                
-                querySnapshot.forEach((doc) => {
-                    const dateData = doc.data();
-                    const date = new Date(dateData.date);
-                    const isImportant = dateData.important || false;
-                    
-                    datesHTML += `
-                        <div class="date-item ${isImportant ? 'important' : ''}">
-                            <div class="date-title">${dateData.title}</div>
-                            <div class="date-value">${date.toLocaleDateString('ar-IQ')}</div>
-                        </div>
-                    `;
-                });
-                
-                datesList.innerHTML = datesHTML;
-                
-            } catch (error) {
-                console.error("❌ خطأ في تحميل المواعيد:", error);
-            }
-        }
-
-        // عرض محاضرات مادة محددة
-        window.showLectures = async function(subjectCode) {
-            try {
-                // إخفاء الأقسام الأخرى
-                document.getElementById('subjects').style.display = 'none';
-                document.getElementById('developer').style.display = 'none';
-                document.getElementById('channels').style.display = 'none';
-                
-                // البحث عن المادة المحددة
-                const subject = allSubjects.find(s => s.code === subjectCode);
-                lecturesSubtitle.textContent = `محاضرات مادة ${subject?.name || subjectCode}`;
-                
-                const querySnapshot = await db.collection("lectures")
-                    .where("subjectCode", "==", subjectCode)
-                    .get();
-                
-                currentSubjectLectures = [];
-                
-                if (querySnapshot.empty) {
-                    lecturesList.innerHTML = `
-                        <div class="no-lectures" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--gray-color);">
-                            <i class="fas fa-file-pdf" style="font-size: 3rem; margin-bottom: 20px;"></i>
-                            <h3>لا توجد محاضرات متاحة لهذه المادة حالياً</h3>
-                            <p>سيتم رفع المحاضرات قريباً</p>
-                        </div>
-                    `;
-                } else {
-                    let lecturesHTML = '';
-                    let lecturesArray = [];
-                    
-                    querySnapshot.forEach((doc) => {
-                        const lecture = { id: doc.id, ...doc.data() };
-                        lecturesArray.push(lecture);
-                    });
-                    
-                    lecturesArray.sort((a, b) => {
-                        const dateA = a.createdAt ? a.createdAt.toDate() : new Date(0);
-                        const dateB = b.createdAt ? b.createdAt.toDate() : new Date(0);
-                        return dateB - dateA;
-                    });
-                    
-                    lecturesArray.forEach((lecture, index) => {
-                        const animationDelay = index * 0.1;
-                        
-                        lecturesHTML += `
-                            <div class="lecture-card" style="animation-delay: ${animationDelay}s">
-                                <div class="lecture-header">
-                                    <h3>${lecture.title}</h3>
-                                    <span class="subject-badge">${lecture.subjectCode}</span>
-                                </div>
-                                <div class="lecture-body">
-                                    <div class="lecture-info">
-                                        <span><i class="far fa-calendar-alt"></i> ${lecture.uploadDate || 'غير محدد'}</span>
-                                        <span><i class="far fa-file-pdf"></i> ${lecture.fileSize || 'غير معروف'}</span>
-                                    </div>
-                                    <p class="lecture-desc">${lecture.description || 'لا يوجد وصف'}</p>
-                                    <a href="${lecture.fileUrl}" class="download-btn" download target="_blank">
-                                        <i class="fas fa-download"></i> تحميل المحاضرة
-                                    </a>
-                                </div>
-                            </div>
-                        `;
-                    });
-                    
-                    lecturesList.innerHTML = lecturesHTML;
-                }
-                
-                lecturesContainer.classList.add('show');
-                lecturesContainer.scrollIntoView({ behavior: 'smooth' });
-                sidebar.classList.remove('active');
-                
-            } catch (error) {
-                console.error("❌ خطأ في تحميل المحاضرات:", error);
-                showMessage("حدث خطأ في تحميل المحاضرات", "error");
-            }
-        };
 
         // إغلاق قسم المحاضرات
         closeLectures.addEventListener('click', function() {
@@ -2684,6 +3153,8 @@
         // إدارة المواعيد المهمة
         datesBtn.addEventListener('click', function() {
             datesPanel.classList.toggle('show');
+            // إزالة إشعار التحديث بعد فتح اللوحة
+            datesBtn.classList.remove('has-updates');
         });
 
         // إغلاق لوحة الإعلانات عند النقر خارجها
@@ -2789,6 +3260,9 @@
                 checkLoginStatus();
             }, 800);
         });
+
+        // إعادة تعيين دالة العرض للمحاضرات
+        window.showLectures = window.showLecturesRealtime;
     </script>
 
     <!-- Service Worker Script -->
