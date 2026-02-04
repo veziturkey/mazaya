@@ -6,7 +6,7 @@
     <title>كلية مزايا الجامعة - المرحلة الأولى مسائي</title>
     
     <!-- PWA Metadata -->
-    <meta name="theme-color" content="#2c3e50">
+    <meta name="theme-color" content="#0f172a">
     <meta name="description" content="نظام المحاضرات الإلكتروني لكلية مزايا الجامعة">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -38,27 +38,46 @@
         }
 
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --light-color: #ecf0f1;
-            --dark-color: #2c3e50;
-            --gray-color: #7f8c8d;
-            --success-color: #27ae60;
-            --warning-color: #f39c12;
-            --border-radius: 8px;
-            --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --primary-color: #0f172a;
+            --secondary-color: #4f46e5;
+            --accent-color: #ec4899;
+            --light-color: #f8fafc;
+            --dark-color: #0f172a;
+            --gray-color: #64748b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             --transition: all 0.3s ease;
+        }
+
+        /* ألوان الوضع الليلي */
+        .night-mode {
+            --primary-color: #0f172a;
+            --secondary-color: #6366f1;
+            --accent-color: #ec4899;
+            --light-color: #1e293b;
+            --dark-color: #f1f5f9;
+            --gray-color: #94a3b8;
+            --success-color: #34d399;
+            --warning-color: #fbbf24;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
 
         body {
             font-family: 'Cairo', sans-serif;
             line-height: 1.6;
-            color: #333;
-            background-color: #f9f9f9;
+            color: #334155;
+            background-color: #f8fafc;
             direction: rtl;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.3s ease;
+        }
+
+        body.night-mode {
+            background-color: #0f172a;
+            color: #cbd5e1;
         }
 
         .container {
@@ -68,7 +87,7 @@
             padding: 0 20px;
         }
 
-        /* تسجيل الدخول */
+        /* تسجيل الدخول - تصميم جديد */
         .login-modal {
             display: flex;
             position: fixed;
@@ -76,7 +95,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             z-index: 3000;
             justify-content: center;
             align-items: center;
@@ -84,16 +103,21 @@
         }
 
         .login-content {
-            background: linear-gradient(135deg, var(--primary-color), #1a2530);
-            color: white;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             padding: 40px;
             border-radius: 20px;
             width: 90%;
             max-width: 450px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
             position: relative;
             animation: slideUp 0.5s ease;
-            border: 3px solid var(--secondary-color);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .night-mode .login-content {
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .login-header {
@@ -104,12 +128,19 @@
         .login-header h2 {
             font-size: 1.8rem;
             margin-bottom: 10px;
-            color: white;
+            color: var(--primary-color);
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .night-mode .login-header h2 {
+            color: #f1f5f9;
         }
 
         .login-header p {
-            color: #ddd;
-            opacity: 0.8;
+            color: var(--gray-color);
+            opacity: 0.9;
         }
 
         .form-group {
@@ -120,35 +151,49 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            color: #ddd;
+            color: var(--primary-color);
+        }
+
+        .night-mode .form-group label {
+            color: #e2e8f0;
         }
 
         .form-control {
             width: 100%;
             padding: 14px 20px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid #e2e8f0;
             border-radius: var(--border-radius);
             font-family: 'Cairo', sans-serif;
             font-size: 1rem;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
+            background: white;
+            color: var(--primary-color);
             transition: var(--transition);
+        }
+
+        .night-mode .form-control {
+            background: #1e293b;
+            border-color: #334155;
+            color: #f1f5f9;
         }
 
         .form-control:focus {
             outline: none;
             border-color: var(--secondary-color);
-            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .night-mode .form-control:focus {
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
         }
 
         .form-control::placeholder {
-            color: rgba(255, 255, 255, 0.5);
+            color: #94a3b8;
         }
 
         .login-btn {
             width: 100%;
             padding: 15px;
-            background: var(--secondary-color);
+            background: linear-gradient(135deg, var(--secondary-color), #6366f1);
             color: white;
             border: none;
             border-radius: var(--border-radius);
@@ -161,12 +206,12 @@
         }
 
         .login-btn:hover {
-            background: #2980b9;
             transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
         }
 
         .login-error {
-            color: #ff6b6b;
+            color: #ef4444;
             text-align: center;
             margin-top: 15px;
             font-size: 0.9rem;
@@ -181,9 +226,9 @@
             position: absolute;
             top: 15px;
             left: 15px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.05);
             border: none;
-            color: white;
+            color: var(--primary-color);
             font-size: 1.5rem;
             cursor: pointer;
             width: 40px;
@@ -195,9 +240,18 @@
             transition: var(--transition);
         }
 
+        .night-mode .close-login {
+            background: rgba(255, 255, 255, 0.1);
+            color: #f1f5f9;
+        }
+
         .close-login:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.1);
             transform: rotate(90deg);
+        }
+
+        .night-mode .close-login:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .stay-logged-container {
@@ -210,7 +264,7 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            color: #ddd;
+            color: var(--gray-color);
             cursor: pointer;
             font-size: 0.95rem;
         }
@@ -221,7 +275,7 @@
             cursor: pointer;
         }
 
-        /* شريط الإعلانات */
+        /* شريط الإعلانات - تصميم جديد أكثر حداثة */
         .announcement-modal {
             display: none;
             position: fixed;
@@ -229,7 +283,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
             z-index: 2000;
             justify-content: center;
             align-items: center;
@@ -241,17 +296,17 @@
         }
 
         .announcement-content {
-            background: linear-gradient(135deg, var(--warning-color), #e67e22);
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
             color: white;
             padding: 30px;
             border-radius: 20px;
             width: 90%;
             max-width: 500px;
             text-align: center;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.3);
             position: relative;
             animation: slideUp 0.5s ease;
-            border: 5px solid white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .announcement-text {
@@ -286,7 +341,41 @@
             transform: rotate(90deg) scale(1.1);
         }
 
-        /* إشعارات المواعيد المهمة */
+        /* زر الرجوع - تصميم جديد */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            right: 90px;
+            z-index: 999;
+            display: none;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, var(--secondary-color), #6366f1);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 1.3rem;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        .back-btn.show {
+            display: flex;
+        }
+
+        /* إشعارات المواعيد المهمة - تصميم جديد */
         .important-dates {
             position: fixed;
             bottom: 20px;
@@ -295,7 +384,7 @@
         }
 
         .dates-btn {
-            background: linear-gradient(135deg, var(--accent-color), #c0392b);
+            background: linear-gradient(135deg, var(--accent-color), #db2777);
             color: white;
             width: 50px;
             height: 50px;
@@ -303,7 +392,7 @@
             border: none;
             cursor: pointer;
             font-size: 1.3rem;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--box-shadow);
             transition: var(--transition);
             display: flex;
             align-items: center;
@@ -313,7 +402,7 @@
 
         .dates-btn:hover {
             transform: scale(1.1) rotate(10deg);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 15px 30px rgba(236, 72, 153, 0.3);
         }
 
         .dates-btn::after {
@@ -323,7 +412,7 @@
             right: -5px;
             width: 20px;
             height: 20px;
-            background: #ff6b6b;
+            background: #ef4444;
             border-radius: 50%;
             border: 3px solid white;
             display: none;
@@ -350,6 +439,12 @@
             width: 280px;
             display: none;
             animation: slideUp 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        .night-mode .dates-panel {
+            background: #1e293b;
+            border-color: #334155;
         }
 
         .dates-panel.show {
@@ -363,18 +458,26 @@
         }
 
         .date-item {
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
             display: flex;
             justify-content: space-between;
             align-items: center;
             transition: var(--transition);
         }
 
+        .night-mode .date-item {
+            border-bottom: 1px solid #334155;
+        }
+
         .date-item.removing {
             opacity: 0.5;
-            background-color: #ffeaea;
+            background-color: #fee;
             transform: translateX(-10px);
+        }
+
+        .night-mode .date-item.removing {
+            background-color: rgba(239, 68, 68, 0.1);
         }
 
         .date-title {
@@ -383,21 +486,25 @@
             font-size: 0.9rem;
         }
 
+        .night-mode .date-title {
+            color: #e2e8f0;
+        }
+
         .date-value {
             color: var(--secondary-color);
             font-weight: 600;
-            background: rgba(52, 152, 219, 0.1);
+            background: rgba(79, 70, 229, 0.1);
             padding: 4px 10px;
             border-radius: 20px;
             font-size: 0.8rem;
         }
 
         .date-item.important .date-value {
-            background: rgba(231, 76, 60, 0.1);
+            background: rgba(236, 72, 153, 0.1);
             color: var(--accent-color);
         }
 
-        /* زر الإعلانات */
+        /* زر الإعلانات - تصميم جديد */
         .announcement-notification {
             position: fixed;
             bottom: 20px;
@@ -406,7 +513,7 @@
         }
 
         .announcement-btn {
-            background: linear-gradient(135deg, var(--warning-color), #e67e22);
+            background: linear-gradient(135deg, var(--warning-color), #f59e0b);
             color: white;
             width: 50px;
             height: 50px;
@@ -414,7 +521,7 @@
             border: none;
             cursor: pointer;
             font-size: 1.3rem;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--box-shadow);
             transition: var(--transition);
             display: flex;
             align-items: center;
@@ -424,17 +531,17 @@
 
         .announcement-btn:hover {
             transform: scale(1.1) rotate(10deg);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 15px 30px rgba(245, 158, 11, 0.3);
         }
 
-        /* الشريط الجانبي المعدل - مع إضافة الوضع اليلي والقنوات */
+        /* الشريط الجانبي المعدل - تصميم جديد */
         .sidebar {
             position: fixed;
             top: 0;
             right: -300px;
             width: 260px;
             height: 100%;
-            background: linear-gradient(180deg, var(--primary-color), #1a2530);
+            background: linear-gradient(180deg, var(--primary-color), #1e293b);
             box-shadow: -5px 0 25px rgba(0, 0, 0, 0.3);
             transition: var(--transition);
             z-index: 2000;
@@ -457,7 +564,7 @@
         .user-avatar {
             width: 60px;
             height: 60px;
-            background: var(--secondary-color);
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
             border-radius: 50%;
             margin: 0 auto 10px;
             display: flex;
@@ -505,12 +612,12 @@
         }
 
         .sidebar-item.active {
-            background: rgba(52, 152, 219, 0.2);
+            background: rgba(79, 70, 229, 0.2);
             border-right-color: var(--secondary-color);
             color: white;
         }
 
-        /* تبديل الوضع اليلي */
+        /* تبديل الوضع اليلي - تصميم جديد */
         .theme-toggle {
             margin: 15px 20px;
             padding: 12px;
@@ -553,7 +660,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: #ccc;
+            background-color: #334155;
             transition: .4s;
             border-radius: 24px;
         }
@@ -580,8 +687,8 @@
 
         /* زر تسجيل الخروج في الشريط الجانبي */
         .logout-sidebar {
-            background: rgba(231, 76, 60, 0.2);
-            color: #ff6b6b;
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
             border: none;
             padding: 12px 20px;
             margin: 10px;
@@ -598,42 +705,43 @@
         }
 
         .logout-sidebar:hover {
-            background: rgba(231, 76, 60, 0.3);
+            background: rgba(239, 68, 68, 0.3);
             color: white;
             transform: translateX(-5px);
         }
 
-        .back-to-subjects {
-            background: rgba(52, 152, 219, 0.1);
-            color: var(--secondary-color);
-            border: none;
-            padding: 10px 15px;
-            margin: 10px;
+        /* زر الرجوع في المحتوى */
+        .content-back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--secondary-color), #6366f1);
+            color: white;
+            padding: 10px 20px;
             border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
             cursor: pointer;
             font-family: 'Cairo', sans-serif;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: var(--transition);
-            font-size: 0.9rem;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
         }
 
-        .back-to-subjects:hover {
-            background: rgba(52, 152, 219, 0.2);
+        .content-back-button:hover {
             transform: translateX(-5px);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
         }
 
-        /* شعار التحميل */
+        /* شعار التحميل - تصميم جديد */
         .loading-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             z-index: 9999;
             display: flex;
             flex-direction: column;
@@ -669,8 +777,8 @@
             margin-bottom: 30px;
             text-shadow: 
                 0 2px 10px rgba(0, 0, 0, 0.5),
-                0 0 30px rgba(52, 152, 219, 0.4);
-            background: linear-gradient(135deg, #ffffff 0%, #3498db 100%);
+                0 0 30px rgba(99, 102, 241, 0.4);
+            background: linear-gradient(135deg, #ffffff 0%, #6366f1 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -693,17 +801,17 @@
             height: 100%;
             width: 0%;
             background: linear-gradient(90deg, 
-                #3498db 0%, 
-                #2ecc71 25%, 
-                #f1c40f 50%, 
-                #e74c3c 75%, 
-                #9b59b6 100%);
+                #6366f1 0%, 
+                #10b981 25%, 
+                #f59e0b 50%, 
+                #ec4899 75%, 
+                #8b5cf6 100%);
             border-radius: 10px;
             position: relative;
             transition: width 0.3s ease;
             box-shadow: 
-                0 0 20px rgba(52, 152, 219, 0.5),
-                0 0 40px rgba(52, 152, 219, 0.3);
+                0 0 20px rgba(99, 102, 241, 0.5),
+                0 0 40px rgba(99, 102, 241, 0.3);
         }
 
         .loading-percentage {
@@ -735,15 +843,6 @@
             }
         }
 
-        @keyframes progressShine {
-            0% {
-                transform: translateX(-100%);
-            }
-            100% {
-                transform: translateX(100%);
-            }
-        }
-
         @keyframes percentagePulse {
             0% {
                 transform: scale(1);
@@ -751,7 +850,7 @@
             }
             100% {
                 transform: scale(1.05);
-                text-shadow: 0 2px 20px rgba(52, 152, 219, 0.6);
+                text-shadow: 0 2px 20px rgba(99, 102, 241, 0.6);
             }
         }
 
@@ -764,7 +863,7 @@
         }
 
         .search-btn {
-            background: var(--secondary-color);
+            background: linear-gradient(135deg, var(--secondary-color), #6366f1);
             color: white;
             width: 50px;
             height: 50px;
@@ -772,7 +871,7 @@
             border: none;
             cursor: pointer;
             font-size: 1.2rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--box-shadow);
             transition: var(--transition);
             display: flex;
             align-items: center;
@@ -780,35 +879,43 @@
         }
 
         .search-btn:hover {
-            background: #2980b9;
             transform: rotate(15deg);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
         }
 
-        /* الصورة في الأعلى */
+        /* الصورة في الأعلى - تصميم جديد */
         .hero {
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.9)), 
                         url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             color: white;
-            padding: 80px 0;
+            padding: 100px 0;
             text-align: center;
             position: relative;
             margin-bottom: 40px;
         }
 
         .hero h2 {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             margin-bottom: 20px;
             line-height: 1.3;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
         .btn {
             display: inline-block;
-            background-color: var(--accent-color);
+            background: linear-gradient(135deg, var(--accent-color), #db2777);
             color: white;
             padding: 12px 30px;
             border-radius: var(--border-radius);
@@ -822,19 +929,24 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 15px rgba(236, 72, 153, 0.2);
         }
 
         .btn:hover {
-            background-color: #c0392b;
             transform: translateY(-3px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 12px 25px rgba(236, 72, 153, 0.3);
         }
 
-        /* قسم المواد الدراسية */
+        /* قسم المواد الدراسية - تصميم جديد */
         .subjects {
             background-color: white;
             padding: 50px 0;
+            border-radius: var(--border-radius);
+            margin: 20px;
+        }
+
+        .night-mode .subjects {
+            background-color: #1e293b;
         }
 
         .section-title {
@@ -845,6 +957,10 @@
             position: relative;
         }
 
+        .night-mode .section-title {
+            color: #f1f5f9;
+        }
+
         .section-title::after {
             content: '';
             position: absolute;
@@ -853,54 +969,63 @@
             transform: translateX(50%);
             width: 60px;
             height: 3px;
-            background-color: var(--secondary-color);
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
             border-radius: 2px;
         }
 
         .subjects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
             margin-top: 30px;
         }
 
         .subject-card {
-            background-color: white;
+            background: white;
             border-radius: var(--border-radius);
-            padding: 20px;
+            padding: 25px;
             text-align: center;
             box-shadow: var(--box-shadow);
             transition: var(--transition);
-            border-top: 3px solid var(--success-color);
+            border: 1px solid #e2e8f0;
             cursor: pointer;
             position: relative;
             overflow: hidden;
         }
 
+        .night-mode .subject-card {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
         .subject-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
-            border-top-color: var(--accent-color);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-color: var(--secondary-color);
         }
 
         .subject-card.removing {
             opacity: 0.5;
-            background-color: #ffeaea;
+            background-color: #fee;
             transform: scale(0.95);
             pointer-events: none;
         }
 
+        .night-mode .subject-card.removing {
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+
         .subject-icon {
-            width: 50px;
-            height: 50px;
-            background-color: rgba(39, 174, 96, 0.1);
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2));
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 15px;
             color: var(--success-color);
-            font-size: 1.3rem;
+            font-size: 1.5rem;
         }
 
         .subject-card h3 {
@@ -910,9 +1035,29 @@
             line-height: 1.3;
         }
 
-        /* تأثيرات ظهور المحاضرات */
+        .night-mode .subject-card h3 {
+            color: #f1f5f9;
+        }
+
+        .subject-card p {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .subject-code {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(79, 70, 229, 0.1);
+            color: var(--secondary-color);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* تأثيرات ظهور المحاضرات - تصميم جديد */
         .lectures-container {
-            margin-top: 30px;
+            margin: 30px 20px;
             display: none;
         }
 
@@ -921,15 +1066,26 @@
             animation: fadeInUp 0.5s ease;
         }
 
+        .section-subtitle {
+            text-align: center;
+            color: var(--gray-color);
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .night-mode .section-subtitle {
+            color: #94a3b8;
+        }
+
         .lectures-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
             margin-top: 20px;
         }
 
         .lecture-card {
-            background-color: white;
+            background: white;
             border-radius: var(--border-radius);
             overflow: hidden;
             box-shadow: var(--box-shadow);
@@ -937,23 +1093,34 @@
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp 0.5s ease forwards;
+            border: 1px solid #e2e8f0;
+        }
+
+        .night-mode .lecture-card {
+            background: #1e293b;
+            border-color: #334155;
         }
 
         .lecture-card.removing {
             opacity: 0.5;
-            background-color: #ffeaea;
+            background-color: #fee;
             transform: scale(0.95);
             pointer-events: none;
         }
 
+        .night-mode .lecture-card.removing {
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+
         .lecture-card:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            border-color: var(--secondary-color);
         }
 
         .lecture-header {
-            padding: 15px;
-            background: linear-gradient(135deg, var(--primary-color), #1a2530);
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-color), #1e293b);
             color: white;
             display: flex;
             justify-content: space-between;
@@ -961,20 +1128,39 @@
         }
 
         .lecture-header h3 {
-            font-size: 1rem;
+            font-size: 1.1rem;
             line-height: 1.3;
+            flex: 1;
         }
 
         .subject-badge {
-            background-color: var(--secondary-color);
-            padding: 4px 10px;
-            border-radius: 15px;
-            font-size: 0.75rem;
+            background: linear-gradient(135deg, var(--secondary-color), #6366f1);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
             font-weight: 600;
         }
 
         .lecture-body {
-            padding: 15px;
+            padding: 20px;
+        }
+
+        .lecture-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+
+        .lecture-desc {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .night-mode .lecture-desc {
+            color: #cbd5e1;
         }
 
         .download-btn {
@@ -983,22 +1169,24 @@
             justify-content: center;
             gap: 8px;
             width: 100%;
-            padding: 10px;
-            background-color: var(--success-color);
+            padding: 12px;
+            background: linear-gradient(135deg, var(--success-color), #34d399);
             color: white;
             text-decoration: none;
             border-radius: var(--border-radius);
             font-weight: 600;
             transition: var(--transition);
             font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
         }
 
         .download-btn:hover {
-            background-color: #219653;
             transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
         }
 
-        /* الشريط العلوي */
+        /* الشريط العلوي - تصميم جديد */
         .navbar {
             background-color: white;
             box-shadow: var(--box-shadow);
@@ -1007,6 +1195,10 @@
             z-index: 1000;
             display: none;
             animation: slideDown 0.5s ease;
+        }
+
+        .night-mode .navbar {
+            background-color: #1e293b;
         }
 
         .navbar.show {
@@ -1037,13 +1229,17 @@
             margin-bottom: 3px;
         }
 
+        .night-mode .logo h1 {
+            color: #f1f5f9;
+        }
+
         .logo p {
             color: var(--gray-color);
             font-size: 0.8rem;
         }
 
         .menu-toggle {
-            background: var(--secondary-color);
+            background: linear-gradient(135deg, var(--secondary-color), #6366f1);
             color: white;
             border: none;
             width: 40px;
@@ -1058,95 +1254,135 @@
         }
 
         .menu-toggle:hover {
-            background: #2980b9;
             transform: rotate(15deg);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
         }
 
-        /* قسم التواصل مع المطور */
+        /* قسم التواصل مع المطور - تصميم جديد */
         .developer-contact {
             background-color: white;
             padding: 50px 0;
             text-align: center;
             display: none;
+            border-radius: var(--border-radius);
+            margin: 20px;
+        }
+
+        .night-mode .developer-contact {
+            background-color: #1e293b;
         }
 
         .developer-card {
-            background: linear-gradient(135deg, var(--primary-color), #1a2530);
+            background: linear-gradient(135deg, var(--primary-color), #1e293b);
             color: white;
-            padding: 30px;
-            border-radius: 15px;
+            padding: 40px;
+            border-radius: 20px;
             max-width: 450px;
             margin: 0 auto;
             box-shadow: var(--box-shadow);
             text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .developer-icon {
             font-size: 2.5rem;
             margin-bottom: 15px;
-            color: var(--secondary-color);
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .developer-name {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .developer-role {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
         }
 
         .developer-phone {
             background: rgba(255, 255, 255, 0.1);
-            padding: 12px 25px;
+            padding: 15px 25px;
             border-radius: 50px;
             display: inline-block;
             margin-bottom: 15px;
             transition: var(--transition);
-            font-size: 1rem;
+            font-size: 1.1rem;
         }
 
-        /* قسم القنوات الرسمية */
+        .developer-phone:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* قسم القنوات الرسمية - تصميم جديد */
         .channels-section {
             background-color: white;
             padding: 50px 0;
             text-align: center;
             display: none;
+            border-radius: var(--border-radius);
+            margin: 20px;
+        }
+
+        .night-mode .channels-section {
+            background-color: #1e293b;
         }
 
         .channels-container {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 20px;
+            gap: 25px;
             margin-top: 30px;
         }
 
         .channel-card {
             background: white;
             border-radius: var(--border-radius);
-            padding: 20px;
-            width: 200px;
+            padding: 25px;
+            width: 220px;
             text-align: center;
             box-shadow: var(--box-shadow);
             transition: var(--transition);
-            border-top: 3px solid var(--secondary-color);
+            border: 1px solid #e2e8f0;
+        }
+
+        .night-mode .channel-card {
+            background: #1e293b;
+            border-color: #334155;
         }
 
         .channel-card.removing {
             opacity: 0.5;
-            background-color: #ffeaea;
+            background-color: #fee;
             transform: scale(0.95);
             pointer-events: none;
         }
 
+        .night-mode .channel-card.removing {
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+
         .channel-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-color: var(--secondary-color);
         }
 
         .channel-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--secondary-color), #6366f1);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 15px;
             color: white;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
         }
 
         .channel-card h3 {
@@ -1155,28 +1391,49 @@
             color: var(--primary-color);
         }
 
+        .night-mode .channel-card h3 {
+            color: #f1f5f9;
+        }
+
+        .channel-card p {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
         .channel-link {
             display: inline-block;
-            background-color: var(--success-color);
+            background: linear-gradient(135deg, var(--success-color), #34d399);
             color: white;
-            padding: 8px 15px;
+            padding: 10px 20px;
             border-radius: var(--border-radius);
             text-decoration: none;
             font-weight: 600;
             transition: var(--transition);
         }
 
-        /* قسم معرض الصور والمقالات الجديد */
+        .channel-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        /* قسم معرض الصور والمقالات الجديد - تصميم جديد */
         .gallery-section {
             background-color: white;
             padding: 50px 0;
             text-align: center;
             display: none;
+            border-radius: var(--border-radius);
+            margin: 20px;
+        }
+
+        .night-mode .gallery-section {
+            background-color: #1e293b;
         }
 
         .gallery-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 25px;
             margin-top: 30px;
         }
@@ -1187,12 +1444,18 @@
             overflow: hidden;
             box-shadow: var(--box-shadow);
             transition: var(--transition);
-            border-top: 4px solid #9b59b6;
+            border: 1px solid #e2e8f0;
+        }
+
+        .night-mode .gallery-card {
+            background: #1e293b;
+            border-color: #334155;
         }
 
         .gallery-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            border-color: var(--secondary-color);
         }
 
         .gallery-image {
@@ -1219,6 +1482,10 @@
             line-height: 1.4;
         }
 
+        .night-mode .gallery-title {
+            color: #f1f5f9;
+        }
+
         .gallery-description {
             color: var(--gray-color);
             font-size: 0.9rem;
@@ -1227,19 +1494,25 @@
         }
 
         .gallery-date {
-            color: #7f8c8d;
+            color: var(--gray-color);
             font-size: 0.8rem;
             display: flex;
             align-items: center;
             gap: 5px;
         }
 
-        /* قسم معرض الفيديوهات الجديد */
+        /* قسم معرض الفيديوهات الجديد - تصميم جديد */
         .videos-section {
             background-color: white;
             padding: 50px 0;
             text-align: center;
             display: none;
+            border-radius: var(--border-radius);
+            margin: 20px;
+        }
+
+        .night-mode .videos-section {
+            background-color: #1e293b;
         }
 
         .videos-container {
@@ -1255,12 +1528,18 @@
             overflow: hidden;
             box-shadow: var(--box-shadow);
             transition: var(--transition);
-            border-top: 4px solid #e74c3c;
+            border: 1px solid #e2e8f0;
+        }
+
+        .night-mode .video-card {
+            background: #1e293b;
+            border-color: #334155;
         }
 
         .video-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            border-color: var(--secondary-color);
         }
 
         .video-wrapper {
@@ -1292,6 +1571,10 @@
             line-height: 1.4;
         }
 
+        .night-mode .video-title {
+            color: #f1f5f9;
+        }
+
         .video-description {
             color: var(--gray-color);
             font-size: 0.9rem;
@@ -1300,27 +1583,29 @@
         }
 
         .video-date {
-            color: #7f8c8d;
+            color: var(--gray-color);
             font-size: 0.8rem;
             display: flex;
             align-items: center;
             gap: 5px;
         }
 
-        /* تذييل الصفحة */
+        /* تذييل الصفحة - تصميم جديد */
         .footer {
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), #1e293b);
             color: white;
-            padding: 30px 0 15px;
+            padding: 50px 0 20px;
             margin-top: 50px;
+            border-top-left-radius: var(--border-radius);
+            border-top-right-radius: var(--border-radius);
         }
 
         .footer-bottom {
             text-align: center;
-            padding-top: 20px;
+            padding-top: 30px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #aaa;
-            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
         }
 
         /* رسائل مؤقتة */
@@ -1329,17 +1614,18 @@
             top: 20px;
             left: 50%;
             transform: translateX(-50%) translateY(-100%);
-            background: var(--success-color);
+            background: linear-gradient(135deg, var(--success-color), #34d399);
             color: white;
-            padding: 12px 25px;
+            padding: 15px 30px;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
             z-index: 3000;
             transition: var(--transition);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             font-size: 0.9rem;
+            backdrop-filter: blur(10px);
         }
 
         .message.show {
@@ -1347,239 +1633,7 @@
         }
 
         .message.error {
-            background: var(--accent-color);
-        }
-
-        /* إشعار تثبيت التطبيق - تصميم جديد */
-        .install-notification {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            z-index: 9999;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .install-notification.show {
-            display: flex;
-        }
-
-        .install-content {
-            background: linear-gradient(135deg, var(--primary-color), #1a2530);
-            color: white;
-            padding: 30px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            animation: slideUp 0.5s ease;
-            border: 3px solid var(--secondary-color);
-            position: relative;
-        }
-
-        .install-icon {
-            font-size: 4rem;
-            color: var(--secondary-color);
-            margin-bottom: 20px;
-            animation: bounce 2s infinite;
-        }
-
-        .install-title {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: white;
-        }
-
-        .install-subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin-bottom: 25px;
-            line-height: 1.5;
-        }
-
-        /* دليل التثبيت لـ iOS */
-        .ios-install-guide {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: right;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .ios-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .ios-icon {
-            font-size: 2.5rem;
-            color: white;
-        }
-
-        .ios-steps {
-            text-align: right;
-        }
-
-        .ios-step {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            border-right: 4px solid var(--secondary-color);
-            transition: var(--transition);
-        }
-
-        .ios-step:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateX(-5px);
-        }
-
-        .step-number {
-            background: var(--secondary-color);
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            font-weight: bold;
-            flex-shrink: 0;
-        }
-
-        .step-text {
-            flex: 1;
-            text-align: right;
-            font-size: 0.95rem;
-            line-height: 1.4;
-        }
-
-        .step-strong {
-            color: var(--secondary-color);
-            font-weight: bold;
-        }
-
-        /* دليل التثبيت لـ Android */
-        .android-install-guide {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: right;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .android-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .android-icon {
-            font-size: 2.5rem;
-            color: white;
-        }
-
-        .android-steps {
-            text-align: right;
-        }
-
-        .android-step {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            border-right: 4px solid #4CAF50;
-            transition: var(--transition);
-        }
-
-        .android-step:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateX(-5px);
-        }
-
-        /* زر الإجراء */
-        .install-action {
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        .install-btn {
-            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: var(--border-radius);
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: 'Cairo', sans-serif;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .install-btn:hover {
-            background: linear-gradient(135deg, #2980b9, var(--secondary-color));
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-        }
-
-        .close-install {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-            z-index: 10;
-        }
-
-        .close-install:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: rotate(90deg);
-        }
-
-        /* مؤشر الشرح */
-        .share-icon-demo {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 8px 15px;
-            border-radius: 20px;
-            margin: 0 5px;
-            font-size: 0.9rem;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: linear-gradient(135deg, #ef4444, #dc2626);
         }
 
         /* إشعار التحديث الفوري */
@@ -1587,83 +1641,22 @@
             position: fixed;
             bottom: 100px;
             right: 20px;
-            background: linear-gradient(135deg, var(--success-color), #219653);
+            background: linear-gradient(135deg, var(--success-color), #34d399);
             color: white;
-            padding: 10px 20px;
+            padding: 15px 25px;
             border-radius: var(--border-radius);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--box-shadow);
             z-index: 999;
             display: none;
             align-items: center;
             gap: 10px;
             animation: slideInRight 0.5s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .realtime-update.show {
             display: flex;
-        }
-
-        .realtime-update.updating {
-            background: linear-gradient(135deg, var(--warning-color), #e67e22);
-        }
-
-        .realtime-update.deleting {
-            background: linear-gradient(135deg, var(--accent-color), #c0392b);
-        }
-
-        @keyframes slideInRight {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        /* تحسينات للشاشات الصغيرة */
-        @media (max-width: 768px) {
-            .install-content {
-                width: 95%;
-                padding: 20px;
-                margin: 20px;
-            }
-            
-            .install-title {
-                font-size: 1.6rem;
-            }
-            
-            .ios-step, .android-step {
-                padding: 12px;
-                gap: 12px;
-            }
-            
-            .step-number {
-                width: 25px;
-                height: 25px;
-                font-size: 0.9rem;
-            }
-            
-            .realtime-update {
-                bottom: 80px;
-                right: 10px;
-                left: 10px;
-                text-align: center;
-                justify-content: center;
-            }
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-20px);
-            }
-            60% {
-                transform: translateY(-10px);
-            }
         }
 
         /* زر تثبيت عائم */
@@ -1671,7 +1664,7 @@
             position: fixed;
             bottom: 20px;
             left: 20px;
-            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+            background: linear-gradient(135deg, var(--secondary-color), #6366f1);
             color: white;
             width: 60px;
             height: 60px;
@@ -1679,63 +1672,41 @@
             border: none;
             cursor: pointer;
             font-size: 1.5rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--box-shadow);
             transition: var(--transition);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 999;
             animation: pulse 2s infinite;
+            border: 2px solid white;
         }
 
         .floating-install-btn.show {
             display: flex;
         }
 
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.7);
-            }
-            70% {
-                box-shadow: 0 0 0 15px rgba(52, 152, 219, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(52, 152, 219, 0);
-            }
-        }
-
         /* أنماط الوضع اليلي */
-        body.night-mode {
-            background-color: #121212;
-            color: #e0e0e0;
-        }
-
-        body.night-mode .navbar {
-            background-color: #1e1e1e;
-        }
-
-        body.night-mode .section-card,
-        body.night-mode .subject-card,
-        body.night-mode .lecture-card,
-        body.night-mode .channel-card {
-            background-color: #1e1e1e;
-            color: #e0e0e0;
-            border-color: #333;
-        }
-
-        body.night-mode .subject-card h3,
-        body.night-mode .lecture-header h3,
-        body.night-mode .channel-card h3 {
-            color: #e0e0e0;
-        }
-
-        body.night-mode .sidebar {
-            background: linear-gradient(180deg, #121212, #000000);
-        }
-
-        body.night-mode .hero {
-            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), 
+        .night-mode .hero {
+            background: linear-gradient(rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.95)), 
                         url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+        }
+
+        .night-mode .section-card,
+        .night-mode .subject-card,
+        .night-mode .lecture-card,
+        .night-mode .channel-card,
+        .night-mode .gallery-card,
+        .night-mode .video-card {
+            background-color: #1e293b;
+            color: #cbd5e1;
+            border-color: #334155;
+        }
+
+        .night-mode .subject-card h3,
+        .night-mode .lecture-header h3,
+        .night-mode .channel-card h3 {
+            color: #f1f5f9;
         }
 
         /* تأثيرات عامة */
@@ -1765,6 +1736,17 @@
             }
         }
 
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
         /* تأثيرات الحذف */
         @keyframes fadeOut {
             from {
@@ -1779,8 +1761,8 @@
 
         /* إضافة أنماط جديدة لمعالجة أخطاء الفيديو */
         .video-error {
-            background: rgba(231, 76, 60, 0.1);
-            border: 2px dashed var(--accent-color);
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px dashed #ef4444;
             border-radius: var(--border-radius);
             padding: 30px;
             margin: 10px;
@@ -1788,7 +1770,7 @@
         }
 
         .video-error h4 {
-            color: var(--accent-color);
+            color: #ef4444;
             margin-bottom: 10px;
         }
 
@@ -1800,6 +1782,100 @@
             color: white;
             border-radius: var(--border-radius);
             text-decoration: none;
+        }
+
+        /* حالات فارغة */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray-color);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .night-mode .empty-state h3 {
+            color: #cbd5e1;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            opacity: 0.7;
+        }
+
+        /* تحسينات للشاشات الصغيرة */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .subjects-grid,
+            .lectures-list,
+            .gallery-container,
+            .videos-container {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+            
+            .hero {
+                padding: 80px 0;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .channels-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .channel-card {
+                width: 100%;
+                max-width: 320px;
+            }
+            
+            .realtime-update {
+                bottom: 80px;
+                right: 10px;
+                left: 10px;
+                text-align: center;
+                justify-content: center;
+            }
+            
+            .back-button {
+                right: 80px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .subjects-grid,
+            .lectures-list,
+            .gallery-container,
+            .videos-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .back-button {
+                right: 70px;
+            }
         }
     </style>
 </head>
@@ -1840,7 +1916,7 @@
     <!-- شريط الإعلانات -->
     <div class="announcement-modal" id="announcementModal">
         <div class="announcement-content">
-            <p class="announcement-text" id="announcementText">جارٍ تحميل الإعلان...</p>
+            <p class="announcement-text" id="announcementText"></p>
             <button class="close-announcement" id="closeAnnouncement" title="إغلاق الإعلان">
                 <i class="fas fa-times"></i>
             </button>
@@ -1851,7 +1927,7 @@
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-container">
             <h1 class="loading-title">CET Mazaya</h1>
-            <p class="loading-subtitle">نظام المحاضرات الإلكتروني</p>
+            <p style="color: #94a3b8; font-size: 1.2rem;">نظام المحاضرات الإلكتروني</p>
             
             <div class="loading-progress-container">
                 <div class="loading-progress-bar" id="loadingProgressBar"></div>
@@ -1859,8 +1935,15 @@
             
             <div class="loading-percentage" id="loadingPercentage">0%</div>
             
-            <p class="loading-college">كلية مزايا الجامعة - المرحلة الأولى مسائي</p>
+            <p style="color: #94a3b8; margin-top: 20px;">كلية مزايا الجامعة - المرحلة الأولى مسائي</p>
         </div>
+    </div>
+
+    <!-- زر الرجوع -->
+    <div class="back-button" id="backButtonContainer">
+        <button class="back-btn" id="backButton" title="رجوع">
+            <i class="fas fa-arrow-right"></i>
+        </button>
     </div>
 
     <!-- إشعارات المواعيد المهمة -->
@@ -1870,10 +1953,7 @@
         </button>
         <div class="dates-panel" id="datesPanel">
             <div class="dates-list" id="datesList">
-                <div class="loading">
-                    <i class="fas fa-spinner fa-spin"></i>
-                    <p>جاري تحميل المواعيد...</p>
-                </div>
+                <!-- سيتم إضافة المواعيد هنا -->
             </div>
         </div>
     </div>
@@ -1889,121 +1969,6 @@
     <div class="realtime-update" id="realtimeUpdate">
         <i class="fas fa-sync-alt fa-spin"></i>
         <span>جاري تحديث البيانات...</span>
-    </div>
-
-    <!-- إشعار تثبيت التطبيق (محدث ومحسن) -->
-    <div class="install-notification" id="installNotification">
-        <div class="install-content">
-            <button class="close-install" id="closeInstallNotification">&times;</button>
-            
-            <div class="install-icon">
-                <i class="fas fa-mobile-alt"></i>
-            </div>
-            
-            <div class="install-title">تثبيت تطبيق CET</div>
-            
-            <p class="install-subtitle">احصل على تجربة أفضل مع إمكانية الوصول السريع إلى محاضراتك</p>
-            
-            <!-- دليل تثبيت iOS -->
-            <div id="iosInstallGuide" class="ios-install-guide" style="display: none;">
-                <div class="ios-header">
-                    <i class="fab fa-apple ios-icon"></i>
-                    <h3 style="margin: 0;">لتثبيت التطبيق على iPhone أو iPad</h3>
-                </div>
-                
-                <div class="ios-steps">
-                    <div class="ios-step">
-                        <span class="step-number">1</span>
-                        <span class="step-text">
-                            افتح <span class="step-strong">Safari</span> (متصفح آبل) وانتقل إلى هذا الموقع
-                        </span>
-                    </div>
-                    <div class="ios-step">
-                        <span class="step-number">2</span>
-                        <span class="step-text">
-                            اضغط على زر <span class="share-icon-demo"><i class="fas fa-share"></i> مشاركة</span> في الأسفل
-                        </span>
-                    </div>
-                    <div class="ios-step">
-                        <span class="step-number">3</span>
-                        <span class="step-text">
-                            مرر للأسفل واختر <span class="step-strong">"أضف إلى الشاشة الرئيسية"</span>
-                        </span>
-                    </div>
-                    <div class="ios-step">
-                        <span class="step-number">4</span>
-                        <span class="step-text">
-                            اضغط على <span class="step-strong">"إضافة"</span> في الزاوية العلوية اليمنى
-                        </span>
-                    </div>
-                    <div class="ios-step">
-                        <span class="step-number">5</span>
-                        <span class="step-text">
-                            ستظهر أيقونة التطبيق على شاشتك الرئيسية
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="install-action">
-                    <button class="install-btn" id="iosGotItBtn">
-                        <i class="fas fa-check-circle"></i> فهمت، شكراً
-                    </button>
-                </div>
-            </div>
-            
-            <!-- دليل تثبيت Android -->
-            <div id="androidInstallGuide" class="android-install-guide" style="display: none;">
-                <div class="android-header">
-                    <i class="fab fa-android android-icon"></i>
-                    <h3 style="margin: 0;">لتثبيت التطبيق على Android</h3>
-                </div>
-                
-                <div class="android-steps">
-                    <div class="android-step">
-                        <span class="step-number">1</span>
-                        <span class="step-text">
-                            اضغط على زر <span class="step-strong">"تثبيت"</span> أدناه
-                        </span>
-                    </div>
-                    <div class="android-step">
-                        <span class="step-number">2</span>
-                        <span class="step-text">
-                            ستظهر نافذة تأكيد، اضغط على <span class="step-strong">"تثبيت"</span>
-                        </span>
-                    </div>
-                    <div class="android-step">
-                        <span class="step-number">3</span>
-                        <span class="step-text">
-                            انتظر حتى يكتمل التثبيت
-                        </span>
-                    </div>
-                    <div class="android-step">
-                        <span class="step-number">4</span>
-                        <span class="step-text">
-                            سيظهر التطبيق على شاشتك الرئيسية وتطبيقاتك
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="install-action">
-                    <button class="install-btn" id="androidInstallBtn">
-                        <i class="fas fa-download"></i> تثبيت التطبيق
-                    </button>
-                </div>
-            </div>
-            
-            <!-- رسالة عامة للمتصفحات الأخرى -->
-            <div id="generalInstallMessage" style="display: none; text-align: center; padding: 20px;">
-                <p>يمكنك تثبيت هذا الموقع كتطبيق على جهازك لسهولة الوصول.</p>
-                <p>الرجاء استخدام متصفح Chrome على Android أو Safari على iOS للحصول على أفضل تجربة.</p>
-                
-                <div class="install-action" style="margin-top: 30px;">
-                    <button class="install-btn" id="generalGotItBtn">
-                        <i class="fas fa-check-circle"></i> فهمت، شكراً
-                    </button>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- زر تثبيت عائم -->
@@ -2107,7 +2072,7 @@
             <section id="subjects" class="subjects">
                 <h2 class="section-title">المواد الدراسية</h2>
                 <div class="subjects-grid" id="subjectsList">
-                    <div class="loading">جار تحميل المواد الدراسية...</div>
+                    <!-- سيتم إضافة المواد هنا -->
                 </div>
             </section>
 
@@ -2120,41 +2085,61 @@
                     <!-- سيتم إضافة المحاضرات هنا -->
                 </div>
                 
-                <button class="btn btn-primary" id="closeLectures" style="margin: 25px auto 0; display: block;">
-                    <i class="fas fa-times"></i> إخفاء المحاضرات
+                <button class="content-back-button" id="closeLectures">
+                    <i class="fas fa-arrow-right"></i> العودة للمواد الدراسية
                 </button>
             </div>
 
             <!-- قسم معرض الصور والمقالات -->
             <section id="gallery" class="gallery-section">
-                <h2 class="section-title">معرض الصور والمقالات</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                    <h2 class="section-title">معرض الصور والمقالات</h2>
+                    <button class="content-back-button" id="backFromGallery">
+                        <i class="fas fa-arrow-right"></i> العودة للرئيسية
+                    </button>
+                </div>
                 
                 <div class="gallery-container" id="galleryContainer">
-                    <div class="loading">جار تحميل الصور والمقالات...</div>
+                    <!-- سيتم إضافة الصور والمقالات هنا -->
                 </div>
             </section>
 
             <!-- قسم معرض الفيديوهات -->
             <section id="videos" class="videos-section">
-                <h2 class="section-title">معرض الفيديوهات</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                    <h2 class="section-title">معرض الفيديوهات</h2>
+                    <button class="content-back-button" id="backFromVideos">
+                        <i class="fas fa-arrow-right"></i> العودة للرئيسية
+                    </button>
+                </div>
                 
                 <div class="videos-container" id="videosContainer">
-                    <div class="loading">جار تحميل الفيديوهات...</div>
+                    <!-- سيتم إضافة الفيديوهات هنا -->
                 </div>
             </section>
 
             <!-- قسم القنوات الرسمية -->
             <section id="channels" class="channels-section">
-                <h2 class="section-title">القنوات الرسمية</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                    <h2 class="section-title">القنوات الرسمية</h2>
+                    <button class="content-back-button" id="backFromChannels">
+                        <i class="fas fa-arrow-right"></i> العودة للرئيسية
+                    </button>
+                </div>
                 
                 <div class="channels-container" id="channelsContainer">
-                    <div class="loading">جار تحميل القنوات...</div>
+                    <!-- سيتم إضافة القنوات هنا -->
                 </div>
             </section>
 
             <!-- قسم التواصل مع المطور -->
             <section id="developer" class="developer-contact">
-                <h2 class="section-title">التواصل مع المطور</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                    <h2 class="section-title">التواصل مع المطور</h2>
+                    <button class="content-back-button" id="backFromDeveloper">
+                        <i class="fas fa-arrow-right"></i> العودة للرئيسية
+                    </button>
+                </div>
                 <div class="developer-card">
                     <div class="developer-icon">
                         <i class="fas fa-code"></i>
@@ -2165,7 +2150,7 @@
                         <i class="fas fa-phone"></i>
                         <span>07821531234</span>
                     </div>
-                    <p class="developer-email">
+                    <p class="developer-email" style="color: rgba(255, 255, 255, 0.7); margin-top: 10px;">
                         <i class="fas fa-envelope"></i>
                         للتواصل الفني والدعم
                     </p>
@@ -2182,15 +2167,6 @@
                 </div>
             </div>
         </footer>
-    </div>
-
-    <!-- نافذة عرض الصورة -->
-    <div id="imageModal" class="modal" style="display: none;">
-        <div class="modal-content" style="max-width: 90%; max-height: 90%;">
-            <button class="close-modal" id="closeImageModal">&times;</button>
-            <img id="modalImage" src="" alt="" style="width: 100%; height: auto; border-radius: var(--border-radius);">
-            <div id="modalCaption" style="text-align: center; margin-top: 15px; color: var(--primary-color); font-weight: 600;"></div>
-        </div>
     </div>
 
     <!-- Firebase SDKs -->
@@ -2235,7 +2211,6 @@
         const datesBtn = document.getElementById('datesBtn');
         const datesPanel = document.getElementById('datesPanel');
         const datesList = document.getElementById('datesList');
-        const backToSubjects = document.getElementById('backToSubjects');
         const logoutSidebar = document.getElementById('logoutSidebar');
         const announcementModal = document.getElementById('announcementModal');
         const announcementText = document.getElementById('announcementText');
@@ -2245,27 +2220,22 @@
         const loadingProgressBar = document.getElementById('loadingProgressBar');
         const loadingPercentage = document.getElementById('loadingPercentage');
         const realtimeUpdate = document.getElementById('realtimeUpdate');
-        
-        // عناصر إشعار التثبيت
-        const installNotification = document.getElementById('installNotification');
-        const closeInstallNotification = document.getElementById('closeInstallNotification');
-        const iosInstallGuide = document.getElementById('iosInstallGuide');
-        const androidInstallGuide = document.getElementById('androidInstallGuide');
-        const generalInstallMessage = document.getElementById('generalInstallMessage');
-        const iosGotItBtn = document.getElementById('iosGotItBtn');
-        const androidInstallBtn = document.getElementById('androidInstallBtn');
-        const generalGotItBtn = document.getElementById('generalGotItBtn');
         const floatingInstallBtn = document.getElementById('floatingInstallBtn');
-
-        // عناصر معرض الصور والفيديوهات
         const galleryBtn = document.getElementById('galleryBtn');
         const videosBtn = document.getElementById('videosBtn');
         const galleryContainer = document.getElementById('galleryContainer');
         const videosContainer = document.getElementById('videosContainer');
-        const imageModal = document.getElementById('imageModal');
-        const modalImage = document.getElementById('modalImage');
-        const modalCaption = document.getElementById('modalCaption');
-        const closeImageModal = document.getElementById('closeImageModal');
+        const channelsBtn = document.getElementById('channelsBtn');
+        const channelsContainer = document.getElementById('channelsContainer');
+        const developerBtn = document.getElementById('developerBtn');
+        
+        // عناصر جديدة
+        const backButtonContainer = document.getElementById('backButtonContainer');
+        const backButton = document.getElementById('backButton');
+        const backFromGallery = document.getElementById('backFromGallery');
+        const backFromVideos = document.getElementById('backFromVideos');
+        const backFromChannels = document.getElementById('backFromChannels');
+        const backFromDeveloper = document.getElementById('backFromDeveloper');
 
         // بيانات التطبيق
         let currentUser = null;
@@ -2279,16 +2249,19 @@
         let isLoading = true;
         let progress = 0;
         let deferredPrompt = null;
-        let installPromptShown = false;
         
         // تخزين العناصر المعروضة
-        let displayedSubjects = new Map(); // id -> element
-        let displayedDates = new Map(); // id -> element
-        let displayedChannels = new Map(); // id -> element
-        let displayedLectures = new Map(); // id -> element
-        let displayedAnnouncements = new Map(); // id -> element
-        let displayedGalleryItems = new Map(); // id -> element
-        let displayedVideos = new Map(); // id -> element
+        let displayedSubjects = new Map();
+        let displayedDates = new Map();
+        let displayedChannels = new Map();
+        let displayedLectures = new Map();
+        let displayedAnnouncements = new Map();
+        let displayedGalleryItems = new Map();
+        let displayedVideos = new Map();
+        
+        // متغيرات للتنقل
+        let currentSection = 'home';
+        let sectionHistory = [];
         
         // مراقبين في الوقت الحقيقي
         let subjectsListener = null;
@@ -2304,7 +2277,6 @@
         const isAndroid = /Android/.test(navigator.userAgent);
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
                            window.navigator.standalone === true;
-        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
         // إعداد السنة الحالية
         currentYear.textContent = new Date().getFullYear();
@@ -2328,16 +2300,13 @@
             deferredPrompt = e;
             console.log('✅ متصفح يدعم تثبيت PWA مباشرة');
             
-            // إظهار الزر العائم للتثبيت
-            showFloatingInstallButton();
+            // إظهار الزر العائم للتثبيت بعد 5 ثواني
+            setTimeout(() => {
+                if (!isStandalone && !localStorage.getItem('installDismissed')) {
+                    floatingInstallBtn.classList.add('show');
+                }
+            }, 5000);
         });
-
-        // إظهار زر التثبيت العائم
-        function showFloatingInstallButton() {
-            if (!isStandalone && !localStorage.getItem('installDismissed')) {
-                floatingInstallBtn.classList.add('show');
-            }
-        }
 
         // زر التثبيت العائم
         floatingInstallBtn.addEventListener('click', () => {
@@ -2377,69 +2346,109 @@
             console.log('🛑 تم إيقاف جميع المراقبين');
         }
 
-        // استخراج معرف فيديو يوتيوب من الرابط (نسخة محسنة)
-        function extractYouTubeId(url) {
-            if (!url) return '';
+        // إضافة حالة فارغة
+        function showEmptyState(container, type) {
+            const messages = {
+                'subjects': {
+                    icon: 'fas fa-book',
+                    title: 'لا توجد مواد دراسية حالياً',
+                    message: 'سيتم إضافة المواد الدراسية قريباً'
+                },
+                'lectures': {
+                    icon: 'fas fa-file-pdf',
+                    title: 'لا توجد محاضرات متاحة',
+                    message: 'سيتم رفع المحاضرات قريباً'
+                },
+                'dates': {
+                    icon: 'fas fa-calendar-alt',
+                    title: 'لا توجد مواعيد حالياً',
+                    message: 'سيتم إضافة المواعيد المهمة قريباً'
+                },
+                'channels': {
+                    icon: 'fas fa-satellite-dish',
+                    title: 'لا توجد قنوات حالياً',
+                    message: 'سيتم إضافة القنوات الرسمية قريباً'
+                },
+                'gallery': {
+                    icon: 'fas fa-images',
+                    title: 'لا توجد صور أو مقالات حالياً',
+                    message: 'سيتم إضافة محتوى جديد قريباً'
+                },
+                'videos': {
+                    icon: 'fas fa-video',
+                    title: 'لا توجد فيديوهات حالياً',
+                    message: 'سيتم إضافة فيديوهات جديدة قريباً'
+                }
+            };
             
-            try {
-                // تنظيف الرابط وإزالة المسافات
-                url = url.trim();
-                
-                // تحقق من الروابط المختلفة لـ YouTube
-                let videoId = '';
-                
-                // الحالة 1: رابط عادي مثل https://www.youtube.com/watch?v=VIDEO_ID
-                if (url.includes('youtube.com/watch?v=')) {
-                    videoId = url.split('v=')[1];
-                    const ampersandPosition = videoId.indexOf('&');
-                    if (ampersandPosition !== -1) {
-                        videoId = videoId.substring(0, ampersandPosition);
-                    }
-                }
-                // الحالة 2: رابط مختصر مثل https://youtu.be/VIDEO_ID
-                else if (url.includes('youtu.be/')) {
-                    videoId = url.split('youtu.be/')[1];
-                    const queryPosition = videoId.indexOf('?');
-                    if (queryPosition !== -1) {
-                        videoId = videoId.substring(0, queryPosition);
-                    }
-                }
-                // الحالة 3: رابط تضمين مثل https://www.youtube.com/embed/VIDEO_ID
-                else if (url.includes('youtube.com/embed/')) {
-                    videoId = url.split('embed/')[1];
-                    const queryPosition = videoId.indexOf('?');
-                    if (queryPosition !== -1) {
-                        videoId = videoId.substring(0, queryPosition);
-                    }
-                }
-                // الحالة 4: معرف مباشر (يجب أن يكون 11 حرفاً)
-                else if (url.length === 11 && !url.includes('/') && !url.includes('?')) {
-                    videoId = url;
-                }
-                
-                // تحقق من أن معرف الفيديو صالح (11 حرفاً)
-                if (videoId && videoId.length === 11) {
-                    return videoId;
-                } else {
-                    console.error('❌ معرف فيديو يوتيوب غير صالح:', url);
-                    return '';
-                }
-            } catch (error) {
-                console.error('❌ خطأ في استخراج معرف يوتيوب:', error, url);
-                return '';
+            const msg = messages[type] || messages['subjects'];
+            
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="${msg.icon}"></i>
+                    <h3>${msg.title}</h3>
+                    <p>${msg.message}</p>
+                </div>
+            `;
+        }
+
+        // إدارة زر الرجوع
+        function updateBackButton() {
+            if (currentSection === 'home') {
+                backButtonContainer.style.display = 'none';
+            } else {
+                backButtonContainer.style.display = 'block';
             }
         }
 
-        // التحقق من قابلية تشغيل فيديو يوتيوب
-        async function checkYouTubeVideo(videoId) {
-            if (!videoId) return false;
+        // التنقل إلى قسم معين
+        function navigateToSection(sectionName) {
+            sectionHistory.push(currentSection);
+            currentSection = sectionName;
+            updateBackButton();
             
-            try {
-                const response = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`);
-                return response.ok;
-            } catch (error) {
-                console.error('❌ خطأ في التحقق من فيديو يوتيوب:', error);
-                return false;
+            // إخفاء جميع الأقسام أولاً
+            document.getElementById('subjects').style.display = 'none';
+            document.getElementById('developer').style.display = 'none';
+            document.getElementById('channels').style.display = 'none';
+            document.getElementById('gallery').style.display = 'none';
+            document.getElementById('videos').style.display = 'none';
+            lecturesContainer.classList.remove('show');
+            
+            // إظهار القسم المطلوب
+            if (sectionName === 'subjects') {
+                document.getElementById('subjects').style.display = 'block';
+                document.getElementById('subjects').scrollIntoView({ behavior: 'smooth' });
+            } else if (sectionName === 'gallery') {
+                document.getElementById('gallery').style.display = 'block';
+                document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' });
+            } else if (sectionName === 'videos') {
+                document.getElementById('videos').style.display = 'block';
+                document.getElementById('videos').scrollIntoView({ behavior: 'smooth' });
+            } else if (sectionName === 'channels') {
+                document.getElementById('channels').style.display = 'block';
+                document.getElementById('channels').scrollIntoView({ behavior: 'smooth' });
+            } else if (sectionName === 'developer') {
+                document.getElementById('developer').style.display = 'block';
+                document.getElementById('developer').scrollIntoView({ behavior: 'smooth' });
+            } else if (sectionName === 'home') {
+                document.getElementById('homeSection').scrollIntoView({ behavior: 'smooth' });
+                document.getElementById('subjects').style.display = 'block';
+            }
+            
+            sidebar.classList.remove('active');
+        }
+
+        // الرجوع للقسم السابق
+        function goBack() {
+            if (sectionHistory.length > 0) {
+                const previousSection = sectionHistory.pop();
+                currentSection = previousSection;
+                updateBackButton();
+                
+                navigateToSection(previousSection);
+            } else {
+                navigateToSection('home');
             }
         }
 
@@ -2457,25 +2466,17 @@
                         if (change.type === "added") {
                             console.log(`➕ مادة مضافة: ${docData.name}`);
                             showUpdateNotification("تمت إضافة مادة دراسية جديدة", "success");
-                            
-                            // إضافة المادة الجديدة إلى القائمة
-                            if (!displayedSubjects.has(docId)) {
-                                addSubjectToDisplay(docId, docData);
-                            }
+                            addSubjectToDisplay(docId, docData);
                         }
                         
                         if (change.type === "modified") {
                             console.log(`✏️ مادة معدلة: ${docData.name}`);
                             showUpdateNotification("تم تعديل مادة دراسية", "success");
-                            
-                            // تحديث المادة المعدلة
                             updateSubjectInDisplay(docId, docData);
                         }
                         
                         if (change.type === "removed") {
                             console.log(`🗑️ مادة محذوفة: ${docData.name || docId}`);
-                            
-                            // حذف المادة من العرض
                             removeSubjectFromDisplay(docId);
                         }
                     });
@@ -2495,36 +2496,13 @@
                             console.log(`📢 إعلان مضاف: ${docData.message.substring(0, 50)}...`);
                             showUpdateNotification("تمت إضافة إعلان جديد", "success");
                             
-                            // حفظ الإعلان
                             displayedAnnouncements.set(docId, docData);
                             
-                            // عرض الإعلان الجديد
                             setTimeout(() => {
                                 announcementText.textContent = docData.message;
                                 announcementModal.classList.add('show');
                                 localStorage.setItem('lastSeenAnnouncementId', docId);
                             }, 1000);
-                        }
-                        
-                        if (change.type === "modified") {
-                            console.log(`✏️ إعلان معدل: ${docData.message.substring(0, 50)}...`);
-                            showUpdateNotification("تم تعديل إعلان", "success");
-                            
-                            // تحديث الإعلان
-                            displayedAnnouncements.set(docId, docData);
-                        }
-                        
-                        if (change.type === "removed") {
-                            console.log(`🗑️ إعلان محذوف: ${docId}`);
-                            
-                            // إزالة الإعلان من الذاكرة
-                            displayedAnnouncements.delete(docId);
-                            
-                            // إذا كان هذا الإعلان معروضاً حالياً، إغلاقه
-                            if (localStorage.getItem('lastSeenAnnouncementId') === docId) {
-                                announcementModal.classList.remove('show');
-                                localStorage.removeItem('lastSeenAnnouncementId');
-                            }
                         }
                     });
                 }, (error) => {
@@ -2542,28 +2520,18 @@
                         if (change.type === "added") {
                             console.log(`📅 موعد مضاف: ${docData.title}`);
                             showUpdateNotification("تمت إضافة موعد مهم", "success");
-                            
-                            // إضافة الموعد الجديد
-                            if (!displayedDates.has(docId)) {
-                                addDateToDisplay(docId, docData);
-                            }
-                            
-                            // إظهار إشعار في زر المواعيد
+                            addDateToDisplay(docId, docData);
                             datesBtn.classList.add('has-updates');
                         }
                         
                         if (change.type === "modified") {
                             console.log(`✏️ موعد معدل: ${docData.title}`);
                             showUpdateNotification("تم تعديل موعد مهم", "success");
-                            
-                            // تحديث الموعد
                             updateDateInDisplay(docId, docData);
                         }
                         
                         if (change.type === "removed") {
                             console.log(`🗑️ موعد محذوف: ${docData.title || docId}`);
-                            
-                            // حذف الموعد من العرض
                             removeDateFromDisplay(docId);
                         }
                     });
@@ -2582,7 +2550,6 @@
                             console.log(`📚 محاضرة مضافة: ${docData.title} - ${docData.subjectCode}`);
                             showUpdateNotification(`تمت إضافة محاضرة جديدة لـ ${docData.subjectCode}`, "success");
                             
-                            // إذا كان المستخدم يشاهد محاضرات هذا المادة، قم بتحديثها
                             if (lecturesContainer.classList.contains('show') && 
                                 lecturesSubtitle.textContent.includes(docData.subjectCode)) {
                                 loadLecturesForSubjectRealtime(docData.subjectCode);
@@ -2593,7 +2560,6 @@
                             console.log(`✏️ محاضرة معدلة: ${docData.title}`);
                             showUpdateNotification(`تم تعديل محاضرة لـ ${docData.subjectCode}`, "success");
                             
-                            // إذا كان المستخدم يشاهد محاضرات هذا المادة، قم بتحديثها
                             if (lecturesContainer.classList.contains('show') && 
                                 lecturesSubtitle.textContent.includes(docData.subjectCode)) {
                                 loadLecturesForSubjectRealtime(docData.subjectCode);
@@ -2603,7 +2569,6 @@
                         if (change.type === "removed") {
                             console.log(`🗑️ محاضرة محذوفة: ${docData.title || docId}`);
                             
-                            // إذا كان المستخدم يشاهد محاضرات هذا المادة، قم بتحديثها
                             if (lecturesContainer.classList.contains('show') && 
                                 lecturesSubtitle.textContent.includes(docData.subjectCode)) {
                                 loadLecturesForSubjectRealtime(docData.subjectCode);
@@ -2624,104 +2589,22 @@
                         if (change.type === "added") {
                             console.log(`📡 قناة مضافة: ${docData.name}`);
                             showUpdateNotification("تمت إضافة قناة جديدة", "success");
-                            
-                            // إضافة القناة الجديدة
-                            if (!displayedChannels.has(docId)) {
-                                addChannelToDisplay(docId, docData);
-                            }
+                            addChannelToDisplay(docId, docData);
                         }
                         
                         if (change.type === "modified") {
                             console.log(`✏️ قناة معدلة: ${docData.name}`);
                             showUpdateNotification("تم تعديل قناة", "success");
-                            
-                            // تحديث القناة
                             updateChannelInDisplay(docId, docData);
                         }
                         
                         if (change.type === "removed") {
                             console.log(`🗑️ قناة محذوفة: ${docData.name || docId}`);
-                            
-                            // حذف القناة من العرض
                             removeChannelFromDisplay(docId);
                         }
                     });
                 }, (error) => {
                     console.error("❌ خطأ في مراقبة القنوات:", error);
-                });
-
-            // مراقبة معرض الصور والمقالات
-            galleryListener = db.collection("gallery")
-                .orderBy("createdAt", "desc")
-                .onSnapshot((snapshot) => {
-                    snapshot.docChanges().forEach((change) => {
-                        const docId = change.doc.id;
-                        const docData = change.doc.data();
-                        
-                        if (change.type === "added") {
-                            console.log(`🖼️ صورة مضافة: ${docData.title}`);
-                            showUpdateNotification("تمت إضافة صورة جديدة إلى المعرض", "success");
-                            
-                            // إضافة الصورة الجديدة
-                            if (!displayedGalleryItems.has(docId)) {
-                                addGalleryItemToDisplay(docId, docData);
-                            }
-                        }
-                        
-                        if (change.type === "modified") {
-                            console.log(`✏️ صورة معدلة: ${docData.title}`);
-                            showUpdateNotification("تم تعديل صورة في المعرض", "success");
-                            
-                            // تحديث الصورة
-                            updateGalleryItemInDisplay(docId, docData);
-                        }
-                        
-                        if (change.type === "removed") {
-                            console.log(`🗑️ صورة محذوفة: ${docData.title || docId}`);
-                            
-                            // حذف الصورة من العرض
-                            removeGalleryItemFromDisplay(docId);
-                        }
-                    });
-                }, (error) => {
-                    console.error("❌ خطأ في مراقبة المعرض:", error);
-                });
-
-            // مراقبة معرض الفيديوهات
-            videosListener = db.collection("videos")
-                .orderBy("createdAt", "desc")
-                .onSnapshot((snapshot) => {
-                    snapshot.docChanges().forEach((change) => {
-                        const docId = change.doc.id;
-                        const docData = change.doc.data();
-                        
-                        if (change.type === "added") {
-                            console.log(`🎥 فيديو مضاف: ${docData.title}`);
-                            showUpdateNotification("تمت إضافة فيديو جديد إلى المعرض", "success");
-                            
-                            // إضافة الفيديو الجديد
-                            if (!displayedVideos.has(docId)) {
-                                addVideoToDisplay(docId, docData);
-                            }
-                        }
-                        
-                        if (change.type === "modified") {
-                            console.log(`✏️ فيديو معدل: ${docData.title}`);
-                            showUpdateNotification("تم تعديل فيديو في المعرض", "success");
-                            
-                            // تحديث الفيديو
-                            updateVideoInDisplay(docId, docData);
-                        }
-                        
-                        if (change.type === "removed") {
-                            console.log(`🗑️ فيديو محذوف: ${docData.title || docId}`);
-                            
-                            // حذف الفيديو من العرض
-                            removeVideoFromDisplay(docId);
-                        }
-                    });
-                }, (error) => {
-                    console.error("❌ خطأ في مراقبة الفيديوهات:", error);
                 });
 
             console.log('✅ بدء المراقبة الفورية للبيانات بنجاح');
@@ -2749,7 +2632,6 @@
             subjectsList.appendChild(subjectCard);
             displayedSubjects.set(docId, subjectCard);
             
-            // إضافة تأثير ظهور
             subjectCard.style.opacity = '0';
             subjectCard.style.transform = 'translateY(20px)';
             setTimeout(() => {
@@ -2773,7 +2655,6 @@
                 if (description) description.textContent = subjectData.description || 'مادة دراسية';
                 if (codeSpan) codeSpan.textContent = subjectData.code;
                 
-                // تأثير التحديث
                 subjectCard.classList.add('updating');
                 setTimeout(() => {
                     subjectCard.classList.remove('updating');
@@ -2785,7 +2666,6 @@
         function removeSubjectFromDisplay(docId) {
             const subjectCard = displayedSubjects.get(docId);
             if (subjectCard) {
-                // تأثير الحذف
                 subjectCard.classList.add('removing');
                 
                 setTimeout(() => {
@@ -2797,15 +2677,8 @@
                         subjectCard.remove();
                         displayedSubjects.delete(docId);
                         
-                        // إذا لم يتبقى مواد، عرض رسالة
                         if (displayedSubjects.size === 0) {
-                            subjectsList.innerHTML = `
-                                <div class="no-subjects" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-                                    <i class="fas fa-book" style="font-size: 3rem; color: var(--gray-color); margin-bottom: 20px;"></i>
-                                    <h3>لا توجد مواد دراسية حالياً</h3>
-                                    <p>سيتم إضافة المواد الدراسية قريباً</p>
-                                </div>
-                            `;
+                            showEmptyState(subjectsList, 'subjects');
                         }
                     }, 500);
                 }, 10);
@@ -2848,20 +2721,14 @@
         function removeDateFromDisplay(docId) {
             const dateItem = displayedDates.get(docId);
             if (dateItem) {
-                // تأثير الحذف
                 dateItem.classList.add('removing');
                 
                 setTimeout(() => {
                     dateItem.remove();
                     displayedDates.delete(docId);
                     
-                    // إذا لم يتبقى مواعيد، عرض رسالة
                     if (displayedDates.size === 0) {
-                        datesList.innerHTML = `
-                            <div class="date-item">
-                                <div class="date-title">لا توجد مواعيد حالياً</div>
-                            </div>
-                        `;
+                        showEmptyState(datesList, 'dates');
                     }
                 }, 500);
             }
@@ -2907,273 +2774,14 @@
         function removeChannelFromDisplay(docId) {
             const channelCard = displayedChannels.get(docId);
             if (channelCard) {
-                // تأثير الحذف
                 channelCard.classList.add('removing');
                 
                 setTimeout(() => {
                     channelCard.remove();
                     displayedChannels.delete(docId);
                     
-                    // إذا لم يتبقى قنوات، عرض رسالة
                     if (displayedChannels.size === 0) {
-                        channelsContainer.innerHTML = `
-                            <div class="no-channels" style="text-align: center; padding: 40px;">
-                                <i class="fas fa-satellite-dish" style="font-size: 3rem; color: var(--gray-color); margin-bottom: 20px;"></i>
-                                <h3>لا توجد قنوات حالياً</h3>
-                                <p>سيتم إضافة القنوات الرسمية قريباً</p>
-                            </div>
-                        `;
-                    }
-                }, 500);
-            }
-        }
-
-        // فتح نافذة عرض الصورة
-        window.openImageModal = function(imageUrl, title) {
-            modalImage.src = imageUrl;
-            modalCaption.textContent = title;
-            imageModal.style.display = 'flex';
-        }
-
-        // إغلاق نافذة عرض الصورة
-        closeImageModal.addEventListener('click', () => {
-            imageModal.style.display = 'none';
-        });
-
-        // إغلاق نافذة العرض عند النقر خارجها
-        imageModal.addEventListener('click', (e) => {
-            if (e.target === imageModal) {
-                imageModal.style.display = 'none';
-            }
-        });
-
-        // إضافة صورة إلى المعرض
-        async function addGalleryItemToDisplay(docId, galleryData) {
-            const galleryCard = document.createElement('div');
-            galleryCard.className = 'gallery-card';
-            galleryCard.dataset.id = docId;
-            
-            const date = galleryData.createdAt ? galleryData.createdAt.toDate() : new Date();
-            const formattedDate = date.toLocaleDateString('ar-IQ');
-            
-            galleryCard.innerHTML = `
-                <img src="${galleryData.imageUrl}" alt="${galleryData.title}" class="gallery-image" onclick="openImageModal('${galleryData.imageUrl}', '${galleryData.title}')">
-                <div class="gallery-content">
-                    <h3 class="gallery-title">${galleryData.title}</h3>
-                    <p class="gallery-description">${galleryData.description || 'لا يوجد وصف'}</p>
-                    <div class="gallery-date">
-                        <i class="far fa-calendar-alt"></i>
-                        <span>${formattedDate}</span>
-                    </div>
-                </div>
-            `;
-            
-            galleryContainer.appendChild(galleryCard);
-            displayedGalleryItems.set(docId, galleryCard);
-        }
-
-        // تحديث صورة في المعرض
-        function updateGalleryItemInDisplay(docId, galleryData) {
-            const galleryCard = displayedGalleryItems.get(docId);
-            if (galleryCard) {
-                const date = galleryData.createdAt ? galleryData.createdAt.toDate() : new Date();
-                const formattedDate = date.toLocaleDateString('ar-IQ');
-                
-                galleryCard.innerHTML = `
-                    <img src="${galleryData.imageUrl}" alt="${galleryData.title}" class="gallery-image" onclick="openImageModal('${galleryData.imageUrl}', '${galleryData.title}')">
-                    <div class="gallery-content">
-                        <h3 class="gallery-title">${galleryData.title}</h3>
-                        <p class="gallery-description">${galleryData.description || 'لا يوجد وصف'}</p>
-                        <div class="gallery-date">
-                            <i class="far fa-calendar-alt"></i>
-                            <span>${formattedDate}</span>
-                        </div>
-                    </div>
-                `;
-            }
-        }
-
-        // حذف صورة من المعرض
-        function removeGalleryItemFromDisplay(docId) {
-            const galleryCard = displayedGalleryItems.get(docId);
-            if (galleryCard) {
-                // تأثير الحذف
-                galleryCard.classList.add('removing');
-                
-                setTimeout(() => {
-                    galleryCard.remove();
-                    displayedGalleryItems.delete(docId);
-                    
-                    // إذا لم يتبقى صور، عرض رسالة
-                    if (displayedGalleryItems.size === 0) {
-                        galleryContainer.innerHTML = `
-                            <div class="no-gallery" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-                                <i class="fas fa-images" style="font-size: 3rem; color: var(--gray-color); margin-bottom: 20px;"></i>
-                                <h3>لا توجد صور أو مقالات حالياً</h3>
-                                <p>سيتم إضافة محتوى جديد قريباً</p>
-                            </div>
-                        `;
-                    }
-                }, 500);
-            }
-        }
-
-        // إضافة فيديو إلى المعرض (محسنة)
-        async function addVideoToDisplay(docId, videoData) {
-            const videoCard = document.createElement('div');
-            videoCard.className = 'video-card';
-            videoCard.dataset.id = docId;
-            
-            const date = videoData.createdAt ? videoData.createdAt.toDate() : new Date();
-            const formattedDate = date.toLocaleDateString('ar-IQ');
-            
-            // استخراج معرف فيديو يوتيوب من الرابط
-            const videoId = extractYouTubeId(videoData.videoUrl);
-            
-            let videoHTML = '';
-            if (videoId) {
-                // التحقق من صحة الفيديو
-                const isValid = await checkYouTubeVideo(videoId);
-                
-                if (isValid) {
-                    videoHTML = `
-                        <div class="video-wrapper">
-                            <iframe class="video-iframe" 
-                                    src="https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1" 
-                                    frameborder="0" 
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                    allowfullscreen
-                                    title="${videoData.title}">
-                            </iframe>
-                        </div>
-                    `;
-                } else {
-                    videoHTML = `
-                        <div class="video-error">
-                            <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 10px;"></i>
-                            <h4>فيديو غير متاح</h4>
-                            <p>قد يكون الفيديو محذوفاً أو محظوراً في منطقتك</p>
-                            <a href="${videoData.videoUrl}" target="_blank" style="color: var(--secondary-color); margin-top: 10px;">
-                                <i class="fas fa-external-link-alt"></i> حاول فتح الرابط مباشرة
-                            </a>
-                        </div>
-                    `;
-                }
-            } else {
-                videoHTML = `
-                    <div class="video-error">
-                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 10px;"></i>
-                        <h4>رابط YouTube غير صالح</h4>
-                        <p>الرجاء التحقق من صحة رابط الفيديو</p>
-                        <a href="${videoData.videoUrl}" target="_blank" style="color: var(--secondary-color); margin-top: 10px;">
-                            <i class="fas fa-external-link-alt"></i> فتح الرابط مباشرة
-                        </a>
-                    </div>
-                `;
-            }
-            
-            videoCard.innerHTML = `
-                ${videoHTML}
-                <div class="video-content">
-                    <h3 class="video-title">${videoData.title}</h3>
-                    <p class="video-description">${videoData.description || 'لا يوجد وصف'}</p>
-                    <div class="video-date">
-                        <i class="far fa-calendar-alt"></i>
-                        <span>${formattedDate}</span>
-                    </div>
-                </div>
-            `;
-            
-            videosContainer.appendChild(videoCard);
-            displayedVideos.set(docId, videoCard);
-        }
-
-        // تحديث فيديو في المعرض
-        async function updateVideoInDisplay(docId, videoData) {
-            const videoCard = displayedVideos.get(docId);
-            if (videoCard) {
-                const date = videoData.createdAt ? videoData.createdAt.toDate() : new Date();
-                const formattedDate = date.toLocaleDateString('ar-IQ');
-                
-                // استخراج معرف فيديو يوتيوب من الرابط
-                const videoId = extractYouTubeId(videoData.videoUrl);
-                
-                let videoHTML = '';
-                if (videoId) {
-                    // التحقق من صحة الفيديو
-                    const isValid = await checkYouTubeVideo(videoId);
-                    
-                    if (isValid) {
-                        videoHTML = `
-                            <div class="video-wrapper">
-                                <iframe class="video-iframe" 
-                                        src="https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1" 
-                                        frameborder="0" 
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                        allowfullscreen
-                                        title="${videoData.title}">
-                                </iframe>
-                            </div>
-                        `;
-                    } else {
-                        videoHTML = `
-                            <div class="video-error">
-                                <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 10px;"></i>
-                                <h4>فيديو غير متاح</h4>
-                                <p>قد يكون الفيديو محذوفاً أو محظوراً في منطقتك</p>
-                                <a href="${videoData.videoUrl}" target="_blank" style="color: var(--secondary-color); margin-top: 10px;">
-                                    <i class="fas fa-external-link-alt"></i> حاول فتح الرابط مباشرة
-                                </a>
-                            </div>
-                        `;
-                    }
-                } else {
-                    videoHTML = `
-                        <div class="video-error">
-                            <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 10px;"></i>
-                            <h4>رابط YouTube غير صالح</h4>
-                            <p>الرجاء التحقق من صحة رابط الفيديو</p>
-                            <a href="${videoData.videoUrl}" target="_blank" style="color: var(--secondary-color); margin-top: 10px;">
-                                <i class="fas fa-external-link-alt"></i> فتح الرابط مباشرة
-                            </a>
-                        </div>
-                    `;
-                }
-                
-                videoCard.innerHTML = `
-                    ${videoHTML}
-                    <div class="video-content">
-                        <h3 class="video-title">${videoData.title}</h3>
-                        <p class="video-description">${videoData.description || 'لا يوجد وصف'}</p>
-                        <div class="video-date">
-                            <i class="far fa-calendar-alt"></i>
-                            <span>${formattedDate}</span>
-                        </div>
-                    </div>
-                `;
-            }
-        }
-
-        // حذف فيديو من المعرض
-        function removeVideoFromDisplay(docId) {
-            const videoCard = displayedVideos.get(docId);
-            if (videoCard) {
-                // تأثير الحذف
-                videoCard.classList.add('removing');
-                
-                setTimeout(() => {
-                    videoCard.remove();
-                    displayedVideos.delete(docId);
-                    
-                    // إذا لم يتبقى فيديوهات، عرض رسالة
-                    if (displayedVideos.size === 0) {
-                        videosContainer.innerHTML = `
-                            <div class="no-videos" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-                                <i class="fas fa-video" style="font-size: 3rem; color: var(--gray-color); margin-bottom: 20px;"></i>
-                                <h3>لا توجد فيديوهات حالياً</h3>
-                                <p>سيتم إضافة فيديوهات جديدة قريباً</p>
-                            </div>
-                        `;
+                        showEmptyState(channelsContainer, 'channels');
                     }
                 }, 500);
             }
@@ -3190,13 +2798,7 @@
                 displayedLectures.clear();
                 
                 if (querySnapshot.empty) {
-                    lecturesList.innerHTML = `
-                        <div class="no-lectures" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--gray-color);">
-                            <i class="fas fa-file-pdf" style="font-size: 3rem; margin-bottom: 20px;"></i>
-                            <h3>لا توجد محاضرات متاحة لهذه المادة حالياً</h3>
-                            <p>سيتم رفع المحاضرات قريباً</p>
-                        </div>
-                    `;
+                    showEmptyState(lecturesList, 'lectures');
                     return;
                 }
                 
@@ -3208,14 +2810,12 @@
                     lecturesArray.push(lecture);
                 });
                 
-                // ترتيب المحاضرات تنازلياً حسب التاريخ
                 lecturesArray.sort((a, b) => {
                     const dateA = a.createdAt ? a.createdAt.toDate() : new Date(0);
                     const dateB = b.createdAt ? b.createdAt.toDate() : new Date(0);
                     return dateB - dateA;
                 });
                 
-                // إضافة المحاضرات بعد الترتيب
                 lecturesArray.forEach((lecture, index) => {
                     const animationDelay = index * 0.1;
                     
@@ -3241,7 +2841,6 @@
                 
                 lecturesList.innerHTML = lecturesHTML;
                 
-                // حفظ المحاضرات المعروضة
                 document.querySelectorAll('.lecture-card').forEach(card => {
                     const id = card.dataset.id;
                     displayedLectures.set(id, card);
@@ -3249,6 +2848,7 @@
                 
             } catch (error) {
                 console.error("❌ خطأ في تحميل المحاضرات:", error);
+                showEmptyState(lecturesList, 'lectures');
             }
         }
 
@@ -3257,37 +2857,35 @@
             try {
                 // تحميل المواد الدراسية
                 const subjectsSnapshot = await db.collection("subjects").get();
-                subjectsSnapshot.forEach((doc) => {
-                    addSubjectToDisplay(doc.id, doc.data());
-                    allSubjects.push({ id: doc.id, ...doc.data() });
-                });
+                if (subjectsSnapshot.empty) {
+                    showEmptyState(subjectsList, 'subjects');
+                } else {
+                    subjectsSnapshot.forEach((doc) => {
+                        addSubjectToDisplay(doc.id, doc.data());
+                        allSubjects.push({ id: doc.id, ...doc.data() });
+                    });
+                }
                 
                 // تحميل المواعيد
                 const datesSnapshot = await db.collection("importantDates").orderBy("date").get();
-                datesSnapshot.forEach((doc) => {
-                    addDateToDisplay(doc.id, doc.data());
-                    allImportantDates.push({ id: doc.id, ...doc.data() });
-                });
+                if (datesSnapshot.empty) {
+                    showEmptyState(datesList, 'dates');
+                } else {
+                    datesSnapshot.forEach((doc) => {
+                        addDateToDisplay(doc.id, doc.data());
+                        allImportantDates.push({ id: doc.id, ...doc.data() });
+                    });
+                }
                 
                 // تحميل القنوات
                 const channelsSnapshot = await db.collection("channels").get();
-                channelsSnapshot.forEach((doc) => {
-                    addChannelToDisplay(doc.id, doc.data());
-                    allChannels.push({ id: doc.id, ...doc.data() });
-                });
-                
-                // تحميل معرض الصور
-                const gallerySnapshot = await db.collection("gallery").orderBy("createdAt", "desc").get();
-                gallerySnapshot.forEach((doc) => {
-                    addGalleryItemToDisplay(doc.id, doc.data());
-                    allGalleryItems.push({ id: doc.id, ...doc.data() });
-                });
-                
-                // تحميل معرض الفيديوهات
-                const videosSnapshot = await db.collection("videos").orderBy("createdAt", "desc").get();
-                for (const doc of videosSnapshot.docs) {
-                    await addVideoToDisplay(doc.id, doc.data());
-                    allVideos.push({ id: doc.id, ...doc.data() });
+                if (channelsSnapshot.empty) {
+                    showEmptyState(channelsContainer, 'channels');
+                } else {
+                    channelsSnapshot.forEach((doc) => {
+                        addChannelToDisplay(doc.id, doc.data());
+                        allChannels.push({ id: doc.id, ...doc.data() });
+                    });
                 }
                 
                 // تحميل الإعلانات النشطة
@@ -3324,12 +2922,13 @@
                 - ${allSubjects.length} مادة
                 - ${allImportantDates.length} موعد
                 - ${allChannels.length} قناة
-                - ${allGalleryItems.length} صورة
-                - ${allVideos.length} فيديو
                 - ${allAnnouncements.length} إعلان`);
                 
             } catch (error) {
                 console.error("❌ خطأ في تحميل البيانات الأولية:", error);
+                showEmptyState(subjectsList, 'subjects');
+                showEmptyState(datesList, 'dates');
+                showEmptyState(channelsContainer, 'channels');
             }
         }
 
@@ -3353,6 +2952,7 @@
                 lecturesContainer.classList.add('show');
                 lecturesContainer.scrollIntoView({ behavior: 'smooth' });
                 sidebar.classList.remove('active');
+                backButtonContainer.style.display = 'none';
                 
             } catch (error) {
                 console.error("❌ خطأ في تحميل المحاضرات:", error);
@@ -3362,7 +2962,6 @@
 
         // عرض إشعار التثبيت
         function showInstallPrompt() {
-            // إذا كان التطبيق مثبتاً بالفعل أو تم تجاهل الإشعار
             if (isStandalone) {
                 console.log('✅ التطبيق مثبت بالفعل');
                 return;
@@ -3373,123 +2972,24 @@
                 return;
             }
             
-            // إخفاء الزر العائم
             floatingInstallBtn.classList.remove('show');
             
-            // إخفاء جميع الأدلة أولاً
-            iosInstallGuide.style.display = 'none';
-            androidInstallGuide.style.display = 'none';
-            generalInstallMessage.style.display = 'none';
-            
-            // تحديد الرسالة المناسبة حسب النظام
-            if (isIOS) {
-                if (!isSafari) {
-                    // إذا كان على iOS ولكن ليس Safari
-                    generalInstallMessage.style.display = 'block';
-                    generalInstallMessage.innerHTML = `
-                        <p><i class="fab fa-apple" style="font-size: 2rem; margin-bottom: 15px;"></i></p>
-                        <h3>لتثبيت التطبيق على iOS</h3>
-                        <p>الرجاء استخدام متصفح <strong>Safari</strong> لتثبيت التطبيق</p>
-                        <p>افتح هذا الموقع في Safari واتبع التعليمات</p>
-                    `;
-                } else {
-                    // iOS + Safari
-                    iosInstallGuide.style.display = 'block';
-                }
-            } else if (isAndroid && deferredPrompt) {
-                // Android مع دعم التثبيت المباشر
-                androidInstallGuide.style.display = 'block';
-            } else {
-                // متصفحات أخرى
-                generalInstallMessage.style.display = 'block';
-            }
-            
-            installNotification.classList.add('show');
-            installPromptShown = true;
-            
-            // تسجيل عرض الإشعار
-            console.log(`📱 عرض إشعار التثبيت لـ: ${isIOS ? 'iOS' : isAndroid ? 'Android' : 'متصفح آخر'}`);
-        }
-
-        // تثبيت التطبيق (لـ Android فقط)
-        androidInstallBtn.addEventListener('click', async () => {
             if (deferredPrompt) {
-                try {
-                    installNotification.classList.remove('show');
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    
-                    if (outcome === 'accepted') {
-                        showMessage("✅ تم تثبيت تطبيق CET بنجاح!", "success");
-                        localStorage.setItem('appInstalled', 'true');
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
                         console.log('✅ المستخدم قبل التثبيت');
+                        showMessage("✅ تم تثبيت تطبيق CET بنجاح!", "success");
                     } else {
-                        showMessage("تم إلغاء التثبيت", "error");
                         console.log('❌ المستخدم رفض التثبيت');
                     }
-                    
                     deferredPrompt = null;
                     localStorage.setItem('installDismissed', 'true');
-                } catch (error) {
-                    console.error('❌ خطأ في التثبيت:', error);
-                    showMessage("حدث خطأ أثناء التثبيت", "error");
-                }
-            }
-        });
-
-        // زر "فهمت" لـ iOS
-        iosGotItBtn.addEventListener('click', () => {
-            installNotification.classList.remove('show');
-            localStorage.setItem('installDismissed', 'true');
-            showMessage("شكراً! اتبع الخطوات في Safari لتثبيت التطبيق", "success");
-            
-            // إذا كان على iOS ولكن ليس Safari، توجيه إلى Safari
-            if (isIOS && !isSafari) {
-                setTimeout(() => {
-                    if (confirm("هل تريد فتح هذا الموقع في Safari لتثبيت التطبيق؟")) {
-                        window.location.href = 'x-web-search://?CET Mazaya';
-                    }
-                }, 1000);
-            }
-        });
-
-        // زر "فهمت" العام
-        generalGotItBtn.addEventListener('click', () => {
-            installNotification.classList.remove('show');
-            localStorage.setItem('installDismissed', 'true');
-            showMessage("شكراً لك!", "success");
-        });
-
-        // إغلاق إشعار التثبيت
-        closeInstallNotification.addEventListener('click', () => {
-            installNotification.classList.remove('show');
-            localStorage.setItem('installDismissed', 'true');
-            
-            // إظهار الزر العائم مرة أخرى
-            if (deferredPrompt && !isStandalone) {
-                setTimeout(() => {
-                    floatingInstallBtn.classList.add('show');
-                }, 1000);
-            }
-        });
-
-        // التحقق من حالة التثبيت عند التحميل
-        function checkInstallStatus() {
-            if (isStandalone) {
-                console.log('✅ التطبيق يعمل في وضع المثبت');
-                document.body.classList.add('standalone-mode');
+                });
             } else {
-                console.log('🌐 التطبيق يعمل في المتصفح');
-                
-                // التحقق من متصفح Safari على iOS
-                if (isIOS && isSafari) {
-                    console.log('📱 iOS + Safari: جاهز للتثبيت');
-                }
-                
-                // عرض إشعار التثبيت بعد 5 ثواني
-                setTimeout(() => {
-                    showInstallPrompt();
-                }, 5000);
+                // لمتصفحات لا تدعم التثبيت المباشر
+                showMessage("يمكنك تثبيت التطبيق من إعدادات المتصفح", "success");
+                localStorage.setItem('installDismissed', 'true');
             }
         }
 
@@ -3569,12 +3069,10 @@
             updateLoadingProgress(75);
             loginModal.style.display = 'none';
             
-            // تحديث معلومات المستخدم
             updateUserInfo(userData);
             
             updateLoadingProgress(80);
             
-            // تحميل البيانات الأساسية أول مرة
             loadInitialData()
                 .then(() => {
                     updateLoadingProgress(90);
@@ -3587,16 +3085,14 @@
                         
                         hideLoadingScreen();
                         
-                        // بدء المراقبة الفورية
                         startRealtimeListeners();
                         
                         setTimeout(() => {
                             showMessage(`مرحباً ${userData.name} في تطبيق CET`, "success");
                             
-                            // عرض إشعار التثبيت بعد تسجيل الدخول
                             setTimeout(() => {
-                                if (!isStandalone && !localStorage.getItem('installDismissed')) {
-                                    showInstallPrompt();
+                                if (!isStandalone && !localStorage.getItem('installDismissed') && deferredPrompt) {
+                                    floatingInstallBtn.classList.add('show');
                                 }
                             }, 2000);
                         }, 500);
@@ -3614,11 +3110,10 @@
         function hideMainContent() {
             navbar.classList.remove('show');
             sidebar.classList.remove('active');
+            backButtonContainer.style.display = 'none';
             
-            // إيقاف المراقبة الفورية
             stopAllListeners();
             
-            // مسح البيانات المعروضة
             displayedSubjects.clear();
             displayedDates.clear();
             displayedChannels.clear();
@@ -3633,6 +3128,9 @@
             allAnnouncements = [];
             allGalleryItems = [];
             allVideos = [];
+            
+            sectionHistory = [];
+            currentSection = 'home';
         }
 
         // تحديث معلومات المستخدم
@@ -3730,7 +3228,6 @@
                 }
             }
             
-            // إيقاف المراقبة الفورية
             stopAllListeners();
             
             clearLoginData();
@@ -3753,8 +3250,7 @@
         closeLectures.addEventListener('click', function() {
             lecturesContainer.classList.remove('show');
             setTimeout(() => {
-                document.getElementById('subjects').style.display = 'block';
-                document.getElementById('subjects').scrollIntoView({ behavior: 'smooth' });
+                navigateToSection('subjects');
             }, 300);
         });
 
@@ -3782,7 +3278,6 @@
         // إدارة المواعيد المهمة
         datesBtn.addEventListener('click', function() {
             datesPanel.classList.toggle('show');
-            // إزالة إشعار التحديث بعد فتح اللوحة
             datesBtn.classList.remove('has-updates');
         });
 
@@ -3796,80 +3291,42 @@
         // التنقل من الشريط الجانبي
         homeBtn.addEventListener('click', function() {
             setActiveSidebarItem(homeBtn);
-            document.getElementById('homeSection').scrollIntoView({ behavior: 'smooth' });
-            hideOtherSections();
-            sidebar.classList.remove('active');
+            navigateToSection('home');
         });
 
         subjectsBtn.addEventListener('click', function() {
             setActiveSidebarItem(subjectsBtn);
-            document.getElementById('subjects').style.display = 'block';
-            document.getElementById('developer').style.display = 'none';
-            document.getElementById('channels').style.display = 'none';
-            document.getElementById('gallery').style.display = 'none';
-            document.getElementById('videos').style.display = 'none';
-            lecturesContainer.classList.remove('show');
-            document.getElementById('subjects').scrollIntoView({ behavior: 'smooth' });
-            sidebar.classList.remove('active');
+            navigateToSection('subjects');
         });
 
         galleryBtn.addEventListener('click', function() {
             setActiveSidebarItem(galleryBtn);
-            document.getElementById('gallery').style.display = 'block';
-            document.getElementById('subjects').style.display = 'none';
-            document.getElementById('developer').style.display = 'none';
-            document.getElementById('channels').style.display = 'none';
-            document.getElementById('videos').style.display = 'none';
-            lecturesContainer.classList.remove('show');
-            document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' });
-            sidebar.classList.remove('active');
+            navigateToSection('gallery');
         });
 
         videosBtn.addEventListener('click', function() {
             setActiveSidebarItem(videosBtn);
-            document.getElementById('videos').style.display = 'block';
-            document.getElementById('subjects').style.display = 'none';
-            document.getElementById('developer').style.display = 'none';
-            document.getElementById('channels').style.display = 'none';
-            document.getElementById('gallery').style.display = 'none';
-            lecturesContainer.classList.remove('show');
-            document.getElementById('videos').scrollIntoView({ behavior: 'smooth' });
-            sidebar.classList.remove('active');
+            navigateToSection('videos');
         });
 
         channelsBtn.addEventListener('click', function() {
             setActiveSidebarItem(channelsBtn);
-            document.getElementById('channels').style.display = 'block';
-            document.getElementById('subjects').style.display = 'none';
-            document.getElementById('developer').style.display = 'none';
-            document.getElementById('gallery').style.display = 'none';
-            document.getElementById('videos').style.display = 'none';
-            lecturesContainer.classList.remove('show');
-            document.getElementById('channels').scrollIntoView({ behavior: 'smooth' });
-            sidebar.classList.remove('active');
+            navigateToSection('channels');
         });
 
         developerBtn.addEventListener('click', function() {
             setActiveSidebarItem(developerBtn);
-            document.getElementById('developer').style.display = 'block';
-            document.getElementById('subjects').style.display = 'none';
-            document.getElementById('channels').style.display = 'none';
-            document.getElementById('gallery').style.display = 'none';
-            document.getElementById('videos').style.display = 'none';
-            lecturesContainer.classList.remove('show');
-            document.getElementById('developer').scrollIntoView({ behavior: 'smooth' });
-            sidebar.classList.remove('active');
+            navigateToSection('developer');
         });
 
-        // إخفاء الأقسام الأخرى
-        function hideOtherSections() {
-            document.getElementById('subjects').style.display = 'block';
-            document.getElementById('developer').style.display = 'none';
-            document.getElementById('channels').style.display = 'none';
-            document.getElementById('gallery').style.display = 'none';
-            document.getElementById('videos').style.display = 'none';
-            lecturesContainer.classList.remove('show');
-        }
+        // زر الرجوع العام
+        backButton.addEventListener('click', goBack);
+
+        // أزرار الرجوع من الأقسام
+        backFromGallery.addEventListener('click', goBack);
+        backFromVideos.addEventListener('click', goBack);
+        backFromChannels.addEventListener('click', goBack);
+        backFromDeveloper.addEventListener('click', goBack);
 
         // تعيين العنصر النشط في الشريط الجانبي
         function setActiveSidebarItem(activeItem) {
@@ -3913,9 +3370,6 @@
         document.addEventListener("DOMContentLoaded", function() {
             updateLoadingProgress(10);
             
-            // التحقق من حالة التثبيت
-            checkInstallStatus();
-            
             setTimeout(() => {
                 updateLoadingProgress(30);
                 checkLoginStatus();
@@ -3928,13 +3382,11 @@
 
     <!-- Service Worker Script -->
     <script>
-        // Register Service Worker for PWA
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
                 navigator.serviceWorker.register('/sw.js').then(function(registration) {
                     console.log('ServiceWorker registered with scope:', registration.scope);
                     
-                    // Manifest للمتصفحات
                     if ('manifest' in document.createElement('link')) {
                         const link = document.createElement('link');
                         link.rel = 'manifest';
@@ -3947,12 +3399,10 @@
             });
         }
 
-        // كشف تغيير وضع العرض
         window.addEventListener('appinstalled', (evt) => {
             console.log('🎉 تم تثبيت تطبيق CET بنجاح!');
             localStorage.setItem('appInstalled', 'true');
             
-            // إخفاء زر التثبيت العائم
             document.getElementById('floatingInstallBtn').classList.remove('show');
         });
     </script>
