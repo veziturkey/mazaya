@@ -2061,7 +2061,7 @@
             <div class="container">
                 <div class="hero-content">
                     <h2>مرحباً بك في تطبيق CET</h2>
-                    <p>نظام المحاضرات الإلكتروني لكلية مزايا الجامعة - المرحلة الأولى مسائي</p>
+                    <p>-نظام المحاضرات الإلكتروني لكلية مزايا الجامعة - المرحلة الأولى مسائي-صباحي</p>
                     <a href="#subjects" class="btn">استعرض المواد الدراسية <i class="fas fa-arrow-down"></i></a>
                 </div>
             </div>
@@ -2163,7 +2163,7 @@
             <div class="container">
                 <div class="footer-bottom">
                     <p>جميع الحقوق محفوظة &copy; <span id="currentYear"></span> تطبيق CET - كلية مزايا الجامعة</p>
-                    <p>تم تطوير هذا التطبيق لخدمة طلبة المرحلة الأولى - الدراسة المسائية</p>
+                    <p>تم تطوير هذا التطبيق لخدمة طلبة المرحلة الأولى - الدراسة المسائية-صباحي</p>
                 </div>
             </div>
         </footer>
@@ -2344,6 +2344,57 @@
             videosListener = null;
             
             console.log('🛑 تم إيقاف جميع المراقبين');
+        }
+
+        // استخراج معرف فيديو يوتيوب من الرابط
+        function extractYouTubeId(url) {
+            if (!url) return '';
+            
+            try {
+                // تنظيف الرابط
+                url = url.trim();
+                let videoId = '';
+                
+                // رابط عادي: https://www.youtube.com/watch?v=VIDEO_ID
+                if (url.includes('youtube.com/watch?v=')) {
+                    videoId = url.split('v=')[1];
+                    const ampersandPosition = videoId.indexOf('&');
+                    if (ampersandPosition !== -1) {
+                        videoId = videoId.substring(0, ampersandPosition);
+                    }
+                }
+                // رابط مختصر: https://youtu.be/VIDEO_ID
+                else if (url.includes('youtu.be/')) {
+                    videoId = url.split('youtu.be/')[1];
+                    const queryPosition = videoId.indexOf('?');
+                    if (queryPosition !== -1) {
+                        videoId = videoId.substring(0, queryPosition);
+                    }
+                }
+                // رابط تضمين: https://www.youtube.com/embed/VIDEO_ID
+                else if (url.includes('youtube.com/embed/')) {
+                    videoId = url.split('embed/')[1];
+                    const queryPosition = videoId.indexOf('?');
+                    if (queryPosition !== -1) {
+                        videoId = videoId.substring(0, queryPosition);
+                    }
+                }
+                // معرف مباشر (11 حرفاً)
+                else if (url.length === 11 && !url.includes('/') && !url.includes('?')) {
+                    videoId = url;
+                }
+                
+                // التحقق من صحة معرف الفيديو
+                if (videoId && videoId.length === 11) {
+                    return videoId;
+                } else {
+                    console.error('❌ معرف فيديو يوتيوب غير صالح:', url);
+                    return '';
+                }
+            } catch (error) {
+                console.error('❌ خطأ في استخراج معرف يوتيوب:', error, url);
+                return '';
+            }
         }
 
         // إضافة حالة فارغة
@@ -2531,7 +2582,7 @@
                         }
                         
                         if (change.type === "removed") {
-                            console.log(`🗑️ موعد محذوف: ${docData.title || docId}`);
+                            console.log(`🗑️ موعد محذوفة: ${docData.title || docId}`);
                             removeDateFromDisplay(docId);
                         }
                     });
@@ -2605,6 +2656,64 @@
                     });
                 }, (error) => {
                     console.error("❌ خطأ في مراقبة القنوات:", error);
+                });
+
+            // مراقبة معرض الصور
+            galleryListener = db.collection("gallery")
+                .orderBy("createdAt", "desc")
+                .onSnapshot((snapshot) => {
+                    snapshot.docChanges().forEach((change) => {
+                        const docId = change.doc.id;
+                        const docData = change.doc.data();
+                        
+                        if (change.type === "added") {
+                            console.log(`🖼️ صورة مضافة: ${docData.title}`);
+                            showUpdateNotification("تمت إضافة صورة جديدة إلى المعرض", "success");
+                            addGalleryItemToDisplay(docId, docData);
+                        }
+                        
+                        if (change.type === "modified") {
+                            console.log(`✏️ صورة معدلة: ${docData.title}`);
+                            showUpdateNotification("تم تعديل صورة في المعرض", "success");
+                            updateGalleryItemInDisplay(docId, docData);
+                        }
+                        
+                        if (change.type === "removed") {
+                            console.log(`🗑️ صورة محذوفة: ${docData.title || docId}`);
+                            removeGalleryItemFromDisplay(docId);
+                        }
+                    });
+                }, (error) => {
+                    console.error("❌ خطأ في مراقبة المعرض:", error);
+                });
+
+            // مراقبة معرض الفيديوهات
+            videosListener = db.collection("videos")
+                .orderBy("createdAt", "desc")
+                .onSnapshot((snapshot) => {
+                    snapshot.docChanges().forEach((change) => {
+                        const docId = change.doc.id;
+                        const docData = change.doc.data();
+                        
+                        if (change.type === "added") {
+                            console.log(`🎥 فيديو مضاف: ${docData.title}`);
+                            showUpdateNotification("تمت إضافة فيديو جديد إلى المعرض", "success");
+                            addVideoToDisplay(docId, docData);
+                        }
+                        
+                        if (change.type === "modified") {
+                            console.log(`✏️ فيديو معدل: ${docData.title}`);
+                            showUpdateNotification("تم تعديل فيديو في المعرض", "success");
+                            updateVideoInDisplay(docId, docData);
+                        }
+                        
+                        if (change.type === "removed") {
+                            console.log(`🗑️ فيديو محذوف: ${docData.title || docId}`);
+                            removeVideoFromDisplay(docId);
+                        }
+                    });
+                }, (error) => {
+                    console.error("❌ خطأ في مراقبة الفيديوهات:", error);
                 });
 
             console.log('✅ بدء المراقبة الفورية للبيانات بنجاح');
@@ -2787,6 +2896,190 @@
             }
         }
 
+        // إضافة صورة للمعرض
+        function addGalleryItemToDisplay(docId, galleryData) {
+            const galleryCard = document.createElement('div');
+            galleryCard.className = 'gallery-card';
+            galleryCard.dataset.id = docId;
+            
+            const date = galleryData.createdAt ? galleryData.createdAt.toDate() : new Date();
+            const formattedDate = date.toLocaleDateString('ar-IQ');
+            
+            galleryCard.innerHTML = `
+                <img src="${galleryData.imageUrl}" alt="${galleryData.title}" class="gallery-image" onclick="openImageModal('${galleryData.imageUrl}', '${galleryData.title}')">
+                <div class="gallery-content">
+                    <h3 class="gallery-title">${galleryData.title}</h3>
+                    <p class="gallery-description">${galleryData.description || 'لا يوجد وصف'}</p>
+                    <div class="gallery-date">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>${formattedDate}</span>
+                    </div>
+                </div>
+            `;
+            
+            galleryContainer.appendChild(galleryCard);
+            displayedGalleryItems.set(docId, galleryCard);
+        }
+
+        // تحديث صورة في المعرض
+        function updateGalleryItemInDisplay(docId, galleryData) {
+            const galleryCard = displayedGalleryItems.get(docId);
+            if (galleryCard) {
+                const date = galleryData.createdAt ? galleryData.createdAt.toDate() : new Date();
+                const formattedDate = date.toLocaleDateString('ar-IQ');
+                
+                galleryCard.innerHTML = `
+                    <img src="${galleryData.imageUrl}" alt="${galleryData.title}" class="gallery-image" onclick="openImageModal('${galleryData.imageUrl}', '${galleryData.title}')">
+                    <div class="gallery-content">
+                        <h3 class="gallery-title">${galleryData.title}</h3>
+                        <p class="gallery-description">${galleryData.description || 'لا يوجد وصف'}</p>
+                        <div class="gallery-date">
+                            <i class="far fa-calendar-alt"></i>
+                            <span>${formattedDate}</span>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // حذف صورة من المعرض
+        function removeGalleryItemFromDisplay(docId) {
+            const galleryCard = displayedGalleryItems.get(docId);
+            if (galleryCard) {
+                galleryCard.classList.add('removing');
+                
+                setTimeout(() => {
+                    galleryCard.remove();
+                    displayedGalleryItems.delete(docId);
+                    
+                    if (displayedGalleryItems.size === 0) {
+                        showEmptyState(galleryContainer, 'gallery');
+                    }
+                }, 500);
+            }
+        }
+
+        // إضافة فيديو للمعرض (النسخة المعدلة)
+        function addVideoToDisplay(docId, videoData) {
+            const videoCard = document.createElement('div');
+            videoCard.className = 'video-card';
+            videoCard.dataset.id = docId;
+            
+            const date = videoData.createdAt ? videoData.createdAt.toDate() : new Date();
+            const formattedDate = date.toLocaleDateString('ar-IQ');
+            
+            // استخراج معرف فيديو يوتيوب من الرابط
+            const videoId = extractYouTubeId(videoData.videoUrl);
+            
+            let videoHTML = '';
+            if (videoId) {
+                videoHTML = `
+                    <div class="video-wrapper">
+                        <iframe class="video-iframe" 
+                                src="https://www.youtube.com/embed/${videoId}" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen
+                                title="${videoData.title}">
+                        </iframe>
+                    </div>
+                `;
+            } else {
+                videoHTML = `
+                    <div class="video-error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h4>رابط فيديو غير صالح</h4>
+                        <p>الرجاء التحقق من رابط الفيديو</p>
+                        <a href="${videoData.videoUrl}" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> فتح الرابط مباشرة
+                        </a>
+                    </div>
+                `;
+            }
+            
+            videoCard.innerHTML = `
+                ${videoHTML}
+                <div class="video-content">
+                    <h3 class="video-title">${videoData.title}</h3>
+                    <p class="video-description">${videoData.description || 'لا يوجد وصف'}</p>
+                    <div class="video-date">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>${formattedDate}</span>
+                    </div>
+                </div>
+            `;
+            
+            videosContainer.appendChild(videoCard);
+            displayedVideos.set(docId, videoCard);
+        }
+
+        // تحديث فيديو في المعرض
+        function updateVideoInDisplay(docId, videoData) {
+            const videoCard = displayedVideos.get(docId);
+            if (videoCard) {
+                const date = videoData.createdAt ? videoData.createdAt.toDate() : new Date();
+                const formattedDate = date.toLocaleDateString('ar-IQ');
+                
+                // استخراج معرف فيديو يوتيوب من الرابط
+                const videoId = extractYouTubeId(videoData.videoUrl);
+                
+                let videoHTML = '';
+                if (videoId) {
+                    videoHTML = `
+                        <div class="video-wrapper">
+                            <iframe class="video-iframe" 
+                                    src="https://www.youtube.com/embed/${videoId}" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowfullscreen
+                                    title="${videoData.title}">
+                            </iframe>
+                        </div>
+                    `;
+                } else {
+                    videoHTML = `
+                        <div class="video-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h4>رابط فيديو غير صالح</h4>
+                            <p>الرجاء التحقق من رابط الفيديو</p>
+                            <a href="${videoData.videoUrl}" target="_blank">
+                                <i class="fas fa-external-link-alt"></i> فتح الرابط مباشرة
+                            </a>
+                        </div>
+                    `;
+                }
+                
+                videoCard.innerHTML = `
+                    ${videoHTML}
+                    <div class="video-content">
+                        <h3 class="video-title">${videoData.title}</h3>
+                        <p class="video-description">${videoData.description || 'لا يوجد وصف'}</p>
+                        <div class="video-date">
+                            <i class="far fa-calendar-alt"></i>
+                            <span>${formattedDate}</span>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // حذف فيديو من المعرض
+        function removeVideoFromDisplay(docId) {
+            const videoCard = displayedVideos.get(docId);
+            if (videoCard) {
+                videoCard.classList.add('removing');
+                
+                setTimeout(() => {
+                    videoCard.remove();
+                    displayedVideos.delete(docId);
+                    
+                    if (displayedVideos.size === 0) {
+                        showEmptyState(videosContainer, 'videos');
+                    }
+                }, 500);
+            }
+        }
+
         // تحميل المحاضرات لمادة محددة (وقت حقيقي)
         async function loadLecturesForSubjectRealtime(subjectCode) {
             try {
@@ -2888,6 +3181,28 @@
                     });
                 }
                 
+                // تحميل معرض الصور
+                const gallerySnapshot = await db.collection("gallery").orderBy("createdAt", "desc").get();
+                if (gallerySnapshot.empty) {
+                    showEmptyState(galleryContainer, 'gallery');
+                } else {
+                    gallerySnapshot.forEach((doc) => {
+                        addGalleryItemToDisplay(doc.id, doc.data());
+                        allGalleryItems.push({ id: doc.id, ...doc.data() });
+                    });
+                }
+                
+                // تحميل معرض الفيديوهات
+                const videosSnapshot = await db.collection("videos").orderBy("createdAt", "desc").get();
+                if (videosSnapshot.empty) {
+                    showEmptyState(videosContainer, 'videos');
+                } else {
+                    videosSnapshot.forEach((doc) => {
+                        addVideoToDisplay(doc.id, doc.data());
+                        allVideos.push({ id: doc.id, ...doc.data() });
+                    });
+                }
+                
                 // تحميل الإعلانات النشطة
                 const announcementsSnapshot = await db.collection("announcements")
                     .where("isActive", "==", true)
@@ -2922,6 +3237,8 @@
                 - ${allSubjects.length} مادة
                 - ${allImportantDates.length} موعد
                 - ${allChannels.length} قناة
+                - ${allGalleryItems.length} صورة
+                - ${allVideos.length} فيديو
                 - ${allAnnouncements.length} إعلان`);
                 
             } catch (error) {
@@ -2929,6 +3246,8 @@
                 showEmptyState(subjectsList, 'subjects');
                 showEmptyState(datesList, 'dates');
                 showEmptyState(channelsContainer, 'channels');
+                showEmptyState(galleryContainer, 'gallery');
+                showEmptyState(videosContainer, 'videos');
             }
         }
 
@@ -3378,6 +3697,12 @@
 
         // إعادة تعيين دالة العرض للمحاضرات
         window.showLectures = window.showLecturesRealtime;
+        
+        // دالة لفتح نافذة عرض الصورة
+        window.openImageModal = function(imageUrl, title) {
+            // سيتم تنفيذ هذه الدالة لاحقاً
+            alert(`عرض الصورة: ${title}\n${imageUrl}`);
+        };
     </script>
 
     <!-- Service Worker Script -->
