@@ -802,60 +802,32 @@
             position: relative;
         }
 
-        .logo-3d {
-            width: 140px;
-            height: 140px;
-            background: linear-gradient(135deg, #4f46e5, #ec4899, #8b5cf6);
-            border-radius: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 20px 40px rgba(79, 70, 229, 0.4),
-                        0 0 0 5px rgba(255, 255, 255, 0.1),
-                        inset 0 -5px 0 rgba(0, 0, 0, 0.2);
-            transform: rotate(10deg) perspective(500px) rotateY(-10deg);
+        /* ========== التعديل هنا: إضافة الشعار الجديد ========== */
+        .college-logo {
+            width: 180px;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 
+                        0 0 0 3px rgba(255, 255, 255, 0.2),
+                        0 0 30px rgba(99, 102, 241, 0.6);
             animation: logoFloat 4s ease-in-out infinite, logoGlow 2s ease-in-out infinite alternate;
-            position: relative;
+            transform: perspective(500px) rotateY(0deg) rotateX(2deg);
+            transition: transform 0.3s ease;
+            border: 3px solid rgba(255, 255, 255, 0.3);
         }
 
-        .logo-3d i {
-            font-size: 5rem;
-            color: white;
-            filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.3));
-            transform: rotate(-10deg) perspective(500px) rotateY(10deg);
-            animation: iconSpin 10s linear infinite;
-        }
-
-        .logo-3d::after {
-            content: '';
-            position: absolute;
-            top: 5px;
-            left: 5px;
-            right: 5px;
-            bottom: 5px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 30px;
-            animation: borderPulse 2s ease-in-out infinite;
+        .college-logo:hover {
+            transform: perspective(500px) rotateY(5deg) rotateX(3deg) scale(1.05);
         }
 
         @keyframes logoFloat {
-            0%, 100% { transform: rotate(10deg) perspective(500px) rotateY(-10deg) translateY(0); }
-            50% { transform: rotate(10deg) perspective(500px) rotateY(-10deg) translateY(-15px); }
+            0%, 100% { transform: perspective(500px) rotateY(0deg) rotateX(2deg) translateY(0); }
+            50% { transform: perspective(500px) rotateY(0deg) rotateX(2deg) translateY(-15px); }
         }
 
         @keyframes logoGlow {
-            0% { box-shadow: 0 20px 40px rgba(79, 70, 229, 0.4), 0 0 0 5px rgba(255, 255, 255, 0.1), inset 0 -5px 0 rgba(0, 0, 0, 0.2); }
-            100% { box-shadow: 0 30px 60px rgba(236, 72, 153, 0.5), 0 0 0 8px rgba(255, 255, 255, 0.2), inset 0 -5px 0 rgba(0, 0, 0, 0.2); }
-        }
-
-        @keyframes iconSpin {
-            0% { transform: rotate(-10deg) perspective(500px) rotateY(10deg) rotate(0deg); }
-            100% { transform: rotate(-10deg) perspective(500px) rotateY(10deg) rotate(360deg); }
-        }
-
-        @keyframes borderPulse {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.05); }
+            0% { box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 3px rgba(255, 255, 255, 0.2), 0 0 30px rgba(99, 102, 241, 0.4); }
+            100% { box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 0 5px rgba(255, 255, 255, 0.3), 0 0 50px rgba(236, 72, 153, 0.6); }
         }
 
         .loading-title {
@@ -2078,13 +2050,8 @@
                 font-size: 0.9rem;
             }
 
-            .logo-3d {
-                width: 100px;
-                height: 100px;
-            }
-
-            .logo-3d i {
-                font-size: 3.5rem;
+            .college-logo {
+                width: 140px;
             }
 
             .loading-title {
@@ -2128,13 +2095,8 @@
                 width: 100%;
             }
 
-            .logo-3d {
-                width: 80px;
-                height: 80px;
-            }
-
-            .logo-3d i {
-                font-size: 2.8rem;
+            .college-logo {
+                width: 120px;
             }
 
             .loading-title {
@@ -2195,13 +2157,14 @@
         </div>
     </div>
 
-    <!-- شعار التحميل - تصميم حديث وجذاب -->
+    <!-- شعار التحميل - تصميم حديث مع شعار الكلية الجديد -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-container">
             <div class="logo-wrapper">
-                <div class="logo-3d">
-                    <i class="fas fa-graduation-cap"></i>
-                </div>
+                <!-- ========== التعديل هنا: إضافة الشعار الجديد ========== -->
+                <img src="https://tse1.mm.bing.net/th/id/OIP.PFVipef1fbg98JZEG7gKyAHaHQ?rs=1&pid=ImgDetMain&o=7&rm=3" 
+                     alt="شعار كلية مزايا الجامعة" 
+                     class="college-logo">
             </div>
             <h1 class="loading-title">CET Mazaya</h1>
             <p class="loading-subtitle">نظام المحاضرات الإلكتروني</p>
