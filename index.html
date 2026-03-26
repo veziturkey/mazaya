@@ -46,6 +46,7 @@
             --gray-color: #64748b;
             --success-color: #10b981;
             --warning-color: #f59e0b;
+            --danger-color: #ef4444;
             --border-radius: 12px;
             --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             --transition: all 0.3s ease;
@@ -216,6 +217,7 @@
             margin-top: 15px;
             font-size: 0.9rem;
             display: none;
+            white-space: pre-line;
         }
 
         .login-error.show {
@@ -734,7 +736,7 @@
             box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
         }
 
-        /* شعار التحميل - تصميم حديث وجذاب */
+        /* شعار التحميل */
         .loading-screen {
             position: fixed;
             top: 0;
@@ -802,7 +804,6 @@
             position: relative;
         }
 
-        /* ========== التعديل هنا: إضافة الشعار الجديد ========== */
         .college-logo {
             width: 180px;
             height: auto;
@@ -1010,7 +1011,7 @@
             box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
         }
 
-        /* ========== قسم الأزرار المخصصة (جديد) ========== */
+        /* قسم الأزرار المخصصة */
         .custom-buttons-section {
             background: white;
             padding: 20px 0;
@@ -1837,6 +1838,9 @@
             gap: 10px;
             font-size: 0.9rem;
             backdrop-filter: blur(10px);
+            white-space: pre-line;
+            max-width: 90%;
+            text-align: center;
         }
 
         .message.show {
@@ -2157,11 +2161,10 @@
         </div>
     </div>
 
-    <!-- شعار التحميل - تصميم حديث مع شعار الكلية الجديد -->
+    <!-- شعار التحميل -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-container">
             <div class="logo-wrapper">
-                <!-- ========== التعديل هنا: إضافة الشعار الجديد ========== -->
                 <img src="https://tse1.mm.bing.net/th/id/OIP.PFVipef1fbg98JZEG7gKyAHaHQ?rs=1&pid=ImgDetMain&o=7&rm=3" 
                      alt="شعار كلية مزايا الجامعة" 
                      class="college-logo">
@@ -2310,7 +2313,7 @@
         </header>
 
         <div class="container">
-            <!-- ========== قسم الأزرار المخصصة (يظهر بعد تسجيل الدخول) ========== -->
+            <!-- قسم الأزرار المخصصة -->
             <section class="custom-buttons-section" id="customButtonsSection" style="display: none;">
                 <div class="custom-buttons-container" id="customButtonsContainer"></div>
             </section>
@@ -2413,8 +2416,7 @@
 
     <script>
         // ======================================================
-        // الكود المصحح - تم إصلاح مشكلة تكرار العناصر
-        // وإضافة الأزرار المخصصة (Custom Buttons)
+        // الكود المعدل - مع إضافة مراقبة حالة المستخدم الفورية
         // ======================================================
 
         // Firebase configuration
@@ -2477,7 +2479,7 @@
         const backFromChannels = document.getElementById('backFromChannels');
         const backFromDeveloper = document.getElementById('backFromDeveloper');
         
-        // ========== عناصر الأزرار المخصصة (جديد) ==========
+        // عناصر الأزرار المخصصة
         const customButtonsSection = document.getElementById('customButtonsSection');
         const customButtonsContainer = document.getElementById('customButtonsContainer');
 
@@ -2490,26 +2492,13 @@
         let allChannels = [];
         let allGalleryItems = [];
         let allVideos = [];
-        let allCustomButtons = []; // متغير لتخزين الأزرار المخصصة
+        let allCustomButtons = [];
         let isLoading = true;
         let progress = 0;
         let deferredPrompt = null;
         
-        // متغيرات لتتبع العناصر المعروضة (منع التكرار)
-        let displayedSubjects = new Map();
-        let displayedDates = new Map();
-        let displayedChannels = new Map();
-        let displayedLectures = new Map();
-        let displayedAnnouncements = new Map();
-        let displayedGalleryItems = new Map();
-        let displayedVideos = new Map();
-        let displayedCustomButtons = new Map(); // خرائط للأزرار المخصصة
-        
-        // متغيرات للتنقل
-        let currentSection = 'home';
-        let sectionHistory = [];
-        
-        // مراقبين في الوقت الحقيقي
+        // متغيرات للمراقبة الفورية
+        let userStatusListener = null;  // مراقب حالة المستخدم
         let subjectsListener = null;
         let lecturesListener = null;
         let announcementsListener = null;
@@ -2517,31 +2506,39 @@
         let channelsListener = null;
         let galleryListener = null;
         let videosListener = null;
-        let customButtonsListener = null; // مراقب الأزرار المخصصة
+        let customButtonsListener = null;
         
+        // متغيرات لتتبع العناصر المعروضة
+        let displayedSubjects = new Map();
+        let displayedDates = new Map();
+        let displayedChannels = new Map();
+        let displayedLectures = new Map();
+        let displayedAnnouncements = new Map();
+        let displayedGalleryItems = new Map();
+        let displayedVideos = new Map();
+        let displayedCustomButtons = new Map();
+        
+        // متغيرات للتنقل
+        let currentSection = 'home';
+        let sectionHistory = [];
+
         // ==================== الدوال المساعدة ====================
 
-        // تنظيف الحاوية قبل إضافة عناصر جديدة
         function clearContainer(container) {
             while (container.firstChild) {
                 container.removeChild(container.firstChild);
             }
         }
 
-        // إعادة تعيين جميع الحاويات
         function resetAllContainers() {
-            // تنظيف الحاويات الرئيسية قبل إضافة المحتوى الجديد
             subjectsList.innerHTML = '';
             datesList.innerHTML = '';
             channelsContainer.innerHTML = '';
             galleryContainer.innerHTML = '';
             videosContainer.innerHTML = '';
-            customButtonsContainer.innerHTML = ''; // تنظيف الأزرار
-            
-            // تنظيف المحاضرات عند الحاجة
+            customButtonsContainer.innerHTML = '';
             lecturesList.innerHTML = '';
             
-            // تفريغ الخرائط
             displayedSubjects.clear();
             displayedDates.clear();
             displayedChannels.clear();
@@ -2551,44 +2548,15 @@
             displayedCustomButtons.clear();
         }
 
-        // إضافة حالة فارغة
         function showEmptyState(container, type) {
             const messages = {
-                'subjects': {
-                    icon: 'fas fa-book',
-                    title: 'لا توجد مواد دراسية حالياً',
-                    message: 'سيتم إضافة المواد الدراسية قريباً'
-                },
-                'lectures': {
-                    icon: 'fas fa-file-pdf',
-                    title: 'لا توجد محاضرات متاحة',
-                    message: 'سيتم رفع المحاضرات قريباً'
-                },
-                'dates': {
-                    icon: 'fas fa-calendar-alt',
-                    title: 'لا توجد مواعيد حالياً',
-                    message: 'سيتم إضافة المواعيد المهمة قريباً'
-                },
-                'channels': {
-                    icon: 'fas fa-satellite-dish',
-                    title: 'لا توجد قنوات حالياً',
-                    message: 'سيتم إضافة القنوات الرسمية قريباً'
-                },
-                'gallery': {
-                    icon: 'fas fa-images',
-                    title: 'لا توجد صور أو مقالات حالياً',
-                    message: 'سيتم إضافة محتوى جديد قريباً'
-                },
-                'videos': {
-                    icon: 'fas fa-video',
-                    title: 'لا توجد فيديوهات حالياً',
-                    message: 'سيتم إضافة فيديوهات جديدة قريباً'
-                },
-                'customButtons': {
-                    icon: 'fas fa-link',
-                    title: 'لا توجد روابط حالياً',
-                    message: 'سيتم إضافة روابط مهمة قريباً'
-                }
+                'subjects': { icon: 'fas fa-book', title: 'لا توجد مواد دراسية حالياً', message: 'سيتم إضافة المواد الدراسية قريباً' },
+                'lectures': { icon: 'fas fa-file-pdf', title: 'لا توجد محاضرات متاحة', message: 'سيتم رفع المحاضرات قريباً' },
+                'dates': { icon: 'fas fa-calendar-alt', title: 'لا توجد مواعيد حالياً', message: 'سيتم إضافة المواعيد المهمة قريباً' },
+                'channels': { icon: 'fas fa-satellite-dish', title: 'لا توجد قنوات حالياً', message: 'سيتم إضافة القنوات الرسمية قريباً' },
+                'gallery': { icon: 'fas fa-images', title: 'لا توجد صور أو مقالات حالياً', message: 'سيتم إضافة محتوى جديد قريباً' },
+                'videos': { icon: 'fas fa-video', title: 'لا توجد فيديوهات حالياً', message: 'سيتم إضافة فيديوهات جديدة قريباً' },
+                'customButtons': { icon: 'fas fa-link', title: 'لا توجد روابط حالياً', message: 'سيتم إضافة روابط مهمة قريباً' }
             };
             
             const msg = messages[type] || messages['subjects'];
@@ -2602,8 +2570,8 @@
             `;
         }
 
-        // إيقاف جميع المراقبين
         function stopAllListeners() {
+            if (userStatusListener) userStatusListener();
             if (subjectsListener) subjectsListener();
             if (lecturesListener) lecturesListener();
             if (announcementsListener) announcementsListener();
@@ -2613,6 +2581,7 @@
             if (videosListener) videosListener();
             if (customButtonsListener) customButtonsListener();
             
+            userStatusListener = null;
             subjectsListener = null;
             lecturesListener = null;
             announcementsListener = null;
@@ -2625,54 +2594,94 @@
             console.log('🛑 تم إيقاف جميع المراقبين');
         }
 
-        // استخراج معرف فيديو يوتيوب
-        function extractYouTubeId(url) {
-            if (!url) return '';
+        // ========== دوال المراقبة الفورية لحالة المستخدم (جديد) ==========
+        
+        // دالة لتسجيل الخروج القسري عند الحظر
+        function forceLogout() {
+            console.log("🚫 تسجيل خروج قسري - تم حظر المستخدم");
             
-            try {
-                url = url.trim();
-                let videoId = '';
-                
-                if (url.includes('youtube.com/watch?v=')) {
-                    videoId = url.split('v=')[1];
-                    const ampersandPosition = videoId.indexOf('&');
-                    if (ampersandPosition !== -1) {
-                        videoId = videoId.substring(0, ampersandPosition);
-                    }
-                }
-                else if (url.includes('youtu.be/')) {
-                    videoId = url.split('youtu.be/')[1];
-                    const queryPosition = videoId.indexOf('?');
-                    if (queryPosition !== -1) {
-                        videoId = videoId.substring(0, queryPosition);
-                    }
-                }
-                else if (url.includes('youtube.com/embed/')) {
-                    videoId = url.split('embed/')[1];
-                    const queryPosition = videoId.indexOf('?');
-                    if (queryPosition !== -1) {
-                        videoId = videoId.substring(0, queryPosition);
-                    }
-                }
-                else if (url.length === 11 && !url.includes('/') && !url.includes('?')) {
-                    videoId = url;
-                }
-                
-                return videoId && videoId.length === 11 ? videoId : '';
-            } catch (error) {
-                console.error('❌ خطأ في استخراج معرف يوتيوب:', error);
-                return '';
-            }
+            // إيقاف جميع المراقبين
+            stopAllListeners();
+            
+            // مسح بيانات تسجيل الدخول
+            currentUser = null;
+            localStorage.removeItem('loggedInUser');
+            localStorage.removeItem('stayLoggedIn');
+            
+            // إخفاء المحتوى الرئيسي
+            hideMainContent();
+            
+            // عرض نافذة تسجيل الدخول
+            loginModal.style.display = 'flex';
+            
+            // إظهار رسالة الخطأ
+            loginError.textContent = "⚠️ تم حظر حسابك من قبل الإدارة. لا يمكنك تسجيل الدخول.";
+            loginError.classList.add('show');
+            
+            // مسح حقول النموذج
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            
+            // إظهار إشعار منبثق
+            showMessage("🚫 تم تسجيل خروجك بسبب حظر حسابك!", "error");
         }
 
-        // تحديث شريط التحميل
+        // دالة لبدء مراقبة حالة المستخدم في الوقت الفعلي
+        function startUserStatusMonitoring(userId) {
+            // إيقاف المراقبة السابقة إن وجدت
+            if (userStatusListener) {
+                userStatusListener();
+                userStatusListener = null;
+            }
+            
+            if (!userId) {
+                console.log("⚠️ لا يوجد معرف مستخدم لمراقبته");
+                return;
+            }
+            
+            console.log("🔄 بدء مراقبة حالة المستخدم:", userId);
+            
+            // إنشاء مراقب فوري لحالة المستخدم
+            userStatusListener = db.collection("students").doc(userId)
+                .onSnapshot((doc) => {
+                    if (doc.exists) {
+                        const userData = doc.data();
+                        
+                        // التحقق من حالة الحظر
+                        if (userData.isBlocked === true) {
+                            console.log("🚫 تم حظر المستخدم أثناء تسجيل الدخول!");
+                            
+                            // عرض رسالة للمستخدم
+                            const banReason = userData.banReason || "لا يوجد سبب محدد";
+                            const bannedAt = userData.bannedAt ? userData.bannedAt.toDate().toLocaleString('ar-IQ') : "غير محدد";
+                            
+                            // عرض إشعار للمستخدم
+                            showMessage(`⚠️ تم حظر حسابك من قبل الإدارة!\nالسبب: ${banReason}\nالتاريخ: ${bannedAt}`, "error");
+                            
+                            // تسجيل حدث الخروج القسري
+                            db.collection("loginLogs").add({
+                                username: currentUser?.username || "unknown",
+                                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                                action: "force_logout",
+                                reason: "banned",
+                                banReason: banReason
+                            }).catch(err => console.error("خطأ في تسجيل الخروج القسري:", err));
+                            
+                            // تسجيل خروج المستخدم فوراً
+                            forceLogout();
+                        }
+                    }
+                }, (error) => {
+                    console.error("❌ خطأ في مراقبة حالة المستخدم:", error);
+                });
+        }
+
         function updateLoadingProgress(newProgress) {
             progress = Math.min(newProgress, 100);
             loadingProgressBar.style.width = `${progress}%`;
             loadingPercentage.textContent = `${progress}%`;
         }
 
-        // إخفاء شاشة التحميل
         function hideLoadingScreen() {
             setTimeout(() => {
                 updateLoadingProgress(100);
@@ -2687,13 +2696,12 @@
             }, 300);
         }
 
-        // عرض رسالة مؤقتة
         function showMessage(message, type = "success") {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}`;
             messageDiv.innerHTML = `
                 <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
-                <span>${message}</span>
+                <span style="white-space: pre-line;">${message}</span>
             `;
             
             document.body.appendChild(messageDiv);
@@ -2707,10 +2715,9 @@
                 setTimeout(() => {
                     messageDiv.remove();
                 }, 300);
-            }, 3000);
+            }, 5000);
         }
 
-        // عرض إشعار التحديث
         function showUpdateNotification(message, type = "updating") {
             realtimeUpdate.innerHTML = `<i class="fas fa-sync-alt fa-spin"></i> <span>${message}</span>`;
             realtimeUpdate.className = `realtime-update ${type}`;
@@ -2721,11 +2728,9 @@
             }, 3000);
         }
 
-        // ========== دوال الأزرار المخصصة (جديد) ==========
+        // ========== دوال الأزرار المخصصة ==========
         
-        // إضافة زر مخصص للعرض
         function addCustomButtonToDisplay(docId, buttonData) {
-            // التحقق من وجود الزر مسبقاً
             if (displayedCustomButtons.has(docId)) {
                 updateCustomButtonInDisplay(docId, buttonData);
                 return;
@@ -2738,28 +2743,23 @@
             button.rel = 'noopener noreferrer';
             button.dataset.id = docId;
             
-            // إضافة أيقونة الزر
             const icon = document.createElement('i');
             icon.className = buttonData.icon || 'fas fa-link';
             button.appendChild(icon);
             
-            // إضافة اسم الزر
             const span = document.createElement('span');
             span.textContent = buttonData.name;
             button.appendChild(span);
             
-            // إضافة اللون المخصص إذا وجد
             if (buttonData.color) {
                 button.style.background = buttonData.color;
             }
             
-            // إضافة ترتيب الزر
             button.style.order = buttonData.order || 0;
             
             customButtonsContainer.appendChild(button);
             displayedCustomButtons.set(docId, button);
             
-            // تأثير الظهور
             button.style.opacity = '0';
             button.style.transform = 'translateY(10px)';
             setTimeout(() => {
@@ -2769,7 +2769,6 @@
             }, 10);
         }
 
-        // تحديث زر مخصص في العرض
         function updateCustomButtonInDisplay(docId, buttonData) {
             const button = displayedCustomButtons.get(docId);
             if (button) {
@@ -2791,7 +2790,6 @@
             }
         }
 
-        // حذف زر مخصص من العرض
         function removeCustomButtonFromDisplay(docId) {
             const button = displayedCustomButtons.get(docId);
             if (button) {
@@ -2808,10 +2806,10 @@
             }
         }
 
-        // تحميل الأزرار المخصصة
         async function loadCustomButtons() {
             try {
                 const querySnapshot = await db.collection("customButtons")
+                    .where("isActive", "==", true)
                     .orderBy("order", "asc")
                     .get();
                 
@@ -2838,11 +2836,9 @@
             }
         }
 
-        // ==================== دوال العرض (المُصلحة - بدون تكرار) ====================
-
-        // إضافة مادة للعرض
+        // ========== دوال المواد ==========
+        
         function addSubjectToDisplay(docId, subjectData) {
-            // التحقق من وجود المادة مسبقاً
             if (displayedSubjects.has(docId)) {
                 updateSubjectInDisplay(docId, subjectData);
                 return;
@@ -2868,7 +2864,6 @@
             subjectsList.appendChild(subjectCard);
             displayedSubjects.set(docId, subjectCard);
             
-            // تأثير الظهور
             subjectCard.style.opacity = '0';
             subjectCard.style.transform = 'translateY(20px)';
             setTimeout(() => {
@@ -2878,7 +2873,6 @@
             }, 10);
         }
 
-        // تحديث مادة في العرض
         function updateSubjectInDisplay(docId, subjectData) {
             const subjectCard = displayedSubjects.get(docId);
             if (subjectCard) {
@@ -2894,7 +2888,6 @@
             }
         }
 
-        // حذف مادة من العرض
         function removeSubjectFromDisplay(docId) {
             const subjectCard = displayedSubjects.get(docId);
             if (subjectCard) {
@@ -2911,315 +2904,8 @@
             }
         }
 
-        // إضافة موعد للعرض
-        function addDateToDisplay(docId, dateData) {
-            // التحقق من وجود الموعد مسبقاً
-            if (displayedDates.has(docId)) {
-                updateDateInDisplay(docId, dateData);
-                return;
-            }
-            
-            const date = new Date(dateData.date);
-            const isImportant = dateData.important || false;
-            
-            const dateItem = document.createElement('div');
-            dateItem.className = `date-item ${isImportant ? 'important' : ''}`;
-            dateItem.dataset.id = docId;
-            dateItem.innerHTML = `
-                <div class="date-title">${dateData.title}</div>
-                <div class="date-value">${date.toLocaleDateString('ar-IQ')}</div>
-            `;
-            
-            datesList.appendChild(dateItem);
-            displayedDates.set(docId, dateItem);
-        }
-
-        // تحديث موعد في العرض
-        function updateDateInDisplay(docId, dateData) {
-            const dateItem = displayedDates.get(docId);
-            if (dateItem) {
-                const date = new Date(dateData.date);
-                const isImportant = dateData.important || false;
-                
-                dateItem.className = `date-item ${isImportant ? 'important' : ''}`;
-                dateItem.innerHTML = `
-                    <div class="date-title">${dateData.title}</div>
-                    <div class="date-value">${date.toLocaleDateString('ar-IQ')}</div>
-                `;
-            }
-        }
-
-        // حذف موعد من العرض
-        function removeDateFromDisplay(docId) {
-            const dateItem = displayedDates.get(docId);
-            if (dateItem) {
-                dateItem.classList.add('removing');
-                
-                setTimeout(() => {
-                    dateItem.remove();
-                    displayedDates.delete(docId);
-                    
-                    if (displayedDates.size === 0) {
-                        showEmptyState(datesList, 'dates');
-                    }
-                }, 500);
-            }
-        }
-
-        // إضافة قناة للعرض
-        function addChannelToDisplay(docId, channelData) {
-            // التحقق من وجود القناة مسبقاً
-            if (displayedChannels.has(docId)) {
-                updateChannelInDisplay(docId, channelData);
-                return;
-            }
-            
-            const channelCard = document.createElement('div');
-            channelCard.className = 'channel-card';
-            channelCard.dataset.id = docId;
-            channelCard.innerHTML = `
-                <div class="channel-icon">
-                    <i class="${channelData.icon || 'fas fa-link'}"></i>
-                </div>
-                <h3>${channelData.name}</h3>
-                <p>${channelData.description || 'قناة رسمية'}</p>
-                <a href="${channelData.url}" target="_blank" class="channel-link">
-                    <i class="fas fa-external-link-alt"></i> زيارة القناة
-                </a>
-            `;
-            
-            channelsContainer.appendChild(channelCard);
-            displayedChannels.set(docId, channelCard);
-        }
-
-        // تحديث قناة في العرض
-        function updateChannelInDisplay(docId, channelData) {
-            const channelCard = displayedChannels.get(docId);
-            if (channelCard) {
-                const icon = channelCard.querySelector('.channel-icon i');
-                const title = channelCard.querySelector('h3');
-                const description = channelCard.querySelector('p');
-                const link = channelCard.querySelector('a');
-                
-                if (icon) icon.className = `${channelData.icon || 'fas fa-link'}`;
-                if (title) title.textContent = channelData.name;
-                if (description) description.textContent = channelData.description || 'قناة رسمية';
-                if (link) link.href = channelData.url;
-            }
-        }
-
-        // حذف قناة من العرض
-        function removeChannelFromDisplay(docId) {
-            const channelCard = displayedChannels.get(docId);
-            if (channelCard) {
-                channelCard.classList.add('removing');
-                
-                setTimeout(() => {
-                    channelCard.remove();
-                    displayedChannels.delete(docId);
-                    
-                    if (displayedChannels.size === 0) {
-                        showEmptyState(channelsContainer, 'channels');
-                    }
-                }, 500);
-            }
-        }
-
-        // إضافة صورة للمعرض
-        function addGalleryItemToDisplay(docId, galleryData) {
-            // التحقق من وجود الصورة مسبقاً
-            if (displayedGalleryItems.has(docId)) {
-                updateGalleryItemInDisplay(docId, galleryData);
-                return;
-            }
-            
-            const galleryCard = document.createElement('div');
-            galleryCard.className = 'gallery-card';
-            galleryCard.dataset.id = docId;
-            
-            const date = galleryData.createdAt ? galleryData.createdAt.toDate() : new Date();
-            const formattedDate = date.toLocaleDateString('ar-IQ');
-            
-            galleryCard.innerHTML = `
-                <img src="${galleryData.imageUrl}" alt="${galleryData.title}" class="gallery-image" onclick="openImageModal('${galleryData.imageUrl}', '${galleryData.title}')">
-                <div class="gallery-content">
-                    <h3 class="gallery-title">${galleryData.title}</h3>
-                    <p class="gallery-description">${galleryData.description || 'لا يوجد وصف'}</p>
-                    <div class="gallery-date">
-                        <i class="far fa-calendar-alt"></i>
-                        <span>${formattedDate}</span>
-                    </div>
-                </div>
-            `;
-            
-            galleryContainer.appendChild(galleryCard);
-            displayedGalleryItems.set(docId, galleryCard);
-        }
-
-        // تحديث صورة في المعرض
-        function updateGalleryItemInDisplay(docId, galleryData) {
-            const galleryCard = displayedGalleryItems.get(docId);
-            if (galleryCard) {
-                const date = galleryData.createdAt ? galleryData.createdAt.toDate() : new Date();
-                const formattedDate = date.toLocaleDateString('ar-IQ');
-                
-                galleryCard.innerHTML = `
-                    <img src="${galleryData.imageUrl}" alt="${galleryData.title}" class="gallery-image" onclick="openImageModal('${galleryData.imageUrl}', '${galleryData.title}')">
-                    <div class="gallery-content">
-                        <h3 class="gallery-title">${galleryData.title}</h3>
-                        <p class="gallery-description">${galleryData.description || 'لا يوجد وصف'}</p>
-                        <div class="gallery-date">
-                            <i class="far fa-calendar-alt"></i>
-                            <span>${formattedDate}</span>
-                        </div>
-                    </div>
-                `;
-            }
-        }
-
-        // حذف صورة من المعرض
-        function removeGalleryItemFromDisplay(docId) {
-            const galleryCard = displayedGalleryItems.get(docId);
-            if (galleryCard) {
-                galleryCard.classList.add('removing');
-                
-                setTimeout(() => {
-                    galleryCard.remove();
-                    displayedGalleryItems.delete(docId);
-                    
-                    if (displayedGalleryItems.size === 0) {
-                        showEmptyState(galleryContainer, 'gallery');
-                    }
-                }, 500);
-            }
-        }
-
-        // إضافة فيديو للمعرض (مُصلح - بدون تكرار)
-        function addVideoToDisplay(docId, videoData) {
-            // التحقق من وجود الفيديو مسبقاً
-            if (displayedVideos.has(docId)) {
-                updateVideoInDisplay(docId, videoData);
-                return;
-            }
-            
-            const videoCard = document.createElement('div');
-            videoCard.className = 'video-card';
-            videoCard.dataset.id = docId;
-            
-            const date = videoData.createdAt ? videoData.createdAt.toDate() : new Date();
-            const formattedDate = date.toLocaleDateString('ar-IQ');
-            
-            const videoId = extractYouTubeId(videoData.videoUrl);
-            
-            let videoHTML = '';
-            if (videoId) {
-                videoHTML = `
-                    <div class="video-wrapper">
-                        <iframe class="video-iframe" 
-                                src="https://www.youtube.com/embed/${videoId}" 
-                                frameborder="0" 
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                allowfullscreen
-                                title="${videoData.title}">
-                        </iframe>
-                    </div>
-                `;
-            } else {
-                videoHTML = `
-                    <div class="video-error">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <h4>رابط فيديو غير صالح</h4>
-                        <p>الرجاء التحقق من رابط الفيديو</p>
-                        <a href="${videoData.videoUrl}" target="_blank">
-                            <i class="fas fa-external-link-alt"></i> فتح الرابط مباشرة
-                        </a>
-                    </div>
-                `;
-            }
-            
-            videoCard.innerHTML = `
-                ${videoHTML}
-                <div class="video-content">
-                    <h3 class="video-title">${videoData.title}</h3>
-                    <p class="video-description">${videoData.description || 'لا يوجد وصف'}</p>
-                    <div class="video-date">
-                        <i class="far fa-calendar-alt"></i>
-                        <span>${formattedDate}</span>
-                    </div>
-                </div>
-            `;
-            
-            videosContainer.appendChild(videoCard);
-            displayedVideos.set(docId, videoCard);
-        }
-
-        // تحديث فيديو في المعرض
-        function updateVideoInDisplay(docId, videoData) {
-            const videoCard = displayedVideos.get(docId);
-            if (videoCard) {
-                const date = videoData.createdAt ? videoData.createdAt.toDate() : new Date();
-                const formattedDate = date.toLocaleDateString('ar-IQ');
-                
-                const videoId = extractYouTubeId(videoData.videoUrl);
-                
-                let videoHTML = '';
-                if (videoId) {
-                    videoHTML = `
-                        <div class="video-wrapper">
-                            <iframe class="video-iframe" 
-                                    src="https://www.youtube.com/embed/${videoId}" 
-                                    frameborder="0" 
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                    allowfullscreen
-                                    title="${videoData.title}">
-                            </iframe>
-                        </div>
-                    `;
-                } else {
-                    videoHTML = `
-                        <div class="video-error">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <h4>رابط فيديو غير صالح</h4>
-                            <p>الرجاء التحقق من رابط الفيديو</p>
-                            <a href="${videoData.videoUrl}" target="_blank">
-                                <i class="fas fa-external-link-alt"></i> فتح الرابط مباشرة
-                            </a>
-                        </div>
-                    `;
-                }
-                
-                videoCard.innerHTML = `
-                    ${videoHTML}
-                    <div class="video-content">
-                        <h3 class="video-title">${videoData.title}</h3>
-                        <p class="video-description">${videoData.description || 'لا يوجد وصف'}</p>
-                        <div class="video-date">
-                            <i class="far fa-calendar-alt"></i>
-                            <span>${formattedDate}</span>
-                        </div>
-                    </div>
-                `;
-            }
-        }
-
-        // حذف فيديو من المعرض
-        function removeVideoFromDisplay(docId) {
-            const videoCard = displayedVideos.get(docId);
-            if (videoCard) {
-                videoCard.classList.add('removing');
-                
-                setTimeout(() => {
-                    videoCard.remove();
-                    displayedVideos.delete(docId);
-                    
-                    if (displayedVideos.size === 0) {
-                        showEmptyState(videosContainer, 'videos');
-                    }
-                }, 500);
-            }
-        }
-
-        // تحميل المحاضرات لمادة محددة (مُصلح - بدون تكرار)
+        // ========== دوال المحاضرات ==========
+        
         async function loadLecturesForSubjectRealtime(subjectCode) {
             try {
                 const querySnapshot = await db.collection("lectures")
@@ -3229,7 +2915,6 @@
                 currentSubjectLectures = [];
                 displayedLectures.clear();
                 
-                // تنظيف قائمة المحاضرات قبل إضافة محتوى جديد
                 lecturesList.innerHTML = '';
                 
                 if (querySnapshot.empty) {
@@ -3284,13 +2969,12 @@
             }
         }
 
-        // تحميل البيانات الأولية (مُصلح - بدون تكرار)
+        // ========== دوال البيانات الأولية ==========
+        
         async function loadInitialData() {
             try {
-                // تنظيف جميع الحاويات أولاً
                 resetAllContainers();
                 
-                // تحميل المواد الدراسية
                 const subjectsSnapshot = await db.collection("subjects").get();
                 if (subjectsSnapshot.empty) {
                     showEmptyState(subjectsList, 'subjects');
@@ -3301,54 +2985,152 @@
                     });
                 }
                 
-                // تحميل المواعيد
                 const datesSnapshot = await db.collection("importantDates").orderBy("date").get();
                 if (datesSnapshot.empty) {
                     showEmptyState(datesList, 'dates');
                 } else {
                     datesSnapshot.forEach((doc) => {
-                        addDateToDisplay(doc.id, doc.data());
-                        allImportantDates.push({ id: doc.id, ...doc.data() });
+                        const dateData = doc.data();
+                        const date = new Date(dateData.date);
+                        const isImportant = dateData.important || false;
+                        
+                        const dateItem = document.createElement('div');
+                        dateItem.className = `date-item ${isImportant ? 'important' : ''}`;
+                        dateItem.dataset.id = doc.id;
+                        dateItem.innerHTML = `
+                            <div class="date-title">${dateData.title}</div>
+                            <div class="date-value">${date.toLocaleDateString('ar-IQ')}</div>
+                        `;
+                        
+                        datesList.appendChild(dateItem);
+                        displayedDates.set(doc.id, dateItem);
+                        allImportantDates.push({ id: doc.id, ...dateData });
                     });
                 }
                 
-                // تحميل القنوات
                 const channelsSnapshot = await db.collection("channels").get();
                 if (channelsSnapshot.empty) {
                     showEmptyState(channelsContainer, 'channels');
                 } else {
                     channelsSnapshot.forEach((doc) => {
-                        addChannelToDisplay(doc.id, doc.data());
-                        allChannels.push({ id: doc.id, ...doc.data() });
+                        const channelData = doc.data();
+                        const channelCard = document.createElement('div');
+                        channelCard.className = 'channel-card';
+                        channelCard.dataset.id = doc.id;
+                        channelCard.innerHTML = `
+                            <div class="channel-icon">
+                                <i class="${channelData.icon || 'fas fa-link'}"></i>
+                            </div>
+                            <h3>${channelData.name}</h3>
+                            <p>${channelData.description || 'قناة رسمية'}</p>
+                            <a href="${channelData.url}" target="_blank" class="channel-link">
+                                <i class="fas fa-external-link-alt"></i> زيارة القناة
+                            </a>
+                        `;
+                        
+                        channelsContainer.appendChild(channelCard);
+                        displayedChannels.set(doc.id, channelCard);
+                        allChannels.push({ id: doc.id, ...channelData });
                     });
                 }
                 
-                // تحميل معرض الصور
                 const gallerySnapshot = await db.collection("gallery").orderBy("createdAt", "desc").get();
                 if (gallerySnapshot.empty) {
                     showEmptyState(galleryContainer, 'gallery');
                 } else {
                     gallerySnapshot.forEach((doc) => {
-                        addGalleryItemToDisplay(doc.id, doc.data());
-                        allGalleryItems.push({ id: doc.id, ...doc.data() });
+                        const galleryData = doc.data();
+                        const date = galleryData.createdAt ? galleryData.createdAt.toDate() : new Date();
+                        const formattedDate = date.toLocaleDateString('ar-IQ');
+                        
+                        const galleryCard = document.createElement('div');
+                        galleryCard.className = 'gallery-card';
+                        galleryCard.dataset.id = doc.id;
+                        galleryCard.innerHTML = `
+                            <img src="${galleryData.imageUrl}" alt="${galleryData.title}" class="gallery-image" onclick="openImageModal('${galleryData.imageUrl}', '${galleryData.title}')">
+                            <div class="gallery-content">
+                                <h3 class="gallery-title">${galleryData.title}</h3>
+                                <p class="gallery-description">${galleryData.description || 'لا يوجد وصف'}</p>
+                                <div class="gallery-date">
+                                    <i class="far fa-calendar-alt"></i>
+                                    <span>${formattedDate}</span>
+                                </div>
+                            </div>
+                        `;
+                        
+                        galleryContainer.appendChild(galleryCard);
+                        displayedGalleryItems.set(doc.id, galleryCard);
+                        allGalleryItems.push({ id: doc.id, ...galleryData });
                     });
                 }
                 
-                // تحميل معرض الفيديوهات
                 const videosSnapshot = await db.collection("videos").orderBy("createdAt", "desc").get();
                 if (videosSnapshot.empty) {
                     showEmptyState(videosContainer, 'videos');
                 } else {
                     videosSnapshot.forEach((doc) => {
-                        addVideoToDisplay(doc.id, doc.data());
-                        allVideos.push({ id: doc.id, ...doc.data() });
+                        const videoData = doc.data();
+                        const date = videoData.createdAt ? videoData.createdAt.toDate() : new Date();
+                        const formattedDate = date.toLocaleDateString('ar-IQ');
+                        
+                        const extractYouTubeId = (url) => {
+                            if (!url) return '';
+                            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                            const match = url.match(regExp);
+                            return (match && match[2].length === 11) ? match[2] : '';
+                        };
+                        
+                        const videoId = extractYouTubeId(videoData.videoUrl);
+                        
+                        let videoHTML = '';
+                        if (videoId) {
+                            videoHTML = `
+                                <div class="video-wrapper">
+                                    <iframe class="video-iframe" 
+                                            src="https://www.youtube.com/embed/${videoId}" 
+                                            frameborder="0" 
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                            allowfullscreen
+                                            title="${videoData.title}">
+                                    </iframe>
+                                </div>
+                            `;
+                        } else {
+                            videoHTML = `
+                                <div class="video-error">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <h4>رابط فيديو غير صالح</h4>
+                                    <p>الرجاء التحقق من رابط الفيديو</p>
+                                    <a href="${videoData.videoUrl}" target="_blank">
+                                        <i class="fas fa-external-link-alt"></i> فتح الرابط مباشرة
+                                    </a>
+                                </div>
+                            `;
+                        }
+                        
+                        const videoCard = document.createElement('div');
+                        videoCard.className = 'video-card';
+                        videoCard.dataset.id = doc.id;
+                        videoCard.innerHTML = `
+                            ${videoHTML}
+                            <div class="video-content">
+                                <h3 class="video-title">${videoData.title}</h3>
+                                <p class="video-description">${videoData.description || 'لا يوجد وصف'}</p>
+                                <div class="video-date">
+                                    <i class="far fa-calendar-alt"></i>
+                                    <span>${formattedDate}</span>
+                                </div>
+                            </div>
+                        `;
+                        
+                        videosContainer.appendChild(videoCard);
+                        displayedVideos.set(doc.id, videoCard);
+                        allVideos.push({ id: doc.id, ...videoData });
                     });
                 }
                 
-                // تحميل الأزرار المخصصة
                 await loadCustomButtons();
                 
-                // تحميل الإعلانات النشطة
                 const announcementsSnapshot = await db.collection("announcements")
                     .where("isActive", "==", true)
                     .get();
@@ -3358,7 +3140,6 @@
                     allAnnouncements.push({ id: doc.id, ...doc.data() });
                 });
                 
-                // عرض أحدث إعلان
                 if (allAnnouncements.length > 0) {
                     allAnnouncements.sort((a, b) => {
                         const dateA = a.createdAt ? a.createdAt.toDate() : new Date(0);
@@ -3392,11 +3173,11 @@
             }
         }
 
-        // بدء المراقبة الفورية لجميع البيانات (مُصلح - بدون تكرار)
+        // ========== دوال المراقبة الفورية ==========
+        
         function startRealtimeListeners() {
             console.log('🔄 بدء المراقبة الفورية للبيانات...');
             
-            // مراقبة المواد الدراسية
             subjectsListener = db.collection("subjects")
                 .onSnapshot((snapshot) => {
                     snapshot.docChanges().forEach((change) => {
@@ -3424,7 +3205,6 @@
                     console.error("❌ خطأ في مراقبة المواد:", error);
                 });
 
-            // مراقبة الإعلانات
             announcementsListener = db.collection("announcements")
                 .where("isActive", "==", true)
                 .onSnapshot((snapshot) => {
@@ -3449,7 +3229,6 @@
                     console.error("❌ خطأ في مراقبة الإعلانات:", error);
                 });
 
-            // مراقبة المواعيد المهمة
             datesListener = db.collection("importantDates")
                 .orderBy("date")
                 .onSnapshot((snapshot) => {
@@ -3460,58 +3239,65 @@
                         if (change.type === "added") {
                             console.log(`📅 موعد مضاف: ${docData.title}`);
                             showUpdateNotification("تمت إضافة موعد مهم", "success");
-                            addDateToDisplay(docId, docData);
+                            
+                            const date = new Date(docData.date);
+                            const isImportant = docData.important || false;
+                            
+                            const dateItem = document.createElement('div');
+                            dateItem.className = `date-item ${isImportant ? 'important' : ''}`;
+                            dateItem.dataset.id = docId;
+                            dateItem.innerHTML = `
+                                <div class="date-title">${docData.title}</div>
+                                <div class="date-value">${date.toLocaleDateString('ar-IQ')}</div>
+                            `;
+                            
+                            datesList.appendChild(dateItem);
+                            displayedDates.set(docId, dateItem);
                             datesBtn.classList.add('has-updates');
                         }
                         
                         if (change.type === "modified") {
                             console.log(`✏️ موعد معدل: ${docData.title}`);
                             showUpdateNotification("تم تعديل موعد مهم", "success");
-                            updateDateInDisplay(docId, docData);
+                            
+                            const dateItem = displayedDates.get(docId);
+                            if (dateItem) {
+                                const date = new Date(docData.date);
+                                const isImportant = docData.important || false;
+                                
+                                dateItem.className = `date-item ${isImportant ? 'important' : ''}`;
+                                dateItem.innerHTML = `
+                                    <div class="date-title">${docData.title}</div>
+                                    <div class="date-value">${date.toLocaleDateString('ar-IQ')}</div>
+                                `;
+                            }
                         }
                         
                         if (change.type === "removed") {
                             console.log(`🗑️ موعد محذوفة: ${docData.title || docId}`);
-                            removeDateFromDisplay(docId);
+                            const dateItem = displayedDates.get(docId);
+                            if (dateItem) {
+                                dateItem.classList.add('removing');
+                                setTimeout(() => {
+                                    dateItem.remove();
+                                    displayedDates.delete(docId);
+                                }, 500);
+                            }
                         }
                     });
                 }, (error) => {
                     console.error("❌ خطأ في مراقبة المواعيد:", error);
                 });
 
-            // مراقبة المحاضرات
             lecturesListener = db.collection("lectures")
                 .onSnapshot((snapshot) => {
                     snapshot.docChanges().forEach((change) => {
-                        const docId = change.doc.id;
                         const docData = change.doc.data();
                         
-                        if (change.type === "added") {
-                            console.log(`📚 محاضرة مضافة: ${docData.title} - ${docData.subjectCode}`);
-                            showUpdateNotification(`تمت إضافة محاضرة جديدة لـ ${docData.subjectCode}`, "success");
-                            
-                            if (lecturesContainer.classList.contains('show') && 
-                                lecturesSubtitle.textContent.includes(docData.subjectCode)) {
-                                loadLecturesForSubjectRealtime(docData.subjectCode);
-                            }
-                        }
-                        
-                        if (change.type === "modified") {
-                            console.log(`✏️ محاضرة معدلة: ${docData.title}`);
-                            showUpdateNotification(`تم تعديل محاضرة لـ ${docData.subjectCode}`, "success");
-                            
-                            if (lecturesContainer.classList.contains('show') && 
-                                lecturesSubtitle.textContent.includes(docData.subjectCode)) {
-                                loadLecturesForSubjectRealtime(docData.subjectCode);
-                            }
-                        }
-                        
-                        if (change.type === "removed") {
-                            console.log(`🗑️ محاضرة محذوفة: ${docData.title || docId}`);
-                            
-                            if (lecturesContainer.classList.contains('show') && 
-                                lecturesSubtitle.textContent.includes(docData.subjectCode)) {
-                                loadLecturesForSubjectRealtime(docData.subjectCode);
+                        if (change.type === "added" || change.type === "modified" || change.type === "removed") {
+                            if (lecturesContainer.classList.contains('show')) {
+                                const currentSubjectCode = lecturesSubtitle.textContent.replace('محاضرات مادة ', '');
+                                loadLecturesForSubjectRealtime(currentSubjectCode);
                             }
                         }
                     });
@@ -3519,94 +3305,284 @@
                     console.error("❌ خطأ في مراقبة المحاضرات:", error);
                 });
 
-            // مراقبة القنوات
             channelsListener = db.collection("channels")
                 .onSnapshot((snapshot) => {
                     snapshot.docChanges().forEach((change) => {
                         const docId = change.doc.id;
-                        const docData = change.doc.data();
+                        const channelData = change.doc.data();
                         
                         if (change.type === "added") {
-                            console.log(`📡 قناة مضافة: ${docData.name}`);
+                            console.log(`📡 قناة مضافة: ${channelData.name}`);
                             showUpdateNotification("تمت إضافة قناة جديدة", "success");
-                            addChannelToDisplay(docId, docData);
+                            
+                            const channelCard = document.createElement('div');
+                            channelCard.className = 'channel-card';
+                            channelCard.dataset.id = docId;
+                            channelCard.innerHTML = `
+                                <div class="channel-icon">
+                                    <i class="${channelData.icon || 'fas fa-link'}"></i>
+                                </div>
+                                <h3>${channelData.name}</h3>
+                                <p>${channelData.description || 'قناة رسمية'}</p>
+                                <a href="${channelData.url}" target="_blank" class="channel-link">
+                                    <i class="fas fa-external-link-alt"></i> زيارة القناة
+                                </a>
+                            `;
+                            
+                            channelsContainer.appendChild(channelCard);
+                            displayedChannels.set(docId, channelCard);
                         }
                         
                         if (change.type === "modified") {
-                            console.log(`✏️ قناة معدلة: ${docData.name}`);
+                            console.log(`✏️ قناة معدلة: ${channelData.name}`);
                             showUpdateNotification("تم تعديل قناة", "success");
-                            updateChannelInDisplay(docId, docData);
+                            
+                            const channelCard = displayedChannels.get(docId);
+                            if (channelCard) {
+                                const icon = channelCard.querySelector('.channel-icon i');
+                                const title = channelCard.querySelector('h3');
+                                const description = channelCard.querySelector('p');
+                                const link = channelCard.querySelector('a');
+                                
+                                if (icon) icon.className = `${channelData.icon || 'fas fa-link'}`;
+                                if (title) title.textContent = channelData.name;
+                                if (description) description.textContent = channelData.description || 'قناة رسمية';
+                                if (link) link.href = channelData.url;
+                            }
                         }
                         
                         if (change.type === "removed") {
-                            console.log(`🗑️ قناة محذوفة: ${docData.name || docId}`);
-                            removeChannelFromDisplay(docId);
+                            console.log(`🗑️ قناة محذوفة: ${channelData.name || docId}`);
+                            const channelCard = displayedChannels.get(docId);
+                            if (channelCard) {
+                                channelCard.classList.add('removing');
+                                setTimeout(() => {
+                                    channelCard.remove();
+                                    displayedChannels.delete(docId);
+                                }, 500);
+                            }
                         }
                     });
                 }, (error) => {
                     console.error("❌ خطأ في مراقبة القنوات:", error);
                 });
 
-            // مراقبة معرض الصور
             galleryListener = db.collection("gallery")
                 .orderBy("createdAt", "desc")
                 .onSnapshot((snapshot) => {
                     snapshot.docChanges().forEach((change) => {
                         const docId = change.doc.id;
-                        const docData = change.doc.data();
+                        const galleryData = change.doc.data();
                         
                         if (change.type === "added") {
-                            console.log(`🖼️ صورة مضافة: ${docData.title}`);
+                            console.log(`🖼️ صورة مضافة: ${galleryData.title}`);
                             showUpdateNotification("تمت إضافة صورة جديدة إلى المعرض", "success");
-                            addGalleryItemToDisplay(docId, docData);
+                            
+                            const date = galleryData.createdAt ? galleryData.createdAt.toDate() : new Date();
+                            const formattedDate = date.toLocaleDateString('ar-IQ');
+                            
+                            const galleryCard = document.createElement('div');
+                            galleryCard.className = 'gallery-card';
+                            galleryCard.dataset.id = docId;
+                            galleryCard.innerHTML = `
+                                <img src="${galleryData.imageUrl}" alt="${galleryData.title}" class="gallery-image" onclick="openImageModal('${galleryData.imageUrl}', '${galleryData.title}')">
+                                <div class="gallery-content">
+                                    <h3 class="gallery-title">${galleryData.title}</h3>
+                                    <p class="gallery-description">${galleryData.description || 'لا يوجد وصف'}</p>
+                                    <div class="gallery-date">
+                                        <i class="far fa-calendar-alt"></i>
+                                        <span>${formattedDate}</span>
+                                    </div>
+                                </div>
+                            `;
+                            
+                            galleryContainer.appendChild(galleryCard);
+                            displayedGalleryItems.set(docId, galleryCard);
                         }
                         
                         if (change.type === "modified") {
-                            console.log(`✏️ صورة معدلة: ${docData.title}`);
+                            console.log(`✏️ صورة معدلة: ${galleryData.title}`);
                             showUpdateNotification("تم تعديل صورة في المعرض", "success");
-                            updateGalleryItemInDisplay(docId, docData);
+                            
+                            const galleryCard = displayedGalleryItems.get(docId);
+                            if (galleryCard) {
+                                const date = galleryData.createdAt ? galleryData.createdAt.toDate() : new Date();
+                                const formattedDate = date.toLocaleDateString('ar-IQ');
+                                
+                                galleryCard.innerHTML = `
+                                    <img src="${galleryData.imageUrl}" alt="${galleryData.title}" class="gallery-image" onclick="openImageModal('${galleryData.imageUrl}', '${galleryData.title}')">
+                                    <div class="gallery-content">
+                                        <h3 class="gallery-title">${galleryData.title}</h3>
+                                        <p class="gallery-description">${galleryData.description || 'لا يوجد وصف'}</p>
+                                        <div class="gallery-date">
+                                            <i class="far fa-calendar-alt"></i>
+                                            <span>${formattedDate}</span>
+                                        </div>
+                                    </div>
+                                `;
+                            }
                         }
                         
                         if (change.type === "removed") {
-                            console.log(`🗑️ صورة محذوفة: ${docData.title || docId}`);
-                            removeGalleryItemFromDisplay(docId);
+                            console.log(`🗑️ صورة محذوفة: ${galleryData.title || docId}`);
+                            const galleryCard = displayedGalleryItems.get(docId);
+                            if (galleryCard) {
+                                galleryCard.classList.add('removing');
+                                setTimeout(() => {
+                                    galleryCard.remove();
+                                    displayedGalleryItems.delete(docId);
+                                }, 500);
+                            }
                         }
                     });
                 }, (error) => {
                     console.error("❌ خطأ في مراقبة المعرض:", error);
                 });
 
-            // مراقبة معرض الفيديوهات
             videosListener = db.collection("videos")
                 .orderBy("createdAt", "desc")
                 .onSnapshot((snapshot) => {
                     snapshot.docChanges().forEach((change) => {
                         const docId = change.doc.id;
-                        const docData = change.doc.data();
+                        const videoData = change.doc.data();
                         
                         if (change.type === "added") {
-                            console.log(`🎥 فيديو مضاف: ${docData.title}`);
+                            console.log(`🎥 فيديو مضاف: ${videoData.title}`);
                             showUpdateNotification("تمت إضافة فيديو جديد إلى المعرض", "success");
-                            addVideoToDisplay(docId, docData);
+                            
+                            const date = videoData.createdAt ? videoData.createdAt.toDate() : new Date();
+                            const formattedDate = date.toLocaleDateString('ar-IQ');
+                            
+                            const extractYouTubeId = (url) => {
+                                if (!url) return '';
+                                const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                                const match = url.match(regExp);
+                                return (match && match[2].length === 11) ? match[2] : '';
+                            };
+                            
+                            const videoId = extractYouTubeId(videoData.videoUrl);
+                            
+                            let videoHTML = '';
+                            if (videoId) {
+                                videoHTML = `
+                                    <div class="video-wrapper">
+                                        <iframe class="video-iframe" 
+                                                src="https://www.youtube.com/embed/${videoId}" 
+                                                frameborder="0" 
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                                allowfullscreen
+                                                title="${videoData.title}">
+                                        </iframe>
+                                    </div>
+                                `;
+                            } else {
+                                videoHTML = `
+                                    <div class="video-error">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <h4>رابط فيديو غير صالح</h4>
+                                        <p>الرجاء التحقق من رابط الفيديو</p>
+                                        <a href="${videoData.videoUrl}" target="_blank">
+                                            <i class="fas fa-external-link-alt"></i> فتح الرابط مباشرة
+                                        </a>
+                                    </div>
+                                `;
+                            }
+                            
+                            const videoCard = document.createElement('div');
+                            videoCard.className = 'video-card';
+                            videoCard.dataset.id = docId;
+                            videoCard.innerHTML = `
+                                ${videoHTML}
+                                <div class="video-content">
+                                    <h3 class="video-title">${videoData.title}</h3>
+                                    <p class="video-description">${videoData.description || 'لا يوجد وصف'}</p>
+                                    <div class="video-date">
+                                        <i class="far fa-calendar-alt"></i>
+                                        <span>${formattedDate}</span>
+                                    </div>
+                                </div>
+                            `;
+                            
+                            videosContainer.appendChild(videoCard);
+                            displayedVideos.set(docId, videoCard);
                         }
                         
                         if (change.type === "modified") {
-                            console.log(`✏️ فيديو معدل: ${docData.title}`);
+                            console.log(`✏️ فيديو معدل: ${videoData.title}`);
                             showUpdateNotification("تم تعديل فيديو في المعرض", "success");
-                            updateVideoInDisplay(docId, docData);
+                            
+                            const videoCard = displayedVideos.get(docId);
+                            if (videoCard) {
+                                const date = videoData.createdAt ? videoData.createdAt.toDate() : new Date();
+                                const formattedDate = date.toLocaleDateString('ar-IQ');
+                                
+                                const extractYouTubeId = (url) => {
+                                    if (!url) return '';
+                                    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                                    const match = url.match(regExp);
+                                    return (match && match[2].length === 11) ? match[2] : '';
+                                };
+                                
+                                const videoId = extractYouTubeId(videoData.videoUrl);
+                                
+                                let videoHTML = '';
+                                if (videoId) {
+                                    videoHTML = `
+                                        <div class="video-wrapper">
+                                            <iframe class="video-iframe" 
+                                                    src="https://www.youtube.com/embed/${videoId}" 
+                                                    frameborder="0" 
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                                    allowfullscreen
+                                                    title="${videoData.title}">
+                                            </iframe>
+                                        </div>
+                                    `;
+                                } else {
+                                    videoHTML = `
+                                        <div class="video-error">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                            <h4>رابط فيديو غير صالح</h4>
+                                            <p>الرجاء التحقق من رابط الفيديو</p>
+                                            <a href="${videoData.videoUrl}" target="_blank">
+                                                <i class="fas fa-external-link-alt"></i> فتح الرابط مباشرة
+                                            </a>
+                                        </div>
+                                    `;
+                                }
+                                
+                                videoCard.innerHTML = `
+                                    ${videoHTML}
+                                    <div class="video-content">
+                                        <h3 class="video-title">${videoData.title}</h3>
+                                        <p class="video-description">${videoData.description || 'لا يوجد وصف'}</p>
+                                        <div class="video-date">
+                                            <i class="far fa-calendar-alt"></i>
+                                            <span>${formattedDate}</span>
+                                        </div>
+                                    </div>
+                                `;
+                            }
                         }
                         
                         if (change.type === "removed") {
-                            console.log(`🗑️ فيديو محذوف: ${docData.title || docId}`);
-                            removeVideoFromDisplay(docId);
+                            console.log(`🗑️ فيديو محذوف: ${videoData.title || docId}`);
+                            const videoCard = displayedVideos.get(docId);
+                            if (videoCard) {
+                                videoCard.classList.add('removing');
+                                setTimeout(() => {
+                                    videoCard.remove();
+                                    displayedVideos.delete(docId);
+                                }, 500);
+                            }
                         }
                     });
                 }, (error) => {
                     console.error("❌ خطأ في مراقبة الفيديوهات:", error);
                 });
             
-            // ========== مراقبة الأزرار المخصصة (جديد) ==========
             customButtonsListener = db.collection("customButtons")
+                .where("isActive", "==", true)
                 .orderBy("order", "asc")
                 .onSnapshot((snapshot) => {
                     snapshot.docChanges().forEach((change) => {
@@ -3638,9 +3614,8 @@
             console.log('✅ بدء المراقبة الفورية للبيانات بنجاح');
         }
 
-        // ==================== دوال التنقل ====================
+        // ========== دوال التنقل ==========
 
-        // تحديث زر الرجوع
         function updateBackButton() {
             if (currentSection === 'home') {
                 backButtonContainer.style.display = 'none';
@@ -3649,13 +3624,11 @@
             }
         }
 
-        // التنقل إلى قسم معين
         function navigateToSection(sectionName) {
             sectionHistory.push(currentSection);
             currentSection = sectionName;
             updateBackButton();
             
-            // إخفاء جميع الأقسام
             document.getElementById('subjects').style.display = 'none';
             document.getElementById('developer').style.display = 'none';
             document.getElementById('channels').style.display = 'none';
@@ -3663,7 +3636,6 @@
             document.getElementById('videos').style.display = 'none';
             lecturesContainer.classList.remove('show');
             
-            // إظهار القسم المطلوب
             if (sectionName === 'subjects') {
                 document.getElementById('subjects').style.display = 'block';
                 document.getElementById('subjects').scrollIntoView({ behavior: 'smooth' });
@@ -3687,7 +3659,6 @@
             sidebar.classList.remove('active');
         }
 
-        // الرجوع للقسم السابق
         function goBack() {
             if (sectionHistory.length > 0) {
                 const previousSection = sectionHistory.pop();
@@ -3699,21 +3670,22 @@
             }
         }
 
-        // تعيين العنصر النشط في الشريط الجانبي
         function setActiveSidebarItem(activeItem) {
             const items = document.querySelectorAll('.sidebar-item');
             items.forEach(item => item.classList.remove('active'));
             activeItem.classList.add('active');
         }
 
-        // ==================== دوال تسجيل الدخول والخروج ====================
+        // ========== دوال تسجيل الدخول والخروج ==========
 
-        // عرض المحتوى الرئيسي
         function showMainContent(userData) {
             updateLoadingProgress(75);
             loginModal.style.display = 'none';
             
             updateUserInfo(userData);
+            
+            // بدء مراقبة حالة المستخدم
+            startUserStatusMonitoring(userData.id);
             
             updateLoadingProgress(80);
             
@@ -3747,19 +3719,15 @@
                 });
         }
 
-        // إخفاء المحتوى الرئيسي
         function hideMainContent() {
             navbar.classList.remove('show');
             sidebar.classList.remove('active');
             backButtonContainer.style.display = 'none';
-            customButtonsSection.style.display = 'none'; // إخفاء الأزرار المخصصة
+            customButtonsSection.style.display = 'none';
             
             stopAllListeners();
-            
-            // تنظيف جميع الحاويات
             resetAllContainers();
             
-            // إعادة تعيين المتغيرات
             allSubjects = [];
             allImportantDates = [];
             allChannels = [];
@@ -3772,7 +3740,6 @@
             currentSection = 'home';
         }
 
-        // تحديث معلومات المستخدم
         function updateUserInfo(userData) {
             if (userData && userData.name) {
                 sidebarUsername.textContent = userData.name;
@@ -3785,7 +3752,6 @@
             }
         }
 
-        // التحقق من حالة تسجيل الدخول
         function checkLoginStatus() {
             const savedUser = localStorage.getItem('loggedInUser');
             const stayLogged = localStorage.getItem('stayLoggedIn') === 'true';
@@ -3812,7 +3778,6 @@
             }
         }
 
-        // مسح بيانات تسجيل الدخول
         function clearLoginData() {
             currentUser = null;
             localStorage.removeItem('loggedInUser');
@@ -3821,7 +3786,6 @@
             loginModal.style.display = 'flex';
         }
 
-        // تسجيل الخروج
         async function logout() {
             if (currentUser) {
                 try {
@@ -3843,9 +3807,8 @@
             }, 1500);
         }
 
-        // ==================== أحداث المستخدم ====================
+        // ========== أحداث المستخدم ==========
 
-        // تسجيل الدخول
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -3875,7 +3838,9 @@
                 const userData = userDoc.data();
                 
                 if (userData.isBlocked === true) {
-                    loginError.textContent = "حسابك موقوف من قبل الإدارة";
+                    const banReason = userData.banReason || "لا يوجد سبب محدد";
+                    const bannedAt = userData.bannedAt ? userData.bannedAt.toDate().toLocaleString('ar-IQ') : "غير محدد";
+                    loginError.textContent = `⚠️ حسابك موقوف من قبل الإدارة!\nالسبب: ${banReason}\nالتاريخ: ${bannedAt}`;
                     loginError.classList.add('show');
                     return;
                 }
@@ -3908,24 +3873,20 @@
             }
         });
 
-        // إغلاق نافذة تسجيل الدخول
         closeLogin.addEventListener('click', () => {
             loginModal.style.display = 'none';
         });
 
-        // إدارة الشريط الجانبي
         menuToggle.addEventListener('click', function() {
             sidebar.classList.toggle('active');
         });
 
-        // إغلاق الشريط الجانبي عند النقر خارجها
         document.addEventListener('click', function(e) {
             if (!sidebar.contains(e.target) && !menuToggle.contains(e.target) && sidebar.classList.contains('active')) {
                 sidebar.classList.remove('active');
             }
         });
 
-        // إدارة الإعلانات
         announcementBtn.addEventListener('click', function() {
             announcementModal.classList.add('show');
         });
@@ -3940,13 +3901,11 @@
             }
         });
 
-        // إدارة المواعيد المهمة
         datesBtn.addEventListener('click', function() {
             datesPanel.classList.toggle('show');
             datesBtn.classList.remove('has-updates');
         });
 
-        // إغلاق قسم المحاضرات
         closeLectures.addEventListener('click', function() {
             lecturesContainer.classList.remove('show');
             setTimeout(() => {
@@ -3954,7 +3913,6 @@
             }, 300);
         });
 
-        // التنقل من الشريط الجانبي
         document.getElementById('homeBtn').addEventListener('click', function() {
             setActiveSidebarItem(this);
             navigateToSection('home');
@@ -3985,27 +3943,22 @@
             navigateToSection('developer');
         });
 
-        // أزرار الرجوع
         backButton.addEventListener('click', goBack);
         backFromGallery.addEventListener('click', goBack);
         backFromVideos.addEventListener('click', goBack);
         backFromChannels.addEventListener('click', goBack);
         backFromDeveloper.addEventListener('click', goBack);
 
-        // تسجيل الخروج
         logoutSidebar.addEventListener('click', logout);
 
-        // ==================== إعدادات إضافية ====================
+        // ========== إعدادات إضافية ==========
 
-        // إعداد السنة الحالية
         currentYear.textContent = new Date().getFullYear();
 
-        // اكتشاف الجهاز
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         const isAndroid = /Android/.test(navigator.userAgent);
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
-        // Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/service-worker.js')
@@ -4018,7 +3971,6 @@
             });
         }
 
-        // PWA Installation
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
@@ -4064,7 +4016,6 @@
             floatingInstallBtn.classList.remove('show');
         });
 
-        // إدارة الوضع الليلي
         const themeSwitch = document.getElementById('themeSwitch');
         themeSwitch.addEventListener('change', function() {
             if (this.checked) {
@@ -4084,7 +4035,6 @@
             themeSwitch.checked = true;
         }
 
-        // دالة عرض المحاضرات
         window.showLecturesRealtime = function(subjectCode) {
             try {
                 document.getElementById('subjects').style.display = 'none';
@@ -4111,7 +4061,6 @@
 
         window.showLectures = window.showLecturesRealtime;
 
-        // دالة فتح نافذة عرض الصورة
         window.openImageModal = function(imageUrl, title) {
             const modal = document.createElement('div');
             modal.style.cssText = `
@@ -4144,7 +4093,6 @@
             document.body.appendChild(modal);
         };
 
-        // بدء التطبيق
         document.addEventListener("DOMContentLoaded", function() {
             updateLoadingProgress(10);
             
@@ -4155,7 +4103,6 @@
         });
     </script>
 
-    <!-- Service Worker Script -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
@@ -4176,4 +4123,3 @@
     </script>
 </body>
 </html>
-
