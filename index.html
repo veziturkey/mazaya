@@ -28,8 +28,6 @@
     <!-- CSS Libraries -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- خط Tajawal للنص الجديد -->
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     
     <style>
         /* جميع الأنماط CSS كما هي بدون تغيير */
@@ -375,33 +373,6 @@
 
         .back-btn.show {
             display: flex;
-        }
-
-        /* ===== زر الخروج من الصفحة المدمجة (جديد) ===== */
-        .exit-merged-page-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            font-size: 1.2rem;
-            box-shadow: var(--box-shadow);
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2001;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .exit-merged-page-btn:hover {
-            transform: scale(1.1) rotate(90deg);
-            background: linear-gradient(135deg, #dc2626, #b91c1c);
         }
 
         /* إشعارات المواعيد المهمة */
@@ -1152,212 +1123,6 @@
             transform: translateY(-3px);
             box-shadow: 0 12px 25px rgba(236, 72, 153, 0.3);
         }
-
-        /* ===== أنماط الصفحة المدمجة (من الكود الثاني) ===== */
-        .merged-page {
-            background-color: black;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 10px;
-            border-radius: 20px;
-            margin: 20px 0;
-            transition: all 0.5s ease;
-        }
-
-        .merged-page.hidden {
-            display: none;
-        }
-
-        .merged-container {
-            text-align: center;
-            max-width: 1200px;
-            width: 100%;
-            padding: 10px;
-        }
-
-        .image-wrapper {
-            position: relative;
-            display: inline-block;
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto 20px auto;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
-        }
-
-        .image-wrapper img {
-            display: block;
-            width: 100%;
-            height: auto;
-            border-radius: 20px;
-        }
-
-        .shiny-effect {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                115deg,
-                transparent 0%,
-                rgba(255, 255, 255, 0.1) 20%,
-                rgba(255, 255, 255, 0.7) 40%,
-                rgba(255, 255, 255, 1) 50%,
-                rgba(255, 255, 255, 0.7) 60%,
-                rgba(255, 255, 255, 0.1) 80%,
-                transparent 100%
-            );
-            transform: translateX(-120%);
-            animation: shine 4s infinite ease-in-out;
-            pointer-events: none;
-            border-radius: 20px;
-        }
-
-        @keyframes shine {
-            0% { transform: translateX(-120%) skewX(-10deg); }
-            20% { transform: translateX(-120%) skewX(-10deg); }
-            50% { transform: translateX(20%) skewX(0deg); }
-            80% { transform: translateX(120%) skewX(10deg); }
-            100% { transform: translateX(120%) skewX(10deg); }
-        }
-
-        .typing-wrapper {
-            font-family: 'Tajawal', sans-serif;
-            font-size: clamp(28px, 6vw, 48px);
-            font-weight: 700;
-            line-height: 1.4;
-            color: white;
-            display: inline-block;
-            text-align: center;
-            max-width: 100%;
-            padding: 0 10px;
-            white-space: nowrap;
-            overflow: hidden;
-            border-left: 3px solid white;
-            animation: typing 4s steps(30, end) infinite, 
-                       blink-caret 0.75s step-end infinite;
-        }
-
-        .typing-wrapper .red-text {
-            color: #ff0000;
-            font-weight: 900;
-        }
-
-        @keyframes typing {
-            0% { width: 0; }
-            30% { width: 100%; }
-            70% { width: 100%; }
-            100% { width: 0; }
-        }
-
-        @keyframes blink-caret {
-            from, to { border-color: transparent; }
-            50% { border-color: white; }
-        }
-
-        .rocket-container {
-            margin-top: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            width: 100%;
-        }
-
-        .real-rocket {
-            width: clamp(60px, 15vw, 120px);
-            height: auto;
-            filter: drop-shadow(0 0 15px rgba(255, 100, 0, 0.8));
-            animation: rocketAppear 1s ease-out, 
-                       rocketFloat 3s infinite ease-in-out,
-                       rocketShake 0.3s infinite alternate;
-        }
-
-        @keyframes rocketFloat {
-            0% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0); }
-        }
-
-        @keyframes rocketShake {
-            from { transform: translateY(-2px) rotate(-1deg); }
-            to { transform: translateY(2px) rotate(1deg); }
-        }
-
-        @keyframes rocketAppear {
-            0% { opacity: 0; transform: scale(0.1) translateY(50px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        .rocket-container::after {
-            content: "🔥";
-            font-size: clamp(20px, 8vw, 40px);
-            position: absolute;
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: flameFlicker 0.2s infinite alternate;
-            filter: drop-shadow(0 0 10px orange);
-            opacity: 0.8;
-            pointer-events: none;
-        }
-
-        @keyframes flameFlicker {
-            from { opacity: 0.6; transform: translateX(-50%) scale(1); }
-            to { opacity: 1; transform: translateX(-50%) scale(1.2); }
-        }
-
-        @media (max-width: 480px) {
-            .typing-wrapper {
-                font-size: 24px;
-                white-space: normal;
-                border-left: 2px solid white;
-                animation: none;
-                overflow: visible;
-                width: 100%;
-            }
-            
-            .rocket-container::after {
-                bottom: -10px;
-            }
-        }
-
-        @media (min-width: 481px) and (max-width: 768px) {
-            .typing-wrapper {
-                font-size: 32px;
-            }
-            .real-rocket {
-                width: 80px;
-            }
-        }
-
-        @media (min-width: 769px) {
-            .real-rocket:hover {
-                transform: scale(1.1);
-                filter: drop-shadow(0 0 30px rgba(255, 150, 0, 1));
-            }
-        }
-
-        @media (max-height: 500px) and (orientation: landscape) {
-            .merged-container {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                gap: 20px;
-            }
-            .image-wrapper {
-                width: 50%;
-                margin-bottom: 0;
-            }
-            .content-wrapper {
-                width: 50%;
-            }
-        }
-        /* ===== نهاية أنماط الصفحة المدمجة ===== */
 
         /* قسم المواد الدراسية */
         .subjects {
@@ -2425,11 +2190,6 @@
         </button>
     </div>
 
-    <!-- زر الخروج من الصفحة المدمجة (جديد) -->
-    <button class="exit-merged-page-btn" id="exitMergedPageBtn" title="العودة للتطبيق الرئيسي">
-        <i class="fas fa-times"></i>
-    </button>
-
     <!-- إشعارات المواعيد المهمة -->
     <div class="important-dates" id="importantDates">
         <button class="dates-btn" id="datesBtn" title="المواعيد المهمة">
@@ -2550,30 +2310,6 @@
         </header>
 
         <div class="container">
-            <!-- ========== الصفحة المدمجة (من الكود الثاني) ========== -->
-            <div class="merged-page" id="mergedPage">
-                <div class="merged-container">
-                    <!-- الصورة مع التأثير اللامع -->
-                    <div class="image-wrapper">
-                        <img src="https://cdn.img.sarabic.ae/img/07e7/0a/0b/1081880708_0:0:3070:1728_1920x0_80_0_0_7d457cfc589b0bc940d155b48293e945.jpg" alt="الصورة المميزة" loading="lazy">
-                        <div class="shiny-effect"></div>
-                    </div>
-
-                    <!-- حاوية المحتوى النصي والصاروخ -->
-                    <div class="content-wrapper">
-                        <!-- النص مع تأثير الكتابة -->
-                        <div class="typing-wrapper">
-                            مع <span class="red-text">المقاومة</span> ننتصر أو نموت
-                        </div>
-
-                        <!-- صاروخ حقيقي أسفل النص -->
-                        <div class="rocket-container">
-                            <img src="https://cdn-icons-png.flaticon.com/512/3214/3214950.png" alt="صاروخ حقيقي" class="real-rocket" loading="lazy">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- ========== قسم الأزرار المخصصة (يظهر بعد تسجيل الدخول) ========== -->
             <section class="custom-buttons-section" id="customButtonsSection" style="display: none;">
                 <div class="custom-buttons-container" id="customButtonsContainer"></div>
@@ -2678,7 +2414,7 @@
     <script>
         // ======================================================
         // الكود المصحح - تم إصلاح مشكلة تكرار العناصر
-        // وإضافة الأزرار المخصصة (Custom Buttons) والصفحة المدمجة
+        // وإضافة الأزرار المخصصة (Custom Buttons)
         // ======================================================
 
         // Firebase configuration
@@ -2741,9 +2477,7 @@
         const backFromChannels = document.getElementById('backFromChannels');
         const backFromDeveloper = document.getElementById('backFromDeveloper');
         
-        // ========== عناصر الصفحة المدمجة والأزرار الجديدة ==========
-        const mergedPage = document.getElementById('mergedPage');
-        const exitMergedPageBtn = document.getElementById('exitMergedPageBtn');
+        // ========== عناصر الأزرار المخصصة (جديد) ==========
         const customButtonsSection = document.getElementById('customButtonsSection');
         const customButtonsContainer = document.getElementById('customButtonsContainer');
 
@@ -2756,7 +2490,7 @@
         let allChannels = [];
         let allGalleryItems = [];
         let allVideos = [];
-        let allCustomButtons = [];
+        let allCustomButtons = []; // متغير لتخزين الأزرار المخصصة
         let isLoading = true;
         let progress = 0;
         let deferredPrompt = null;
@@ -2769,7 +2503,7 @@
         let displayedAnnouncements = new Map();
         let displayedGalleryItems = new Map();
         let displayedVideos = new Map();
-        let displayedCustomButtons = new Map();
+        let displayedCustomButtons = new Map(); // خرائط للأزرار المخصصة
         
         // متغيرات للتنقل
         let currentSection = 'home';
@@ -2783,7 +2517,7 @@
         let channelsListener = null;
         let galleryListener = null;
         let videosListener = null;
-        let customButtonsListener = null;
+        let customButtonsListener = null; // مراقب الأزرار المخصصة
         
         // ==================== الدوال المساعدة ====================
 
@@ -2802,7 +2536,7 @@
             channelsContainer.innerHTML = '';
             galleryContainer.innerHTML = '';
             videosContainer.innerHTML = '';
-            customButtonsContainer.innerHTML = '';
+            customButtonsContainer.innerHTML = ''; // تنظيف الأزرار
             
             // تنظيف المحاضرات عند الحاجة
             lecturesList.innerHTML = '';
@@ -2987,7 +2721,7 @@
             }, 3000);
         }
 
-        // ========== دوال الأزرار المخصصة ==========
+        // ========== دوال الأزرار المخصصة (جديد) ==========
         
         // إضافة زر مخصص للعرض
         function addCustomButtonToDisplay(docId, buttonData) {
@@ -3101,41 +2835,6 @@
             } catch (error) {
                 console.error("❌ خطأ في تحميل الأزرار المخصصة:", error);
                 customButtonsSection.style.display = 'none';
-            }
-        }
-
-        // ========== دوال إدارة الصفحة المدمجة ==========
-        function showMergedPage() {
-            mergedPage.style.display = 'flex';
-            mergedPage.classList.remove('hidden');
-            exitMergedPageBtn.style.display = 'flex';
-            
-            // إخفاء الأقسام الأخرى
-            document.getElementById('subjects').style.display = 'none';
-            document.getElementById('developer').style.display = 'none';
-            document.getElementById('channels').style.display = 'none';
-            document.getElementById('gallery').style.display = 'none';
-            document.getElementById('videos').style.display = 'none';
-            document.querySelector('.hero').style.display = 'none';
-            lecturesContainer.classList.remove('show');
-            customButtonsSection.style.display = 'none';
-            
-            // تمرير إلى الصفحة المدمجة
-            mergedPage.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function hideMergedPage() {
-            mergedPage.style.display = 'none';
-            mergedPage.classList.add('hidden');
-            exitMergedPageBtn.style.display = 'none';
-            
-            // إظهار الأقسام الرئيسية
-            document.querySelector('.hero').style.display = 'block';
-            document.getElementById('subjects').style.display = 'block';
-            
-            // إظهار الأزرار المخصصة إذا كانت موجودة
-            if (displayedCustomButtons.size > 0) {
-                customButtonsSection.style.display = 'block';
             }
         }
 
@@ -3906,7 +3605,7 @@
                     console.error("❌ خطأ في مراقبة الفيديوهات:", error);
                 });
             
-            // ========== مراقبة الأزرار المخصصة ==========
+            // ========== مراقبة الأزرار المخصصة (جديد) ==========
             customButtonsListener = db.collection("customButtons")
                 .orderBy("order", "asc")
                 .onSnapshot((snapshot) => {
@@ -3952,9 +3651,6 @@
 
         // التنقل إلى قسم معين
         function navigateToSection(sectionName) {
-            // إخفاء الصفحة المدمجة أولاً
-            hideMergedPage();
-            
             sectionHistory.push(currentSection);
             currentSection = sectionName;
             updateBackButton();
@@ -3966,12 +3662,10 @@
             document.getElementById('gallery').style.display = 'none';
             document.getElementById('videos').style.display = 'none';
             lecturesContainer.classList.remove('show');
-            document.querySelector('.hero').style.display = 'none';
             
             // إظهار القسم المطلوب
             if (sectionName === 'subjects') {
                 document.getElementById('subjects').style.display = 'block';
-                document.querySelector('.hero').style.display = 'block';
                 document.getElementById('subjects').scrollIntoView({ behavior: 'smooth' });
             } else if (sectionName === 'gallery') {
                 document.getElementById('gallery').style.display = 'block';
@@ -3986,14 +3680,8 @@
                 document.getElementById('developer').style.display = 'block';
                 document.getElementById('developer').scrollIntoView({ behavior: 'smooth' });
             } else if (sectionName === 'home') {
-                document.querySelector('.hero').style.display = 'block';
-                document.getElementById('subjects').style.display = 'block';
                 document.getElementById('homeSection').scrollIntoView({ behavior: 'smooth' });
-            }
-            
-            // إظهار الأزرار المخصصة إذا كانت موجودة
-            if (displayedCustomButtons.size > 0) {
-                customButtonsSection.style.display = 'block';
+                document.getElementById('subjects').style.display = 'block';
             }
             
             sidebar.classList.remove('active');
@@ -4040,9 +3728,6 @@
                         hideLoadingScreen();
                         startRealtimeListeners();
                         
-                        // إظهار الصفحة المدمجة بعد التحميل
-                        showMergedPage();
-                        
                         setTimeout(() => {
                             showMessage(`مرحباً ${userData.name} في تطبيق CET`, "success");
                             
@@ -4067,9 +3752,7 @@
             navbar.classList.remove('show');
             sidebar.classList.remove('active');
             backButtonContainer.style.display = 'none';
-            customButtonsSection.style.display = 'none';
-            exitMergedPageBtn.style.display = 'none';
-            mergedPage.style.display = 'none';
+            customButtonsSection.style.display = 'none'; // إخفاء الأزرار المخصصة
             
             stopAllListeners();
             
@@ -4309,11 +3992,6 @@
         backFromChannels.addEventListener('click', goBack);
         backFromDeveloper.addEventListener('click', goBack);
 
-        // زر الخروج من الصفحة المدمجة
-        exitMergedPageBtn.addEventListener('click', function() {
-            hideMergedPage();
-        });
-
         // تسجيل الخروج
         logoutSidebar.addEventListener('click', logout);
 
@@ -4414,8 +4092,6 @@
                 document.getElementById('channels').style.display = 'none';
                 document.getElementById('gallery').style.display = 'none';
                 document.getElementById('videos').style.display = 'none';
-                document.querySelector('.hero').style.display = 'none';
-                hideMergedPage();
                 
                 const subject = allSubjects.find(s => s.code === subjectCode);
                 lecturesSubtitle.textContent = `محاضرات مادة ${subject?.name || subjectCode}`;
@@ -4500,3 +4176,4 @@
     </script>
 </body>
 </html>
+
