@@ -30,7 +30,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* جميع الأنماط CSS كما هي بدون تغيير */
         * {
             margin: 0;
             padding: 0;
@@ -46,13 +45,11 @@
             --gray-color: #64748b;
             --success-color: #10b981;
             --warning-color: #f59e0b;
-            --danger-color: #ef4444;
             --border-radius: 12px;
             --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             --transition: all 0.3s ease;
         }
 
-        /* ألوان الوضع الليلي */
         .night-mode {
             --primary-color: #0f172a;
             --secondary-color: #6366f1;
@@ -217,7 +214,6 @@
             margin-top: 15px;
             font-size: 0.9rem;
             display: none;
-            white-space: pre-line;
         }
 
         .login-error.show {
@@ -277,7 +273,7 @@
             cursor: pointer;
         }
 
-        /* شريط الإعلانات */
+        /* ========== شريط الإعلانات - تصميم جديد كلياً ========== */
         .announcement-modal {
             display: none;
             position: fixed;
@@ -285,8 +281,6 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
             z-index: 2000;
             justify-content: center;
             align-items: center;
@@ -297,50 +291,287 @@
             display: flex;
         }
 
+        .announcement-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(10px);
+        }
+
         .announcement-content {
-            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-            color: white;
-            padding: 30px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 500px;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.3);
             position: relative;
-            animation: slideUp 0.5s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 90%;
+            max-width: 450px;
+            background: linear-gradient(145deg, #1e1b4b 0%, #312e81 100%);
+            border-radius: 30px;
+            padding: 40px 30px 35px;
+            text-align: center;
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.4),
+                0 0 0 2px rgba(168, 85, 247, 0.2),
+                0 0 40px rgba(139, 92, 246, 0.5),
+                inset 0 2px 4px rgba(255, 255, 255, 0.1);
+            animation: announcementEntrance 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transform-origin: center;
+            overflow: hidden;
+        }
+
+        @keyframes announcementEntrance {
+            0% {
+                opacity: 0;
+                transform: scale(0.7) translateY(30px);
+                filter: blur(10px);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.02) translateY(-5px);
+                filter: blur(0);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        .announcement-content::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 30%, 
+                rgba(168, 85, 247, 0.3) 0%, 
+                rgba(236, 72, 153, 0.2) 30%, 
+                transparent 70%);
+            animation: rotateBg 20s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes rotateBg {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .announcement-content::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                transparent 100%);
+            animation: shimmerAnnouncement 3s infinite;
+            z-index: 1;
+        }
+
+        @keyframes shimmerAnnouncement {
+            0% { transform: translateX(-100%) translateY(-100%); }
+            100% { transform: translateX(100%) translateY(100%); }
+        }
+
+        .announcement-icon {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 20px;
+        }
+
+        .announcement-icon i {
+            font-size: 4rem;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 10px 20px rgba(245, 158, 11, 0.5));
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.1); }
+        }
+
+        .announcement-title {
+            position: relative;
+            z-index: 2;
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 50%, #c7d2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 20px rgba(79, 70, 229, 0.5);
+            letter-spacing: 1px;
         }
 
         .announcement-text {
+            position: relative;
+            z-index: 2;
+            color: #e2e8f0;
             font-size: 1.2rem;
-            line-height: 1.6;
-            margin-bottom: 25px;
-            padding: 0 10px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            line-height: 1.8;
+            margin-bottom: 30px;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .announcement-decoration {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 20px 0 25px;
+        }
+
+        .decoration-dot {
+            width: 8px;
+            height: 8px;
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            border-radius: 50%;
+            opacity: 0.7;
+            animation: dotPulse 1.5s ease-in-out infinite;
+        }
+
+        .decoration-dot:nth-child(2) { animation-delay: 0.2s; }
+        .decoration-dot:nth-child(3) { animation-delay: 0.4s; }
+        .decoration-dot:nth-child(4) { animation-delay: 0.6s; }
+        .decoration-dot:nth-child(5) { animation-delay: 0.8s; }
+
+        @keyframes dotPulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.3); }
         }
 
         .close-announcement {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 10px 15px;
-            border-radius: 50%;
-            transition: var(--transition);
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             position: absolute;
             top: 15px;
             left: 15px;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         .close-announcement:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(239, 68, 68, 0.3);
+            border-color: rgba(239, 68, 68, 0.5);
             transform: rotate(90deg) scale(1.1);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+        }
+
+        .close-announcement i {
+            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
+        }
+
+        .announcement-continue {
+            position: relative;
+            z-index: 2;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 35px;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 10px 30px rgba(139, 92, 246, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            font-family: 'Cairo', sans-serif;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        }
+
+        .announcement-continue::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .announcement-continue:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 15px 40px rgba(139, 92, 246, 0.6),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, #9b6df7, #8b5cf6);
+        }
+
+        .announcement-continue:hover::before {
+            left: 100%;
+        }
+
+        .announcement-continue i {
+            font-size: 1.1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .announcement-continue:hover i {
+            transform: translateX(-5px);
+        }
+
+        .announcement-ribbon {
+            position: absolute;
+            top: 20px;
+            right: -65px;
+            z-index: 3;
+            background: linear-gradient(135deg, #ec4899, #f43f5e);
+            color: white;
+            padding: 8px 70px;
+            transform: rotate(45deg);
+            font-size: 0.9rem;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            letter-spacing: 2px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .announcement-glow {
+            position: absolute;
+            inset: -5px;
+            border-radius: 35px;
+            background: linear-gradient(135deg, #a855f7, #ec4899, #f59e0b);
+            opacity: 0.3;
+            filter: blur(20px);
+            z-index: -1;
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.2; filter: blur(20px); }
+            50% { opacity: 0.4; filter: blur(30px); }
         }
 
         /* زر الرجوع */
@@ -619,7 +850,7 @@
             color: white;
         }
 
-        /* تبديل الوضع اليلي */
+        /* تبديل الوضع الليلي */
         .theme-toggle {
             margin: 15px 20px;
             padding: 12px;
@@ -1838,9 +2069,6 @@
             gap: 10px;
             font-size: 0.9rem;
             backdrop-filter: blur(10px);
-            white-space: pre-line;
-            max-width: 90%;
-            text-align: center;
         }
 
         .message.show {
@@ -2151,10 +2379,28 @@
         </div>
     </div>
 
-    <!-- شريط الإعلانات -->
+    <!-- شريط الإعلانات - بتصميم جديد -->
     <div class="announcement-modal" id="announcementModal">
+        <div class="announcement-backdrop"></div>
         <div class="announcement-content">
+            <div class="announcement-glow"></div>
+            <div class="announcement-ribbon">إعلان هام</div>
+            <div class="announcement-icon">
+                <i class="fas fa-bullhorn"></i>
+            </div>
+            <h2 class="announcement-title">تنبيه مهم</h2>
             <p class="announcement-text" id="announcementText"></p>
+            <div class="announcement-decoration">
+                <span class="decoration-dot"></span>
+                <span class="decoration-dot"></span>
+                <span class="decoration-dot"></span>
+                <span class="decoration-dot"></span>
+                <span class="decoration-dot"></span>
+            </div>
+            <button class="announcement-continue" id="closeAnnouncementBtn">
+                <span>متابعة</span>
+                <i class="fas fa-arrow-left"></i>
+            </button>
             <button class="close-announcement" id="closeAnnouncement" title="إغلاق الإعلان">
                 <i class="fas fa-times"></i>
             </button>
@@ -2258,7 +2504,7 @@
             </div>
         </div>
 
-        <!-- تبديل الوضع اليلي -->
+        <!-- تبديل الوضع الليلي -->
         <div class="theme-toggle" id="themeToggle">
             <div class="theme-toggle-text">
                 <i class="fas fa-moon"></i> الوضع الليلي
@@ -2416,7 +2662,7 @@
 
     <script>
         // ======================================================
-        // الكود المعدل - مع إضافة مراقبة حالة المستخدم الفورية
+        // الكود الكامل مع الإعلان الجديد
         // ======================================================
 
         // Firebase configuration
@@ -2459,6 +2705,7 @@
         const announcementModal = document.getElementById('announcementModal');
         const announcementText = document.getElementById('announcementText');
         const closeAnnouncement = document.getElementById('closeAnnouncement');
+        const closeAnnouncementBtn = document.getElementById('closeAnnouncementBtn');
         const announcementBtn = document.getElementById('announcementBtn');
         const loadingScreen = document.getElementById('loadingScreen');
         const loadingProgressBar = document.getElementById('loadingProgressBar');
@@ -2478,8 +2725,6 @@
         const backFromVideos = document.getElementById('backFromVideos');
         const backFromChannels = document.getElementById('backFromChannels');
         const backFromDeveloper = document.getElementById('backFromDeveloper');
-        
-        // عناصر الأزرار المخصصة
         const customButtonsSection = document.getElementById('customButtonsSection');
         const customButtonsContainer = document.getElementById('customButtonsContainer');
 
@@ -2497,18 +2742,6 @@
         let progress = 0;
         let deferredPrompt = null;
         
-        // متغيرات للمراقبة الفورية
-        let userStatusListener = null;  // مراقب حالة المستخدم
-        let subjectsListener = null;
-        let lecturesListener = null;
-        let announcementsListener = null;
-        let datesListener = null;
-        let channelsListener = null;
-        let galleryListener = null;
-        let videosListener = null;
-        let customButtonsListener = null;
-        
-        // متغيرات لتتبع العناصر المعروضة
         let displayedSubjects = new Map();
         let displayedDates = new Map();
         let displayedChannels = new Map();
@@ -2518,10 +2751,18 @@
         let displayedVideos = new Map();
         let displayedCustomButtons = new Map();
         
-        // متغيرات للتنقل
         let currentSection = 'home';
         let sectionHistory = [];
-
+        
+        let subjectsListener = null;
+        let lecturesListener = null;
+        let announcementsListener = null;
+        let datesListener = null;
+        let channelsListener = null;
+        let galleryListener = null;
+        let videosListener = null;
+        let customButtonsListener = null;
+        
         // ==================== الدوال المساعدة ====================
 
         function clearContainer(container) {
@@ -2550,13 +2791,41 @@
 
         function showEmptyState(container, type) {
             const messages = {
-                'subjects': { icon: 'fas fa-book', title: 'لا توجد مواد دراسية حالياً', message: 'سيتم إضافة المواد الدراسية قريباً' },
-                'lectures': { icon: 'fas fa-file-pdf', title: 'لا توجد محاضرات متاحة', message: 'سيتم رفع المحاضرات قريباً' },
-                'dates': { icon: 'fas fa-calendar-alt', title: 'لا توجد مواعيد حالياً', message: 'سيتم إضافة المواعيد المهمة قريباً' },
-                'channels': { icon: 'fas fa-satellite-dish', title: 'لا توجد قنوات حالياً', message: 'سيتم إضافة القنوات الرسمية قريباً' },
-                'gallery': { icon: 'fas fa-images', title: 'لا توجد صور أو مقالات حالياً', message: 'سيتم إضافة محتوى جديد قريباً' },
-                'videos': { icon: 'fas fa-video', title: 'لا توجد فيديوهات حالياً', message: 'سيتم إضافة فيديوهات جديدة قريباً' },
-                'customButtons': { icon: 'fas fa-link', title: 'لا توجد روابط حالياً', message: 'سيتم إضافة روابط مهمة قريباً' }
+                'subjects': {
+                    icon: 'fas fa-book',
+                    title: 'لا توجد مواد دراسية حالياً',
+                    message: 'سيتم إضافة المواد الدراسية قريباً'
+                },
+                'lectures': {
+                    icon: 'fas fa-file-pdf',
+                    title: 'لا توجد محاضرات متاحة',
+                    message: 'سيتم رفع المحاضرات قريباً'
+                },
+                'dates': {
+                    icon: 'fas fa-calendar-alt',
+                    title: 'لا توجد مواعيد حالياً',
+                    message: 'سيتم إضافة المواعيد المهمة قريباً'
+                },
+                'channels': {
+                    icon: 'fas fa-satellite-dish',
+                    title: 'لا توجد قنوات حالياً',
+                    message: 'سيتم إضافة القنوات الرسمية قريباً'
+                },
+                'gallery': {
+                    icon: 'fas fa-images',
+                    title: 'لا توجد صور أو مقالات حالياً',
+                    message: 'سيتم إضافة محتوى جديد قريباً'
+                },
+                'videos': {
+                    icon: 'fas fa-video',
+                    title: 'لا توجد فيديوهات حالياً',
+                    message: 'سيتم إضافة فيديوهات جديدة قريباً'
+                },
+                'customButtons': {
+                    icon: 'fas fa-link',
+                    title: 'لا توجد روابط حالياً',
+                    message: 'سيتم إضافة روابط مهمة قريباً'
+                }
             };
             
             const msg = messages[type] || messages['subjects'];
@@ -2571,7 +2840,6 @@
         }
 
         function stopAllListeners() {
-            if (userStatusListener) userStatusListener();
             if (subjectsListener) subjectsListener();
             if (lecturesListener) lecturesListener();
             if (announcementsListener) announcementsListener();
@@ -2581,7 +2849,6 @@
             if (videosListener) videosListener();
             if (customButtonsListener) customButtonsListener();
             
-            userStatusListener = null;
             subjectsListener = null;
             lecturesListener = null;
             announcementsListener = null;
@@ -2590,90 +2857,45 @@
             galleryListener = null;
             videosListener = null;
             customButtonsListener = null;
-            
-            console.log('🛑 تم إيقاف جميع المراقبين');
         }
 
-        // ========== دوال المراقبة الفورية لحالة المستخدم (جديد) ==========
-        
-        // دالة لتسجيل الخروج القسري عند الحظر
-        function forceLogout() {
-            console.log("🚫 تسجيل خروج قسري - تم حظر المستخدم");
+        function extractYouTubeId(url) {
+            if (!url) return '';
             
-            // إيقاف جميع المراقبين
-            stopAllListeners();
-            
-            // مسح بيانات تسجيل الدخول
-            currentUser = null;
-            localStorage.removeItem('loggedInUser');
-            localStorage.removeItem('stayLoggedIn');
-            
-            // إخفاء المحتوى الرئيسي
-            hideMainContent();
-            
-            // عرض نافذة تسجيل الدخول
-            loginModal.style.display = 'flex';
-            
-            // إظهار رسالة الخطأ
-            loginError.textContent = "⚠️ تم حظر حسابك من قبل الإدارة. لا يمكنك تسجيل الدخول.";
-            loginError.classList.add('show');
-            
-            // مسح حقول النموذج
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-            
-            // إظهار إشعار منبثق
-            showMessage("🚫 تم تسجيل خروجك بسبب حظر حسابك!", "error");
-        }
-
-        // دالة لبدء مراقبة حالة المستخدم في الوقت الفعلي
-        function startUserStatusMonitoring(userId) {
-            // إيقاف المراقبة السابقة إن وجدت
-            if (userStatusListener) {
-                userStatusListener();
-                userStatusListener = null;
-            }
-            
-            if (!userId) {
-                console.log("⚠️ لا يوجد معرف مستخدم لمراقبته");
-                return;
-            }
-            
-            console.log("🔄 بدء مراقبة حالة المستخدم:", userId);
-            
-            // إنشاء مراقب فوري لحالة المستخدم
-            userStatusListener = db.collection("students").doc(userId)
-                .onSnapshot((doc) => {
-                    if (doc.exists) {
-                        const userData = doc.data();
-                        
-                        // التحقق من حالة الحظر
-                        if (userData.isBlocked === true) {
-                            console.log("🚫 تم حظر المستخدم أثناء تسجيل الدخول!");
-                            
-                            // عرض رسالة للمستخدم
-                            const banReason = userData.banReason || "لا يوجد سبب محدد";
-                            const bannedAt = userData.bannedAt ? userData.bannedAt.toDate().toLocaleString('ar-IQ') : "غير محدد";
-                            
-                            // عرض إشعار للمستخدم
-                            showMessage(`⚠️ تم حظر حسابك من قبل الإدارة!\nالسبب: ${banReason}\nالتاريخ: ${bannedAt}`, "error");
-                            
-                            // تسجيل حدث الخروج القسري
-                            db.collection("loginLogs").add({
-                                username: currentUser?.username || "unknown",
-                                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                                action: "force_logout",
-                                reason: "banned",
-                                banReason: banReason
-                            }).catch(err => console.error("خطأ في تسجيل الخروج القسري:", err));
-                            
-                            // تسجيل خروج المستخدم فوراً
-                            forceLogout();
-                        }
+            try {
+                url = url.trim();
+                let videoId = '';
+                
+                if (url.includes('youtube.com/watch?v=')) {
+                    videoId = url.split('v=')[1];
+                    const ampersandPosition = videoId.indexOf('&');
+                    if (ampersandPosition !== -1) {
+                        videoId = videoId.substring(0, ampersandPosition);
                     }
-                }, (error) => {
-                    console.error("❌ خطأ في مراقبة حالة المستخدم:", error);
-                });
+                }
+                else if (url.includes('youtu.be/')) {
+                    videoId = url.split('youtu.be/')[1];
+                    const queryPosition = videoId.indexOf('?');
+                    if (queryPosition !== -1) {
+                        videoId = videoId.substring(0, queryPosition);
+                    }
+                }
+                else if (url.includes('youtube.com/embed/')) {
+                    videoId = url.split('embed/')[1];
+                    const queryPosition = videoId.indexOf('?');
+                    if (queryPosition !== -1) {
+                        videoId = videoId.substring(0, queryPosition);
+                    }
+                }
+                else if (url.length === 11 && !url.includes('/') && !url.includes('?')) {
+                    videoId = url;
+                }
+                
+                return videoId && videoId.length === 11 ? videoId : '';
+            } catch (error) {
+                console.error('خطأ في استخراج معرف يوتيوب:', error);
+                return '';
+            }
         }
 
         function updateLoadingProgress(newProgress) {
@@ -2701,7 +2923,7 @@
             messageDiv.className = `message ${type}`;
             messageDiv.innerHTML = `
                 <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
-                <span style="white-space: pre-line;">${message}</span>
+                <span>${message}</span>
             `;
             
             document.body.appendChild(messageDiv);
@@ -2715,7 +2937,7 @@
                 setTimeout(() => {
                     messageDiv.remove();
                 }, 300);
-            }, 5000);
+            }, 3000);
         }
 
         function showUpdateNotification(message, type = "updating") {
@@ -2809,7 +3031,6 @@
         async function loadCustomButtons() {
             try {
                 const querySnapshot = await db.collection("customButtons")
-                    .where("isActive", "==", true)
                     .orderBy("order", "asc")
                     .get();
                 
@@ -2828,16 +3049,14 @@
                     allCustomButtons.push({ id: doc.id, ...doc.data() });
                 });
                 
-                console.log(`✅ تم تحميل ${querySnapshot.size} زر مخصص`);
-                
             } catch (error) {
-                console.error("❌ خطأ في تحميل الأزرار المخصصة:", error);
+                console.error("خطأ في تحميل الأزرار المخصصة:", error);
                 customButtonsSection.style.display = 'none';
             }
         }
 
-        // ========== دوال المواد ==========
-        
+        // ==================== دوال العرض ====================
+
         function addSubjectToDisplay(docId, subjectData) {
             if (displayedSubjects.has(docId)) {
                 updateSubjectInDisplay(docId, subjectData);
@@ -2904,8 +3123,298 @@
             }
         }
 
-        // ========== دوال المحاضرات ==========
-        
+        function addDateToDisplay(docId, dateData) {
+            if (displayedDates.has(docId)) {
+                updateDateInDisplay(docId, dateData);
+                return;
+            }
+            
+            const date = new Date(dateData.date);
+            const isImportant = dateData.important || false;
+            
+            const dateItem = document.createElement('div');
+            dateItem.className = `date-item ${isImportant ? 'important' : ''}`;
+            dateItem.dataset.id = docId;
+            dateItem.innerHTML = `
+                <div class="date-title">${dateData.title}</div>
+                <div class="date-value">${date.toLocaleDateString('ar-IQ')}</div>
+            `;
+            
+            datesList.appendChild(dateItem);
+            displayedDates.set(docId, dateItem);
+        }
+
+        function updateDateInDisplay(docId, dateData) {
+            const dateItem = displayedDates.get(docId);
+            if (dateItem) {
+                const date = new Date(dateData.date);
+                const isImportant = dateData.important || false;
+                
+                dateItem.className = `date-item ${isImportant ? 'important' : ''}`;
+                dateItem.innerHTML = `
+                    <div class="date-title">${dateData.title}</div>
+                    <div class="date-value">${date.toLocaleDateString('ar-IQ')}</div>
+                `;
+            }
+        }
+
+        function removeDateFromDisplay(docId) {
+            const dateItem = displayedDates.get(docId);
+            if (dateItem) {
+                dateItem.classList.add('removing');
+                
+                setTimeout(() => {
+                    dateItem.remove();
+                    displayedDates.delete(docId);
+                    
+                    if (displayedDates.size === 0) {
+                        showEmptyState(datesList, 'dates');
+                    }
+                }, 500);
+            }
+        }
+
+        function addChannelToDisplay(docId, channelData) {
+            if (displayedChannels.has(docId)) {
+                updateChannelInDisplay(docId, channelData);
+                return;
+            }
+            
+            const channelCard = document.createElement('div');
+            channelCard.className = 'channel-card';
+            channelCard.dataset.id = docId;
+            channelCard.innerHTML = `
+                <div class="channel-icon">
+                    <i class="${channelData.icon || 'fas fa-link'}"></i>
+                </div>
+                <h3>${channelData.name}</h3>
+                <p>${channelData.description || 'قناة رسمية'}</p>
+                <a href="${channelData.url}" target="_blank" class="channel-link">
+                    <i class="fas fa-external-link-alt"></i> زيارة القناة
+                </a>
+            `;
+            
+            channelsContainer.appendChild(channelCard);
+            displayedChannels.set(docId, channelCard);
+        }
+
+        function updateChannelInDisplay(docId, channelData) {
+            const channelCard = displayedChannels.get(docId);
+            if (channelCard) {
+                const icon = channelCard.querySelector('.channel-icon i');
+                const title = channelCard.querySelector('h3');
+                const description = channelCard.querySelector('p');
+                const link = channelCard.querySelector('a');
+                
+                if (icon) icon.className = `${channelData.icon || 'fas fa-link'}`;
+                if (title) title.textContent = channelData.name;
+                if (description) description.textContent = channelData.description || 'قناة رسمية';
+                if (link) link.href = channelData.url;
+            }
+        }
+
+        function removeChannelFromDisplay(docId) {
+            const channelCard = displayedChannels.get(docId);
+            if (channelCard) {
+                channelCard.classList.add('removing');
+                
+                setTimeout(() => {
+                    channelCard.remove();
+                    displayedChannels.delete(docId);
+                    
+                    if (displayedChannels.size === 0) {
+                        showEmptyState(channelsContainer, 'channels');
+                    }
+                }, 500);
+            }
+        }
+
+        function addGalleryItemToDisplay(docId, galleryData) {
+            if (displayedGalleryItems.has(docId)) {
+                updateGalleryItemInDisplay(docId, galleryData);
+                return;
+            }
+            
+            const galleryCard = document.createElement('div');
+            galleryCard.className = 'gallery-card';
+            galleryCard.dataset.id = docId;
+            
+            const date = galleryData.createdAt ? galleryData.createdAt.toDate() : new Date();
+            const formattedDate = date.toLocaleDateString('ar-IQ');
+            
+            galleryCard.innerHTML = `
+                <img src="${galleryData.imageUrl}" alt="${galleryData.title}" class="gallery-image" onclick="openImageModal('${galleryData.imageUrl}', '${galleryData.title}')">
+                <div class="gallery-content">
+                    <h3 class="gallery-title">${galleryData.title}</h3>
+                    <p class="gallery-description">${galleryData.description || 'لا يوجد وصف'}</p>
+                    <div class="gallery-date">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>${formattedDate}</span>
+                    </div>
+                </div>
+            `;
+            
+            galleryContainer.appendChild(galleryCard);
+            displayedGalleryItems.set(docId, galleryCard);
+        }
+
+        function updateGalleryItemInDisplay(docId, galleryData) {
+            const galleryCard = displayedGalleryItems.get(docId);
+            if (galleryCard) {
+                const date = galleryData.createdAt ? galleryData.createdAt.toDate() : new Date();
+                const formattedDate = date.toLocaleDateString('ar-IQ');
+                
+                galleryCard.innerHTML = `
+                    <img src="${galleryData.imageUrl}" alt="${galleryData.title}" class="gallery-image" onclick="openImageModal('${galleryData.imageUrl}', '${galleryData.title}')">
+                    <div class="gallery-content">
+                        <h3 class="gallery-title">${galleryData.title}</h3>
+                        <p class="gallery-description">${galleryData.description || 'لا يوجد وصف'}</p>
+                        <div class="gallery-date">
+                            <i class="far fa-calendar-alt"></i>
+                            <span>${formattedDate}</span>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function removeGalleryItemFromDisplay(docId) {
+            const galleryCard = displayedGalleryItems.get(docId);
+            if (galleryCard) {
+                galleryCard.classList.add('removing');
+                
+                setTimeout(() => {
+                    galleryCard.remove();
+                    displayedGalleryItems.delete(docId);
+                    
+                    if (displayedGalleryItems.size === 0) {
+                        showEmptyState(galleryContainer, 'gallery');
+                    }
+                }, 500);
+            }
+        }
+
+        function addVideoToDisplay(docId, videoData) {
+            if (displayedVideos.has(docId)) {
+                updateVideoInDisplay(docId, videoData);
+                return;
+            }
+            
+            const videoCard = document.createElement('div');
+            videoCard.className = 'video-card';
+            videoCard.dataset.id = docId;
+            
+            const date = videoData.createdAt ? videoData.createdAt.toDate() : new Date();
+            const formattedDate = date.toLocaleDateString('ar-IQ');
+            
+            const videoId = extractYouTubeId(videoData.videoUrl);
+            
+            let videoHTML = '';
+            if (videoId) {
+                videoHTML = `
+                    <div class="video-wrapper">
+                        <iframe class="video-iframe" 
+                                src="https://www.youtube.com/embed/${videoId}" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen
+                                title="${videoData.title}">
+                        </iframe>
+                    </div>
+                `;
+            } else {
+                videoHTML = `
+                    <div class="video-error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h4>رابط فيديو غير صالح</h4>
+                        <p>الرجاء التحقق من رابط الفيديو</p>
+                        <a href="${videoData.videoUrl}" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> فتح الرابط مباشرة
+                        </a>
+                    </div>
+                `;
+            }
+            
+            videoCard.innerHTML = `
+                ${videoHTML}
+                <div class="video-content">
+                    <h3 class="video-title">${videoData.title}</h3>
+                    <p class="video-description">${videoData.description || 'لا يوجد وصف'}</p>
+                    <div class="video-date">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>${formattedDate}</span>
+                    </div>
+                </div>
+            `;
+            
+            videosContainer.appendChild(videoCard);
+            displayedVideos.set(docId, videoCard);
+        }
+
+        function updateVideoInDisplay(docId, videoData) {
+            const videoCard = displayedVideos.get(docId);
+            if (videoCard) {
+                const date = videoData.createdAt ? videoData.createdAt.toDate() : new Date();
+                const formattedDate = date.toLocaleDateString('ar-IQ');
+                
+                const videoId = extractYouTubeId(videoData.videoUrl);
+                
+                let videoHTML = '';
+                if (videoId) {
+                    videoHTML = `
+                        <div class="video-wrapper">
+                            <iframe class="video-iframe" 
+                                    src="https://www.youtube.com/embed/${videoId}" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowfullscreen
+                                    title="${videoData.title}">
+                            </iframe>
+                        </div>
+                    `;
+                } else {
+                    videoHTML = `
+                        <div class="video-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h4>رابط فيديو غير صالح</h4>
+                            <p>الرجاء التحقق من رابط الفيديو</p>
+                            <a href="${videoData.videoUrl}" target="_blank">
+                                <i class="fas fa-external-link-alt"></i> فتح الرابط مباشرة
+                            </a>
+                        </div>
+                    `;
+                }
+                
+                videoCard.innerHTML = `
+                    ${videoHTML}
+                    <div class="video-content">
+                        <h3 class="video-title">${videoData.title}</h3>
+                        <p class="video-description">${videoData.description || 'لا يوجد وصف'}</p>
+                        <div class="video-date">
+                            <i class="far fa-calendar-alt"></i>
+                            <span>${formattedDate}</span>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function removeVideoFromDisplay(docId) {
+            const videoCard = displayedVideos.get(docId);
+            if (videoCard) {
+                videoCard.classList.add('removing');
+                
+                setTimeout(() => {
+                    videoCard.remove();
+                    displayedVideos.delete(docId);
+                    
+                    if (displayedVideos.size === 0) {
+                        showEmptyState(videosContainer, 'videos');
+                    }
+                }, 500);
+            }
+        }
+
         async function loadLecturesForSubjectRealtime(subjectCode) {
             try {
                 const querySnapshot = await db.collection("lectures")
@@ -2914,7 +3423,6 @@
                 
                 currentSubjectLectures = [];
                 displayedLectures.clear();
-                
                 lecturesList.innerHTML = '';
                 
                 if (querySnapshot.empty) {
@@ -2964,13 +3472,11 @@
                 });
                 
             } catch (error) {
-                console.error("❌ خطأ في تحميل المحاضرات:", error);
+                console.error("خطأ في تحميل المحاضرات:", error);
                 showEmptyState(lecturesList, 'lectures');
             }
         }
 
-        // ========== دوال البيانات الأولية ==========
-        
         async function loadInitialData() {
             try {
                 resetAllContainers();
@@ -2990,21 +3496,8 @@
                     showEmptyState(datesList, 'dates');
                 } else {
                     datesSnapshot.forEach((doc) => {
-                        const dateData = doc.data();
-                        const date = new Date(dateData.date);
-                        const isImportant = dateData.important || false;
-                        
-                        const dateItem = document.createElement('div');
-                        dateItem.className = `date-item ${isImportant ? 'important' : ''}`;
-                        dateItem.dataset.id = doc.id;
-                        dateItem.innerHTML = `
-                            <div class="date-title">${dateData.title}</div>
-                            <div class="date-value">${date.toLocaleDateString('ar-IQ')}</div>
-                        `;
-                        
-                        datesList.appendChild(dateItem);
-                        displayedDates.set(doc.id, dateItem);
-                        allImportantDates.push({ id: doc.id, ...dateData });
+                        addDateToDisplay(doc.id, doc.data());
+                        allImportantDates.push({ id: doc.id, ...doc.data() });
                     });
                 }
                 
@@ -3013,24 +3506,8 @@
                     showEmptyState(channelsContainer, 'channels');
                 } else {
                     channelsSnapshot.forEach((doc) => {
-                        const channelData = doc.data();
-                        const channelCard = document.createElement('div');
-                        channelCard.className = 'channel-card';
-                        channelCard.dataset.id = doc.id;
-                        channelCard.innerHTML = `
-                            <div class="channel-icon">
-                                <i class="${channelData.icon || 'fas fa-link'}"></i>
-                            </div>
-                            <h3>${channelData.name}</h3>
-                            <p>${channelData.description || 'قناة رسمية'}</p>
-                            <a href="${channelData.url}" target="_blank" class="channel-link">
-                                <i class="fas fa-external-link-alt"></i> زيارة القناة
-                            </a>
-                        `;
-                        
-                        channelsContainer.appendChild(channelCard);
-                        displayedChannels.set(doc.id, channelCard);
-                        allChannels.push({ id: doc.id, ...channelData });
+                        addChannelToDisplay(doc.id, doc.data());
+                        allChannels.push({ id: doc.id, ...doc.data() });
                     });
                 }
                 
@@ -3039,28 +3516,8 @@
                     showEmptyState(galleryContainer, 'gallery');
                 } else {
                     gallerySnapshot.forEach((doc) => {
-                        const galleryData = doc.data();
-                        const date = galleryData.createdAt ? galleryData.createdAt.toDate() : new Date();
-                        const formattedDate = date.toLocaleDateString('ar-IQ');
-                        
-                        const galleryCard = document.createElement('div');
-                        galleryCard.className = 'gallery-card';
-                        galleryCard.dataset.id = doc.id;
-                        galleryCard.innerHTML = `
-                            <img src="${galleryData.imageUrl}" alt="${galleryData.title}" class="gallery-image" onclick="openImageModal('${galleryData.imageUrl}', '${galleryData.title}')">
-                            <div class="gallery-content">
-                                <h3 class="gallery-title">${galleryData.title}</h3>
-                                <p class="gallery-description">${galleryData.description || 'لا يوجد وصف'}</p>
-                                <div class="gallery-date">
-                                    <i class="far fa-calendar-alt"></i>
-                                    <span>${formattedDate}</span>
-                                </div>
-                            </div>
-                        `;
-                        
-                        galleryContainer.appendChild(galleryCard);
-                        displayedGalleryItems.set(doc.id, galleryCard);
-                        allGalleryItems.push({ id: doc.id, ...galleryData });
+                        addGalleryItemToDisplay(doc.id, doc.data());
+                        allGalleryItems.push({ id: doc.id, ...doc.data() });
                     });
                 }
                 
@@ -3069,63 +3526,8 @@
                     showEmptyState(videosContainer, 'videos');
                 } else {
                     videosSnapshot.forEach((doc) => {
-                        const videoData = doc.data();
-                        const date = videoData.createdAt ? videoData.createdAt.toDate() : new Date();
-                        const formattedDate = date.toLocaleDateString('ar-IQ');
-                        
-                        const extractYouTubeId = (url) => {
-                            if (!url) return '';
-                            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-                            const match = url.match(regExp);
-                            return (match && match[2].length === 11) ? match[2] : '';
-                        };
-                        
-                        const videoId = extractYouTubeId(videoData.videoUrl);
-                        
-                        let videoHTML = '';
-                        if (videoId) {
-                            videoHTML = `
-                                <div class="video-wrapper">
-                                    <iframe class="video-iframe" 
-                                            src="https://www.youtube.com/embed/${videoId}" 
-                                            frameborder="0" 
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                            allowfullscreen
-                                            title="${videoData.title}">
-                                    </iframe>
-                                </div>
-                            `;
-                        } else {
-                            videoHTML = `
-                                <div class="video-error">
-                                    <i class="fas fa-exclamation-triangle"></i>
-                                    <h4>رابط فيديو غير صالح</h4>
-                                    <p>الرجاء التحقق من رابط الفيديو</p>
-                                    <a href="${videoData.videoUrl}" target="_blank">
-                                        <i class="fas fa-external-link-alt"></i> فتح الرابط مباشرة
-                                    </a>
-                                </div>
-                            `;
-                        }
-                        
-                        const videoCard = document.createElement('div');
-                        videoCard.className = 'video-card';
-                        videoCard.dataset.id = doc.id;
-                        videoCard.innerHTML = `
-                            ${videoHTML}
-                            <div class="video-content">
-                                <h3 class="video-title">${videoData.title}</h3>
-                                <p class="video-description">${videoData.description || 'لا يوجد وصف'}</p>
-                                <div class="video-date">
-                                    <i class="far fa-calendar-alt"></i>
-                                    <span>${formattedDate}</span>
-                                </div>
-                            </div>
-                        `;
-                        
-                        videosContainer.appendChild(videoCard);
-                        displayedVideos.set(doc.id, videoCard);
-                        allVideos.push({ id: doc.id, ...videoData });
+                        addVideoToDisplay(doc.id, doc.data());
+                        allVideos.push({ id: doc.id, ...doc.data() });
                     });
                 }
                 
@@ -3159,25 +3561,12 @@
                     }
                 }
                 
-                console.log(`✅ تم تحميل البيانات الأولية:
-                - ${allSubjects.length} مادة
-                - ${allImportantDates.length} موعد
-                - ${allChannels.length} قناة
-                - ${allGalleryItems.length} صورة
-                - ${allVideos.length} فيديو
-                - ${allCustomButtons.length} زر مخصص
-                - ${allAnnouncements.length} إعلان`);
-                
             } catch (error) {
-                console.error("❌ خطأ في تحميل البيانات الأولية:", error);
+                console.error("خطأ في تحميل البيانات الأولية:", error);
             }
         }
 
-        // ========== دوال المراقبة الفورية ==========
-        
         function startRealtimeListeners() {
-            console.log('🔄 بدء المراقبة الفورية للبيانات...');
-            
             subjectsListener = db.collection("subjects")
                 .onSnapshot((snapshot) => {
                     snapshot.docChanges().forEach((change) => {
@@ -3185,24 +3574,19 @@
                         const docData = change.doc.data();
                         
                         if (change.type === "added") {
-                            console.log(`➕ مادة مضافة: ${docData.name}`);
                             showUpdateNotification("تمت إضافة مادة دراسية جديدة", "success");
                             addSubjectToDisplay(docId, docData);
                         }
                         
                         if (change.type === "modified") {
-                            console.log(`✏️ مادة معدلة: ${docData.name}`);
                             showUpdateNotification("تم تعديل مادة دراسية", "success");
                             updateSubjectInDisplay(docId, docData);
                         }
                         
                         if (change.type === "removed") {
-                            console.log(`🗑️ مادة محذوفة: ${docData.name || docId}`);
                             removeSubjectFromDisplay(docId);
                         }
                     });
-                }, (error) => {
-                    console.error("❌ خطأ في مراقبة المواد:", error);
                 });
 
             announcementsListener = db.collection("announcements")
@@ -3213,7 +3597,6 @@
                         const docData = change.doc.data();
                         
                         if (change.type === "added") {
-                            console.log(`📢 إعلان مضاف: ${docData.message.substring(0, 50)}...`);
                             showUpdateNotification("تمت إضافة إعلان جديد", "success");
                             
                             displayedAnnouncements.set(docId, docData);
@@ -3225,8 +3608,6 @@
                             }, 1000);
                         }
                     });
-                }, (error) => {
-                    console.error("❌ خطأ في مراقبة الإعلانات:", error);
                 });
 
             datesListener = db.collection("importantDates")
@@ -3237,56 +3618,20 @@
                         const docData = change.doc.data();
                         
                         if (change.type === "added") {
-                            console.log(`📅 موعد مضاف: ${docData.title}`);
                             showUpdateNotification("تمت إضافة موعد مهم", "success");
-                            
-                            const date = new Date(docData.date);
-                            const isImportant = docData.important || false;
-                            
-                            const dateItem = document.createElement('div');
-                            dateItem.className = `date-item ${isImportant ? 'important' : ''}`;
-                            dateItem.dataset.id = docId;
-                            dateItem.innerHTML = `
-                                <div class="date-title">${docData.title}</div>
-                                <div class="date-value">${date.toLocaleDateString('ar-IQ')}</div>
-                            `;
-                            
-                            datesList.appendChild(dateItem);
-                            displayedDates.set(docId, dateItem);
+                            addDateToDisplay(docId, docData);
                             datesBtn.classList.add('has-updates');
                         }
                         
                         if (change.type === "modified") {
-                            console.log(`✏️ موعد معدل: ${docData.title}`);
                             showUpdateNotification("تم تعديل موعد مهم", "success");
-                            
-                            const dateItem = displayedDates.get(docId);
-                            if (dateItem) {
-                                const date = new Date(docData.date);
-                                const isImportant = docData.important || false;
-                                
-                                dateItem.className = `date-item ${isImportant ? 'important' : ''}`;
-                                dateItem.innerHTML = `
-                                    <div class="date-title">${docData.title}</div>
-                                    <div class="date-value">${date.toLocaleDateString('ar-IQ')}</div>
-                                `;
-                            }
+                            updateDateInDisplay(docId, docData);
                         }
                         
                         if (change.type === "removed") {
-                            console.log(`🗑️ موعد محذوفة: ${docData.title || docId}`);
-                            const dateItem = displayedDates.get(docId);
-                            if (dateItem) {
-                                dateItem.classList.add('removing');
-                                setTimeout(() => {
-                                    dateItem.remove();
-                                    displayedDates.delete(docId);
-                                }, 500);
-                            }
+                            removeDateFromDisplay(docId);
                         }
                     });
-                }, (error) => {
-                    console.error("❌ خطأ في مراقبة المواعيد:", error);
                 });
 
             lecturesListener = db.collection("lectures")
@@ -3294,77 +3639,53 @@
                     snapshot.docChanges().forEach((change) => {
                         const docData = change.doc.data();
                         
-                        if (change.type === "added" || change.type === "modified" || change.type === "removed") {
-                            if (lecturesContainer.classList.contains('show')) {
-                                const currentSubjectCode = lecturesSubtitle.textContent.replace('محاضرات مادة ', '');
-                                loadLecturesForSubjectRealtime(currentSubjectCode);
+                        if (change.type === "added") {
+                            showUpdateNotification(`تمت إضافة محاضرة جديدة لـ ${docData.subjectCode}`, "success");
+                            
+                            if (lecturesContainer.classList.contains('show') && 
+                                lecturesSubtitle.textContent.includes(docData.subjectCode)) {
+                                loadLecturesForSubjectRealtime(docData.subjectCode);
+                            }
+                        }
+                        
+                        if (change.type === "modified") {
+                            showUpdateNotification(`تم تعديل محاضرة لـ ${docData.subjectCode}`, "success");
+                            
+                            if (lecturesContainer.classList.contains('show') && 
+                                lecturesSubtitle.textContent.includes(docData.subjectCode)) {
+                                loadLecturesForSubjectRealtime(docData.subjectCode);
+                            }
+                        }
+                        
+                        if (change.type === "removed") {
+                            if (lecturesContainer.classList.contains('show') && 
+                                lecturesSubtitle.textContent.includes(docData.subjectCode)) {
+                                loadLecturesForSubjectRealtime(docData.subjectCode);
                             }
                         }
                     });
-                }, (error) => {
-                    console.error("❌ خطأ في مراقبة المحاضرات:", error);
                 });
 
             channelsListener = db.collection("channels")
                 .onSnapshot((snapshot) => {
                     snapshot.docChanges().forEach((change) => {
                         const docId = change.doc.id;
-                        const channelData = change.doc.data();
+                        const docData = change.doc.data();
                         
                         if (change.type === "added") {
-                            console.log(`📡 قناة مضافة: ${channelData.name}`);
                             showUpdateNotification("تمت إضافة قناة جديدة", "success");
-                            
-                            const channelCard = document.createElement('div');
-                            channelCard.className = 'channel-card';
-                            channelCard.dataset.id = docId;
-                            channelCard.innerHTML = `
-                                <div class="channel-icon">
-                                    <i class="${channelData.icon || 'fas fa-link'}"></i>
-                                </div>
-                                <h3>${channelData.name}</h3>
-                                <p>${channelData.description || 'قناة رسمية'}</p>
-                                <a href="${channelData.url}" target="_blank" class="channel-link">
-                                    <i class="fas fa-external-link-alt"></i> زيارة القناة
-                                </a>
-                            `;
-                            
-                            channelsContainer.appendChild(channelCard);
-                            displayedChannels.set(docId, channelCard);
+                            addChannelToDisplay(docId, docData);
                         }
                         
                         if (change.type === "modified") {
-                            console.log(`✏️ قناة معدلة: ${channelData.name}`);
                             showUpdateNotification("تم تعديل قناة", "success");
-                            
-                            const channelCard = displayedChannels.get(docId);
-                            if (channelCard) {
-                                const icon = channelCard.querySelector('.channel-icon i');
-                                const title = channelCard.querySelector('h3');
-                                const description = channelCard.querySelector('p');
-                                const link = channelCard.querySelector('a');
-                                
-                                if (icon) icon.className = `${channelData.icon || 'fas fa-link'}`;
-                                if (title) title.textContent = channelData.name;
-                                if (description) description.textContent = channelData.description || 'قناة رسمية';
-                                if (link) link.href = channelData.url;
-                            }
+                            updateChannelInDisplay(docId, docData);
                         }
                         
                         if (change.type === "removed") {
-                            console.log(`🗑️ قناة محذوفة: ${channelData.name || docId}`);
-                            const channelCard = displayedChannels.get(docId);
-                            if (channelCard) {
-                                channelCard.classList.add('removing');
-                                setTimeout(() => {
-                                    channelCard.remove();
-                                    displayedChannels.delete(docId);
-                                }, 500);
-                            }
+                            removeChannelFromDisplay(docId);
                         }
                     });
-                }, (error) => {
-                    console.error("❌ خطأ في مراقبة القنوات:", error);
                 });
 
             galleryListener = db.collection("gallery")
@@ -3372,71 +3693,22 @@
                 .onSnapshot((snapshot) => {
                     snapshot.docChanges().forEach((change) => {
                         const docId = change.doc.id;
-                        const galleryData = change.doc.data();
+                        const docData = change.doc.data();
                         
                         if (change.type === "added") {
-                            console.log(`🖼️ صورة مضافة: ${galleryData.title}`);
                             showUpdateNotification("تمت إضافة صورة جديدة إلى المعرض", "success");
-                            
-                            const date = galleryData.createdAt ? galleryData.createdAt.toDate() : new Date();
-                            const formattedDate = date.toLocaleDateString('ar-IQ');
-                            
-                            const galleryCard = document.createElement('div');
-                            galleryCard.className = 'gallery-card';
-                            galleryCard.dataset.id = docId;
-                            galleryCard.innerHTML = `
-                                <img src="${galleryData.imageUrl}" alt="${galleryData.title}" class="gallery-image" onclick="openImageModal('${galleryData.imageUrl}', '${galleryData.title}')">
-                                <div class="gallery-content">
-                                    <h3 class="gallery-title">${galleryData.title}</h3>
-                                    <p class="gallery-description">${galleryData.description || 'لا يوجد وصف'}</p>
-                                    <div class="gallery-date">
-                                        <i class="far fa-calendar-alt"></i>
-                                        <span>${formattedDate}</span>
-                                    </div>
-                                </div>
-                            `;
-                            
-                            galleryContainer.appendChild(galleryCard);
-                            displayedGalleryItems.set(docId, galleryCard);
+                            addGalleryItemToDisplay(docId, docData);
                         }
                         
                         if (change.type === "modified") {
-                            console.log(`✏️ صورة معدلة: ${galleryData.title}`);
                             showUpdateNotification("تم تعديل صورة في المعرض", "success");
-                            
-                            const galleryCard = displayedGalleryItems.get(docId);
-                            if (galleryCard) {
-                                const date = galleryData.createdAt ? galleryData.createdAt.toDate() : new Date();
-                                const formattedDate = date.toLocaleDateString('ar-IQ');
-                                
-                                galleryCard.innerHTML = `
-                                    <img src="${galleryData.imageUrl}" alt="${galleryData.title}" class="gallery-image" onclick="openImageModal('${galleryData.imageUrl}', '${galleryData.title}')">
-                                    <div class="gallery-content">
-                                        <h3 class="gallery-title">${galleryData.title}</h3>
-                                        <p class="gallery-description">${galleryData.description || 'لا يوجد وصف'}</p>
-                                        <div class="gallery-date">
-                                            <i class="far fa-calendar-alt"></i>
-                                            <span>${formattedDate}</span>
-                                        </div>
-                                    </div>
-                                `;
-                            }
+                            updateGalleryItemInDisplay(docId, docData);
                         }
                         
                         if (change.type === "removed") {
-                            console.log(`🗑️ صورة محذوفة: ${galleryData.title || docId}`);
-                            const galleryCard = displayedGalleryItems.get(docId);
-                            if (galleryCard) {
-                                galleryCard.classList.add('removing');
-                                setTimeout(() => {
-                                    galleryCard.remove();
-                                    displayedGalleryItems.delete(docId);
-                                }, 500);
-                            }
+                            removeGalleryItemFromDisplay(docId);
                         }
                     });
-                }, (error) => {
-                    console.error("❌ خطأ في مراقبة المعرض:", error);
                 });
 
             videosListener = db.collection("videos")
@@ -3444,145 +3716,25 @@
                 .onSnapshot((snapshot) => {
                     snapshot.docChanges().forEach((change) => {
                         const docId = change.doc.id;
-                        const videoData = change.doc.data();
+                        const docData = change.doc.data();
                         
                         if (change.type === "added") {
-                            console.log(`🎥 فيديو مضاف: ${videoData.title}`);
                             showUpdateNotification("تمت إضافة فيديو جديد إلى المعرض", "success");
-                            
-                            const date = videoData.createdAt ? videoData.createdAt.toDate() : new Date();
-                            const formattedDate = date.toLocaleDateString('ar-IQ');
-                            
-                            const extractYouTubeId = (url) => {
-                                if (!url) return '';
-                                const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-                                const match = url.match(regExp);
-                                return (match && match[2].length === 11) ? match[2] : '';
-                            };
-                            
-                            const videoId = extractYouTubeId(videoData.videoUrl);
-                            
-                            let videoHTML = '';
-                            if (videoId) {
-                                videoHTML = `
-                                    <div class="video-wrapper">
-                                        <iframe class="video-iframe" 
-                                                src="https://www.youtube.com/embed/${videoId}" 
-                                                frameborder="0" 
-                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                                allowfullscreen
-                                                title="${videoData.title}">
-                                        </iframe>
-                                    </div>
-                                `;
-                            } else {
-                                videoHTML = `
-                                    <div class="video-error">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                        <h4>رابط فيديو غير صالح</h4>
-                                        <p>الرجاء التحقق من رابط الفيديو</p>
-                                        <a href="${videoData.videoUrl}" target="_blank">
-                                            <i class="fas fa-external-link-alt"></i> فتح الرابط مباشرة
-                                        </a>
-                                    </div>
-                                `;
-                            }
-                            
-                            const videoCard = document.createElement('div');
-                            videoCard.className = 'video-card';
-                            videoCard.dataset.id = docId;
-                            videoCard.innerHTML = `
-                                ${videoHTML}
-                                <div class="video-content">
-                                    <h3 class="video-title">${videoData.title}</h3>
-                                    <p class="video-description">${videoData.description || 'لا يوجد وصف'}</p>
-                                    <div class="video-date">
-                                        <i class="far fa-calendar-alt"></i>
-                                        <span>${formattedDate}</span>
-                                    </div>
-                                </div>
-                            `;
-                            
-                            videosContainer.appendChild(videoCard);
-                            displayedVideos.set(docId, videoCard);
+                            addVideoToDisplay(docId, docData);
                         }
                         
                         if (change.type === "modified") {
-                            console.log(`✏️ فيديو معدل: ${videoData.title}`);
                             showUpdateNotification("تم تعديل فيديو في المعرض", "success");
-                            
-                            const videoCard = displayedVideos.get(docId);
-                            if (videoCard) {
-                                const date = videoData.createdAt ? videoData.createdAt.toDate() : new Date();
-                                const formattedDate = date.toLocaleDateString('ar-IQ');
-                                
-                                const extractYouTubeId = (url) => {
-                                    if (!url) return '';
-                                    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-                                    const match = url.match(regExp);
-                                    return (match && match[2].length === 11) ? match[2] : '';
-                                };
-                                
-                                const videoId = extractYouTubeId(videoData.videoUrl);
-                                
-                                let videoHTML = '';
-                                if (videoId) {
-                                    videoHTML = `
-                                        <div class="video-wrapper">
-                                            <iframe class="video-iframe" 
-                                                    src="https://www.youtube.com/embed/${videoId}" 
-                                                    frameborder="0" 
-                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                                    allowfullscreen
-                                                    title="${videoData.title}">
-                                            </iframe>
-                                        </div>
-                                    `;
-                                } else {
-                                    videoHTML = `
-                                        <div class="video-error">
-                                            <i class="fas fa-exclamation-triangle"></i>
-                                            <h4>رابط فيديو غير صالح</h4>
-                                            <p>الرجاء التحقق من رابط الفيديو</p>
-                                            <a href="${videoData.videoUrl}" target="_blank">
-                                                <i class="fas fa-external-link-alt"></i> فتح الرابط مباشرة
-                                            </a>
-                                        </div>
-                                    `;
-                                }
-                                
-                                videoCard.innerHTML = `
-                                    ${videoHTML}
-                                    <div class="video-content">
-                                        <h3 class="video-title">${videoData.title}</h3>
-                                        <p class="video-description">${videoData.description || 'لا يوجد وصف'}</p>
-                                        <div class="video-date">
-                                            <i class="far fa-calendar-alt"></i>
-                                            <span>${formattedDate}</span>
-                                        </div>
-                                    </div>
-                                `;
-                            }
+                            updateVideoInDisplay(docId, docData);
                         }
                         
                         if (change.type === "removed") {
-                            console.log(`🗑️ فيديو محذوف: ${videoData.title || docId}`);
-                            const videoCard = displayedVideos.get(docId);
-                            if (videoCard) {
-                                videoCard.classList.add('removing');
-                                setTimeout(() => {
-                                    videoCard.remove();
-                                    displayedVideos.delete(docId);
-                                }, 500);
-                            }
+                            removeVideoFromDisplay(docId);
                         }
                     });
-                }, (error) => {
-                    console.error("❌ خطأ في مراقبة الفيديوهات:", error);
                 });
             
             customButtonsListener = db.collection("customButtons")
-                .where("isActive", "==", true)
                 .orderBy("order", "asc")
                 .onSnapshot((snapshot) => {
                     snapshot.docChanges().forEach((change) => {
@@ -3590,31 +3742,24 @@
                         const docData = change.doc.data();
                         
                         if (change.type === "added") {
-                            console.log(`➕ زر مخصص مضاف: ${docData.name}`);
                             showUpdateNotification("تمت إضافة زر جديد", "success");
                             addCustomButtonToDisplay(docId, docData);
                             customButtonsSection.style.display = 'block';
                         }
                         
                         if (change.type === "modified") {
-                            console.log(`✏️ زر مخصص معدل: ${docData.name}`);
                             showUpdateNotification("تم تعديل زر", "success");
                             updateCustomButtonInDisplay(docId, docData);
                         }
                         
                         if (change.type === "removed") {
-                            console.log(`🗑️ زر مخصص محذوف: ${docData.name || docId}`);
                             removeCustomButtonFromDisplay(docId);
                         }
                     });
-                }, (error) => {
-                    console.error("❌ خطأ في مراقبة الأزرار المخصصة:", error);
                 });
-
-            console.log('✅ بدء المراقبة الفورية للبيانات بنجاح');
         }
 
-        // ========== دوال التنقل ==========
+        // ==================== دوال التنقل ====================
 
         function updateBackButton() {
             if (currentSection === 'home') {
@@ -3676,16 +3821,13 @@
             activeItem.classList.add('active');
         }
 
-        // ========== دوال تسجيل الدخول والخروج ==========
+        // ==================== دوال تسجيل الدخول والخروج ====================
 
         function showMainContent(userData) {
             updateLoadingProgress(75);
             loginModal.style.display = 'none';
             
             updateUserInfo(userData);
-            
-            // بدء مراقبة حالة المستخدم
-            startUserStatusMonitoring(userData.id);
             
             updateLoadingProgress(80);
             
@@ -3712,7 +3854,7 @@
                     }, 300);
                 })
                 .catch(error => {
-                    console.error("❌ خطأ في تحميل البيانات:", error);
+                    console.error("خطأ في تحميل البيانات:", error);
                     updateLoadingProgress(100);
                     hideLoadingScreen();
                     showMessage("حدث خطأ في تحميل البيانات", "error");
@@ -3765,7 +3907,7 @@
                     updateLoadingProgress(60);
                     showMainContent(userData);
                 } catch (error) {
-                    console.error("❌ خطأ في تحليل بيانات المستخدم:", error);
+                    console.error("خطأ في تحليل بيانات المستخدم:", error);
                     clearLoginData();
                     updateLoadingProgress(80);
                     hideLoadingScreen();
@@ -3795,19 +3937,19 @@
                         action: "logout"
                     });
                 } catch (error) {
-                    console.error("❌ خطأ في تسجيل نشاط الخروج:", error);
+                    console.error("خطأ في تسجيل نشاط الخروج:", error);
                 }
             }
             
             stopAllListeners();
             clearLoginData();
-            showMessage("✅ تم تسجيل الخروج بنجاح!", "success");
+            showMessage("تم تسجيل الخروج بنجاح!", "success");
             setTimeout(() => {
                 location.reload();
             }, 1500);
         }
 
-        // ========== أحداث المستخدم ==========
+        // ==================== أحداث المستخدم ====================
 
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -3838,9 +3980,7 @@
                 const userData = userDoc.data();
                 
                 if (userData.isBlocked === true) {
-                    const banReason = userData.banReason || "لا يوجد سبب محدد";
-                    const bannedAt = userData.bannedAt ? userData.bannedAt.toDate().toLocaleString('ar-IQ') : "غير محدد";
-                    loginError.textContent = `⚠️ حسابك موقوف من قبل الإدارة!\nالسبب: ${banReason}\nالتاريخ: ${bannedAt}`;
+                    loginError.textContent = "حسابك موقوف من قبل الإدارة";
                     loginError.classList.add('show');
                     return;
                 }
@@ -3868,7 +4008,7 @@
                 });
                 
             } catch (error) {
-                console.error("❌ خطأ في تسجيل الدخول:", error);
+                console.error("خطأ في تسجيل الدخول:", error);
                 showMessage("حدث خطأ في الاتصال بالخادم", "error");
             }
         });
@@ -3887,17 +4027,21 @@
             }
         });
 
+        // إدارة الإعلانات - مع الزر الجديد
+        function closeAnnouncementModal() {
+            announcementModal.classList.remove('show');
+        }
+
         announcementBtn.addEventListener('click', function() {
             announcementModal.classList.add('show');
         });
 
-        closeAnnouncement.addEventListener('click', function() {
-            announcementModal.classList.remove('show');
-        });
+        closeAnnouncement.addEventListener('click', closeAnnouncementModal);
+        closeAnnouncementBtn.addEventListener('click', closeAnnouncementModal);
 
         announcementModal.addEventListener('click', function(e) {
-            if (e.target === announcementModal) {
-                closeAnnouncement.click();
+            if (e.target === announcementModal || e.target.classList.contains('announcement-backdrop')) {
+                closeAnnouncementModal();
             }
         });
 
@@ -3951,7 +4095,7 @@
 
         logoutSidebar.addEventListener('click', logout);
 
-        // ========== إعدادات إضافية ==========
+        // ==================== إعدادات إضافية ====================
 
         currentYear.textContent = new Date().getFullYear();
 
@@ -3963,10 +4107,10 @@
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/service-worker.js')
                     .then(registration => {
-                        console.log('✅ ServiceWorker registered:', registration.scope);
+                        console.log('ServiceWorker registered');
                     })
                     .catch(error => {
-                        console.log('❌ ServiceWorker registration failed:', error);
+                        console.log('ServiceWorker registration failed');
                     });
             });
         }
@@ -3999,7 +4143,7 @@
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
-                        showMessage("✅ تم تثبيت تطبيق CET بنجاح!", "success");
+                        showMessage("تم تثبيت تطبيق CET بنجاح!", "success");
                     }
                     deferredPrompt = null;
                     localStorage.setItem('installDismissed', 'true');
@@ -4011,7 +4155,6 @@
         }
 
         window.addEventListener('appinstalled', (evt) => {
-            console.log('🎉 تم تثبيت تطبيق CET بنجاح!');
             localStorage.setItem('appInstalled', 'true');
             floatingInstallBtn.classList.remove('show');
         });
@@ -4021,11 +4164,11 @@
             if (this.checked) {
                 document.body.classList.add('night-mode');
                 localStorage.setItem('theme', 'night');
-                showMessage("🌙 تم تفعيل الوضع الليلي", "success");
+                showMessage("تم تفعيل الوضع الليلي", "success");
             } else {
                 document.body.classList.remove('night-mode');
                 localStorage.setItem('theme', 'day');
-                showMessage("☀️ تم تفعيل الوضع النهاري", "success");
+                showMessage("تم تفعيل الوضع النهاري", "success");
             }
         });
 
@@ -4054,7 +4197,7 @@
                 backButtonContainer.style.display = 'none';
                 
             } catch (error) {
-                console.error("❌ خطأ في تحميل المحاضرات:", error);
+                console.error("خطأ في تحميل المحاضرات:", error);
                 showMessage("حدث خطأ في تحميل المحاضرات", "error");
             }
         };
@@ -4103,11 +4246,12 @@
         });
     </script>
 
+    <!-- Service Worker Script -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
                 navigator.serviceWorker.register('/sw.js').then(function(registration) {
-                    console.log('ServiceWorker registered with scope:', registration.scope);
+                    console.log('ServiceWorker registered');
                     
                     if ('manifest' in document.createElement('link')) {
                         const link = document.createElement('link');
@@ -4115,8 +4259,6 @@
                         link.href = '/manifest.json';
                         document.head.appendChild(link);
                     }
-                }, function(err) {
-                    console.log('ServiceWorker registration failed:', err);
                 });
             });
         }
