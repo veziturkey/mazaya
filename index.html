@@ -4,8 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
     <title>كلية مزايا الجامعة - نظام المحاضرات الإلكتروني</title>
+    
+    <!-- ========== أيقونات الموقع للشاشة الرئيسية ========== -->
+    <!-- Favicon أيقونة عامة -->
+    <link rel="icon" type="image/x-icon" href="https://img.icons8.com/color/48/graduation-cap.png">
+    <link rel="shortcut icon" href="https://img.icons8.com/color/48/graduation-cap.png">
+    
+    <!-- أيقونات Apple iOS -->
+    <link rel="apple-touch-icon" href="https://img.icons8.com/ios/452/graduation-cap.png">
+    
+    <!-- أيقونات Android -->
+    <link rel="icon" type="image/png" sizes="192x192" href="https://img.icons8.com/color/96/graduation-cap.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="https://img.icons8.com/color/96/graduation-cap.png">
+    
+    <!-- لون شريط الحالة -->
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="msapplication-TileColor" content="#4f46e5">
+    
+    <!-- إعدادات PWA للتثبيت -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CET Mazaya">
+    
+    <link rel="manifest" href="data:application/manifest+json,{
+        \"name\": \"CET Mazaya - نظام المحاضرات الإلكتروني\",
+        \"short_name\": \"CET Mazaya\",
+        \"description\": \"نظام المحاضرات الإلكتروني لكلية مزايا الجامعة\",
+        \"start_url\": \".\",
+        \"display\": \"standalone\",
+        \"theme_color\": \"#4f46e5\",
+        \"background_color\": \"#f8fafc\",
+        \"icons\": [
+            {
+                \"src\": \"https://img.icons8.com/color/96/graduation-cap.png\",
+                \"sizes\": \"96x96\",
+                \"type\": \"image/png\"
+            }
+        ]
+    }">
+    
+    <meta name="description" content="نظام المحاضرات الإلكتروني لكلية مزايا الجامعة">
+    
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
@@ -183,11 +226,8 @@
         .message.show { transform: translateX(-50%) translateY(0); }
         .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
         .empty-state i { font-size: 2.5rem; margin-bottom: 12px; opacity: 0.5; }
-        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
         
-        /* رسالة الحظر */
+        /* شاشة الحظر */
         .blocked-message {
             position: fixed;
             top: 0;
@@ -235,6 +275,10 @@
             font-size: 1rem;
             font-weight: 600;
         }
+        
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
     </style>
 </head>
 <body>
@@ -305,13 +349,12 @@ function clearContainer(container){ if(container) while(container.firstChild) co
 function showEmptyState(container,type){ if(!container) return; const msgs={subjects:{icon:'fa-book',title:'لا توجد مواد دراسية',msg:'سيتم إضافة المواد قريباً'},lectures:{icon:'fa-file-pdf',title:'لا توجد محاضرات',msg:'سيتم رفع المحاضرات قريباً'},dates:{icon:'fa-calendar-alt',title:'لا توجد مواعيد',msg:'سيتم إضافة المواعيد قريباً'},channels:{icon:'fa-satellite-dish',title:'لا توجد قنوات',msg:'سيتم إضافة القنوات قريباً'},gallery:{icon:'fa-images',title:'لا توجد صور',msg:'سيتم إضافة محتوى جديد'},videos:{icon:'fa-video',title:'لا توجد فيديوهات',msg:'سيتم إضافة فيديوهات جديدة'},announcements:{icon:'fa-bell',title:'لا توجد إعلانات',msg:''}}; const m=msgs[type]||msgs.subjects; container.innerHTML=`<div class="empty-state"><i class="fas ${sanitize(m.icon)}"></i><h4>${sanitize(m.title)}</h4><p>${sanitize(m.msg)}</p></div>`; }
 function stopListeners(){ if(subjectsListener) subjectsListener(); if(datesListener) datesListener(); if(channelsListener) channelsListener(); if(galleryListener) galleryListener(); if(videosListener) videosListener(); if(announcementsListener) announcementsListener(); if(customButtonsListener) customButtonsListener(); if(checkBlockedInterval) clearInterval(checkBlockedInterval); }
 
-// دالة عرض شاشة الحظر
 function showBlockedScreen(banReason) {
     const blockedHtml = `
         <div class="blocked-message" id="blockedScreen">
             <div class="blocked-card">
                 <i class="fas fa-ban"></i>
-                <h2>⚠️ تم حظر حسابك</h2>
+                <h2>تم حظر حسابك</h2>
                 <p>${sanitize(banReason || 'تم حظر حسابك من قبل الإدارة. يرجى التواصل مع الدعم الفني للمزيد من المعلومات.')}</p>
                 <button class="btn" onclick="location.reload()">تسجيل الدخول</button>
             </div>
@@ -320,7 +363,6 @@ function showBlockedScreen(banReason) {
     document.body.innerHTML = blockedHtml;
 }
 
-// دالة التحقق من حالة الحظر
 async function checkIfBlocked() {
     if (!currentUser || currentUser.role === 'admin') return false;
     try {
@@ -329,7 +371,6 @@ async function checkIfBlocked() {
         if (docSnap.exists) {
             const data = docSnap.data();
             if (data.isBlocked === true) {
-                // تسجيل الخروج فوراً
                 if (checkBlockedInterval) clearInterval(checkBlockedInterval);
                 stopListeners();
                 currentUser = null;
@@ -578,7 +619,6 @@ async function handleLogin(username,password,stay){
     else localStorage.removeItem('stayLoggedIn'); 
     await db.collection("loginLogs").add({username:cleanUsername,action:"login",timestamp:firebase.firestore.FieldValue.serverTimestamp()}); 
     
-    // بدء التحقق الدوري من الحظر (كل 10 ثوانٍ)
     if(checkBlockedInterval) clearInterval(checkBlockedInterval);
     checkBlockedInterval = setInterval(async () => {
         await checkIfBlocked();
@@ -634,7 +674,6 @@ function checkAutoLogin(){
     if(saved&&stay){ 
         try{ 
             currentUser=JSON.parse(saved); 
-            // التحقق من الحظر فوراً قبل الدخول
             checkIfBlocked().then(isBlocked => {
                 if(!isBlocked) {
                     showMainContent();
