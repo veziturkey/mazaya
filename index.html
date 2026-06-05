@@ -379,7 +379,6 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
         
-        /* تحسينات للشاشات الصغيرة */
         @media (max-width: 480px) {
             .hero h2 { font-size: 1.2rem; }
             .hero p { font-size: 0.75rem; }
@@ -389,7 +388,6 @@
             .gallery-container, .channels-container { grid-template-columns: 1fr; }
         }
         
-        /* تحسين للشاشات الكبيرة */
         @media (min-width: 768px) {
             .subjects-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
             .videos-container { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
@@ -448,7 +446,7 @@ const firebaseConfig = { apiKey: "AIzaSyBFdxj6p-DAGrr-To_WZBxIk_FDX67Ygm0", auth
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-function sanitize(text) { if(!text) return ''; if(typeof text!=='string') text=String(text); return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/NonNull/g,'').replace(/Neon/g,''); }
+function sanitize(text) { if(!text) return ''; if(typeof text!=='string') text=String(text); return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
 const authModal=document.getElementById('authModal'), closeAuth=document.getElementById('closeAuth'), loginForm=document.getElementById('loginForm'), registerForm=document.getElementById('registerForm'), loginError=document.getElementById('loginError'), registerError=document.getElementById('registerError'), sidebar=document.getElementById('sidebar'), menuToggle=document.getElementById('menuToggle'), navbar=document.getElementById('navbar'), bottomNav=document.getElementById('bottomNav'), userAvatar=document.getElementById('userAvatar'), sidebarUsername=document.getElementById('sidebarUsername'), sidebarInfo=document.getElementById('sidebarInfo'), subjectsList=document.getElementById('subjectsList'), lecturesContainer=document.getElementById('lecturesContainer'), lecturesList=document.getElementById('lecturesList'), lecturesSubtitle=document.getElementById('lecturesSubtitle'), closeLectures=document.getElementById('closeLectures'), logoutSidebar=document.getElementById('logoutSidebar'), announcementModal=document.getElementById('announcementModal'), announcementList=document.getElementById('announcementList'), closeAnnouncementModal=document.getElementById('closeAnnouncementModal'), bellBtn=document.getElementById('bellBtn'), announcementBadge=document.getElementById('announcementBadge'), calendarBtn=document.getElementById('calendarBtn'), datesModal=document.getElementById('datesModal'), datesList=document.getElementById('datesList'), closeDatesModal=document.getElementById('closeDatesModal'), settingsModal=document.getElementById('settingsModal'), closeSettingsModal=document.getElementById('closeSettingsModal'), settingsForm=document.getElementById('settingsForm'), settingsFullName=document.getElementById('settingsFullName'), settingsUsername=document.getElementById('settingsUsername'), settingsStage=document.getElementById('settingsStage'), settingsShift=document.getElementById('settingsShift'), settingsPassword=document.getElementById('settingsPassword'), settingsConfirmPassword=document.getElementById('settingsConfirmPassword'), avatarPreview=document.getElementById('avatarPreview'), avatarInput=document.getElementById('avatarInput'), removeAvatarBtn=document.getElementById('removeAvatarBtn'), loadingScreen=document.getElementById('loadingScreen'), loadingProgressBar=document.getElementById('loadingProgressBar'), loadingPercentage=document.getElementById('loadingPercentage'), backFromGallery=document.getElementById('backFromGallery'), backFromVideos=document.getElementById('backFromVideos'), backFromChannels=document.getElementById('backFromChannels'), backFromDeveloper=document.getElementById('backFromDeveloper'), exploreBtn=document.getElementById('exploreBtn'), galleryContainer=document.getElementById('galleryContainer'), videosContainer=document.getElementById('videosContainer'), channelsContainer=document.getElementById('channelsContainer');
 
@@ -502,7 +500,7 @@ async function checkIfBlocked() {
     }
 }
 
-// دوال الصورة الشخصية (تخزين محلي)
+// ========== دوال الصورة الشخصية (تخزين محلي localStorage) ==========
 function saveAvatarToLocalStorage(imageData) {
     if (!currentUser) return;
     const key = `user_avatar_${sanitize(currentUser.username)}`;
@@ -786,6 +784,9 @@ async function handleLogin(username,password,stay){
     if(stay) localStorage.setItem('stayLoggedIn','true'); 
     else localStorage.removeItem('stayLoggedIn'); 
     await db.collection("loginLogs").add({username:cleanUsername,action:"login",timestamp:firebase.firestore.FieldValue.serverTimestamp()}); 
+    
+    // تحميل الصورة المحفوظة
+    updateAvatarDisplay();
     
     if(checkBlockedInterval) clearInterval(checkBlockedInterval);
     checkBlockedInterval = setInterval(async () => {
