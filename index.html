@@ -5,32 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
     <title>كلية مزايا الجامعة - نظام المحاضرات الإلكتروني</title>
     
-    <!-- ========== أيقونات سطح الشاشة ========== -->
+    <!-- ========== أيقونات سطح المكتب لجميع الأجهزة (Android + iOS) ========== -->
     <link rel="icon" type="image/png" sizes="48x48" href="https://img.icons8.com/color/48/graduation-cap.png">
-    <link rel="icon" type="image/png" sizes="72x72" href="https://img.icons8.com/color/48/graduation-cap.png">
+    <link rel="icon" type="image/png" sizes="72x72" href="https://img.icons8.com/color/72/graduation-cap.png">
     <link rel="icon" type="image/png" sizes="96x96" href="https://img.icons8.com/color/96/graduation-cap.png">
+    <link rel="icon" type="image/png" sizes="128x128" href="https://img.icons8.com/color/96/graduation-cap.png">
     <link rel="icon" type="image/png" sizes="144x144" href="https://img.icons8.com/color/96/graduation-cap.png">
+    <link rel="icon" type="image/png" sizes="152x152" href="https://img.icons8.com/color/96/graduation-cap.png">
     <link rel="icon" type="image/png" sizes="192x192" href="https://img.icons8.com/color/96/graduation-cap.png">
     <link rel="icon" type="image/png" sizes="256x256" href="https://img.icons8.com/color/96/graduation-cap.png">
     <link rel="icon" type="image/png" sizes="384x384" href="https://img.icons8.com/color/96/graduation-cap.png">
     <link rel="icon" type="image/png" sizes="512x512" href="https://img.icons8.com/color/96/graduation-cap.png">
     
-    <!-- أيقونات iOS -->
-    <link rel="apple-touch-icon" href="https://img.icons8.com/ios/452/graduation-cap.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="https://img.icons8.com/ios/452/graduation-cap.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="https://img.icons8.com/ios/452/graduation-cap.png">
-    <link rel="apple-touch-icon" sizes="167x167" href="https://img.icons8.com/ios/452/graduation-cap.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="https://img.icons8.com/ios/452/graduation-cap.png">
+    <!-- أيقونات iOS (Apple Touch Icon) -->
+    <link rel="apple-touch-icon" href="https://img.icons8.com/color/96/graduation-cap.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="https://img.icons8.com/color/96/graduation-cap.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="https://img.icons8.com/color/96/graduation-cap.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="https://img.icons8.com/color/96/graduation-cap.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://img.icons8.com/color/96/graduation-cap.png">
     
     <link rel="shortcut icon" href="https://img.icons8.com/color/48/graduation-cap.png">
     
-    <!-- ========== Open Graph Tags ========== -->
+    <!-- ========== Open Graph Tags (لظهور الاسم والأيقونة عند مشاركة الرابط) ========== -->
     <meta property="og:title" content="كلية مزايا الجامعة - نظام المحاضرات الإلكتروني">
-    <meta property="og:description" content="نظام المحاضرات الإلكتروني لكلية مزايا الجامعة. يمكنك الوصول إلى المحاضرات والمواد الدراسية بسهولة.">
+    <meta property="og:description" content="نظام المحاضرات الإلكتروني لكلية مزايا الجامعة - يمكنك الوصول إلى المحاضرات والمواد الدراسية بسهولة">
     <meta property="og:image" content="https://img.icons8.com/color/96/graduation-cap.png">
     <meta property="og:image:width" content="512">
     <meta property="og:image:height" content="512">
-    <meta property="og:url" content="https://your-domain.com">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="ar_AR">
     <meta property="og:site_name" content="CET Mazaya">
@@ -46,7 +47,7 @@
     <meta name="theme-color" content="#0f0f1a" media="(prefers-color-scheme: dark)">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <!-- ========== إعدادات PWA ========== -->
+    <!-- ========== إعدادات PWA (تثبيت التطبيق على الأجهزة) ========== -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="CET Mazaya">
@@ -74,7 +75,6 @@
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         :root {
             --primary-bg: #f8fafc;
             --secondary-bg: #ffffff;
@@ -91,10 +91,7 @@
             --border-radius: 12px;
             --box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             --transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-            --safe-area-top: env(safe-area-inset-top, 0px);
-            --safe-area-bottom: env(safe-area-inset-bottom, 0px);
         }
-        
         body.night-mode {
             --primary-bg: #0f0f1a;
             --secondary-bg: #1a1a2e;
@@ -108,142 +105,7 @@
             --text-muted: #94a3b8;
             --border-color: #334155;
         }
-        
-        body { 
-            font-family: 'Cairo', sans-serif; 
-            background-color: var(--primary-bg); 
-            color: var(--text-primary); 
-            direction: rtl; 
-            transition: all 0.3s ease;
-            padding-top: var(--safe-area-top);
-            padding-bottom: var(--safe-area-bottom);
-            min-height: 100vh;
-        }
-        
-        /* ========== سلايدر الخلفية ========== */
-        .hero-slider {
-            position: relative;
-            height: 350px;
-            margin-bottom: 30px;
-            overflow: hidden;
-            border-radius: 0 0 30px 30px;
-        }
-        
-        .slides-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
-        
-        .slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            opacity: 0;
-            transition: opacity 1.5s ease-in-out;
-            z-index: 1;
-        }
-        
-        .slide.active {
-            opacity: 1;
-            z-index: 2;
-        }
-        
-        /* طبقة التغميق */
-        .hero-slider .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(15,23,42,0.75), rgba(15,23,42,0.85));
-            z-index: 3;
-        }
-        
-        /* محتوى الهيرو */
-        .hero-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: white;
-            z-index: 4;
-            width: 90%;
-            max-width: 500px;
-            animation: fadeInUp 0.8s ease;
-        }
-        
-        .hero-content h2 {
-            font-size: 1.8rem;
-            margin-bottom: 12px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        .hero-content p {
-            font-size: 0.9rem;
-            margin-bottom: 20px;
-            opacity: 0.95;
-        }
-        
-        .hero-content .btn {
-            display: inline-block;
-            background: linear-gradient(135deg, #ec4899, #db2777);
-            color: white;
-            padding: 10px 28px;
-            border-radius: 40px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(236,72,153,0.3);
-        }
-        
-        .hero-content .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(236,72,153,0.4);
-        }
-        
-        /* مؤشرات السلايدر (dots) */
-        .slider-dots {
-            position: absolute;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 10px;
-            z-index: 5;
-        }
-        
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: rgba(255,255,255,0.5);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .dot.active {
-            width: 25px;
-            border-radius: 10px;
-            background-color: white;
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translate(-50%, -30%);
-            }
-            to {
-                opacity: 1;
-                transform: translate(-50%, -50%);
-            }
-        }
+        body { font-family: 'Cairo', sans-serif; background-color: var(--primary-bg); color: var(--text-primary); direction: rtl; transition: all 0.3s ease; }
         
         /* شاشة الحظر */
         .blocked-message {
@@ -298,7 +160,6 @@
         body.night-mode .close-auth { background: rgba(255,255,255,0.1); color: #f1f5f9; }
         .close-auth:hover { background: rgba(0,0,0,0.1); transform: rotate(90deg); }
         .stay-logged-label { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: #64748b; cursor: pointer; }
-        
         .announcement-modal, .dates-modal, .settings-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 2000; justify-content: center; align-items: center; }
         .announcement-modal.show, .dates-modal.show, .settings-modal.show { display: flex; }
         .announcement-content, .dates-content, .settings-content { background: var(--card-bg); border-radius: 24px; width: 90%; max-width: 380px; max-height: 70%; overflow-y: auto; animation: slideUp 0.3s ease; border: 1px solid var(--border-color); }
@@ -317,8 +178,7 @@
         .date-title { font-weight: 600; font-size: 0.85rem; }
         .date-desc { font-size: 0.7rem; color: var(--text-muted); }
         .date-value { background: rgba(79,70,229,0.15); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; color: var(--accent-primary); white-space: nowrap; }
-        
-        .sidebar { position: fixed; top: var(--safe-area-top); right: -100%; width: 75%; max-width: 280px; height: calc(100% - var(--safe-area-top) - var(--safe-area-bottom)); background: var(--card-bg); box-shadow: -5px 0 30px rgba(0,0,0,0.3); transition: right 0.3s ease; z-index: 2000; display: flex; flex-direction: column; border-left: 1px solid var(--border-color); }
+        .sidebar { position: fixed; top: 0; right: -100%; width: 75%; max-width: 280px; height: 100%; background: var(--card-bg); box-shadow: -5px 0 30px rgba(0,0,0,0.3); transition: right 0.3s ease; z-index: 2000; display: flex; flex-direction: column; border-left: 1px solid var(--border-color); }
         .sidebar.active { right: 0; }
         .sidebar-header { padding: 20px 16px; text-align: center; border-bottom: 1px solid var(--border-color); background: linear-gradient(135deg, rgba(79,70,229,0.05), rgba(124,58,237,0.05)); flex-shrink: 0; }
         .user-avatar { width: 65px; height: 65px; background: var(--accent-gradient); border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; border: 3px solid rgba(255,255,255,0.2); cursor: pointer; overflow: hidden; }
@@ -338,8 +198,7 @@
         input:checked + .theme-slider { background: var(--accent-gradient); }
         input:checked + .theme-slider:before { transform: translateX(22px); }
         .logout-sidebar { background: rgba(233,69,96,0.15); color: var(--accent-primary); border: none; padding: 12px 16px; margin: 12px; border-radius: 40px; cursor: pointer; font-family: 'Cairo',sans-serif; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.8rem; flex-shrink: 0; }
-        
-        .navbar { background: var(--secondary-bg); backdrop-filter: blur(10px); position: sticky; top: var(--safe-area-top); z-index: 1000; display: none; border-bottom: 1px solid var(--border-color); }
+        .navbar { background: var(--secondary-bg); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; display: none; border-bottom: 1px solid var(--border-color); }
         .navbar.show { display: block; }
         .nav-container { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; }
         .logo-wrapper { display: flex; align-items: center; gap: 8px; flex: 1; }
@@ -351,10 +210,12 @@
         .bell-btn, .calendar-btn, .menu-toggle { background: var(--surface-bg); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--text-primary); font-size: 1rem; position: relative; }
         .bell-badge { position: absolute; top: -3px; right: -3px; background: var(--accent-primary); color: white; font-size: 0.5rem; font-weight: bold; min-width: 16px; height: 16px; border-radius: 20px; display: flex; align-items: center; justify-content: center; padding: 0 3px; border: 2px solid var(--secondary-bg); }
         .calendar-btn.has-updates::after { content: ''; position: absolute; top: 0; right: 0; width: 10px; height: 10px; background: var(--accent-primary); border-radius: 50%; border: 2px solid var(--secondary-bg); }
-        
-        .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 16px; }
-        
-        .subjects { background-color: var(--card-bg); border-radius: var(--border-radius); margin: 0 0 16px 0; padding: 16px; }
+        .hero { background: linear-gradient(rgba(15,23,42,0.8), rgba(15,23,42,0.9)), url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; color: white; padding: 60px 0; text-align: center; margin-bottom: 30px; }
+        body.night-mode .hero { background: linear-gradient(rgba(15,23,42,0.85), rgba(15,23,42,0.95)), url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'); }
+        .hero h2 { font-size: 1.5rem; margin-bottom: 12px; }
+        .hero p { font-size: 0.85rem; margin-bottom: 20px; max-width: 500px; margin-right: auto; margin-left: auto; }
+        .hero .btn { display: inline-block; background: linear-gradient(135deg, #ec4899, #db2777); color: white; padding: 10px 24px; border-radius: 40px; text-decoration: none; font-weight: 600; font-size: 0.8rem; }
+        .subjects { background-color: var(--card-bg); border-radius: var(--border-radius); margin: 16px; padding: 16px; }
         .section-title { text-align: center; font-size: 1.2rem; color: var(--text-primary); margin-bottom: 12px; position: relative; }
         .section-title::after { content: ''; position: absolute; bottom: -8px; right: 50%; transform: translateX(50%); width: 50px; height: 2px; background: var(--accent-gradient); border-radius: 2px; }
         .subjects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; margin-top: 20px; }
@@ -364,8 +225,7 @@
         .subject-card h3 { font-size: 0.8rem; margin-bottom: 5px; }
         .subject-card p { color: var(--text-muted); font-size: 0.65rem; margin-bottom: 6px; }
         .subject-code { display: inline-block; padding: 2px 8px; background: rgba(79,70,229,0.1); color: var(--accent-primary); border-radius: 20px; font-size: 0.6rem; font-weight: 600; }
-        
-        .lectures-container { margin: 0 0 16px 0; display: none; }
+        .lectures-container { margin: 16px; display: none; }
         .lectures-container.show { display: block; }
         .lectures-list { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 16px; }
         .lecture-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); }
@@ -377,8 +237,7 @@
         .lecture-desc { font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 10px; }
         .download-btn { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 8px; background: linear-gradient(135deg, #10b981, #059669); color: white; text-decoration: none; border-radius: 30px; font-weight: 600; font-size: 0.7rem; border: none; cursor: pointer; }
         .content-back-button { display: inline-flex; align-items: center; gap: 6px; background: var(--surface-bg); color: var(--text-primary); border: 1px solid var(--border-color); padding: 8px 18px; border-radius: 40px; font-size: 0.75rem; font-weight: 600; margin-top: 16px; cursor: pointer; }
-        
-        .videos-section, .gallery-section, .channels-section, .developer-contact { padding: 0 0 16px 0; display: none; }
+        .videos-section, .gallery-section, .channels-section, .developer-contact { padding: 16px; display: none; }
         .videos-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-top: 16px; }
         .video-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); transition: var(--transition); }
         .video-card:hover { transform: translateY(-3px); }
@@ -388,32 +247,26 @@
         .video-title { font-size: 0.7rem; margin-bottom: 4px; font-weight: 600; }
         .video-description { font-size: 0.6rem; color: var(--text-muted); }
         .video-date { font-size: 0.55rem; color: var(--text-muted); margin-top: 4px; }
-        
         .gallery-container, .channels-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-top: 16px; }
         .gallery-card, .channel-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); }
-        .gallery-image { width: 100%; height: 150px; object-fit: cover; }
+        .gallery-image { width: 100%; height: 150px; object-fit: cover; cursor: pointer; }
         .gallery-content { padding: 10px; }
         .gallery-title { font-size: 0.8rem; margin-bottom: 5px; font-weight: 600; }
-        
         .developer-card { background: var(--card-bg); border-radius: 20px; padding: 24px; text-align: center; border: 1px solid var(--border-color); }
         .developer-name { font-size: 1rem; margin: 8px 0; }
         .developer-phone { background: rgba(79,70,229,0.12); padding: 6px 16px; border-radius: 40px; display: inline-block; margin-top: 8px; font-size: 0.75rem; color: var(--accent-primary); }
-        
-        .footer { background: linear-gradient(135deg, #1e293b, #0f172a); color: white; padding: 30px 16px 20px; margin-top: 30px; text-align: center; margin-bottom: calc(60px + var(--safe-area-bottom)); }
+        .footer { background: linear-gradient(135deg, #1e293b, #0f172a); color: white; padding: 30px 0 20px; margin-top: 30px; text-align: center; }
         .footer-bottom { color: rgba(255,255,255,0.7); font-size: 0.7rem; }
-        
         .settings-body { padding: 20px; }
-        .avatar-upload { text-align: center; margin-bottom: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+        .avatar-upload { text-align: center; margin-bottom: 20px; }
         .avatar-preview { width: 80px; height: 80px; border-radius: 50%; background: var(--surface-bg); margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 3px solid var(--accent-primary); cursor: pointer; }
         .avatar-preview img { width: 100%; height: 100%; object-fit: cover; }
         .avatar-preview i { font-size: 2rem; color: var(--text-muted); }
         .avatar-upload-btn { background: var(--surface-bg); color: var(--text-primary); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 40px; font-size: 0.7rem; cursor: pointer; }
-        
-        .bottom-nav { position: fixed; bottom: var(--safe-area-bottom); left: 0; right: 0; background: var(--secondary-bg); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 8px 16px calc(16px + var(--safe-area-bottom)); z-index: 999; border-top: 1px solid var(--border-color); }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--secondary-bg); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 8px 16px 16px; z-index: 999; border-top: 1px solid var(--border-color); }
         .bottom-nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; color: var(--text-muted); font-family: 'Cairo',sans-serif; font-size: 0.55rem; cursor: pointer; transition: var(--transition); padding: 6px 10px; border-radius: 30px; }
         .bottom-nav-item i { font-size: 1rem; }
         .bottom-nav-item.active { color: var(--accent-primary); background: rgba(79,70,229,0.1); }
-        
         .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 30% 30%, #1e1b4b, #0f172a); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.8s ease; }
         .loading-screen.hidden { opacity: 0; visibility: hidden; }
         .loading-container { text-align: center; width: 85%; max-width: 300px; padding: 30px 20px; background: rgba(255,255,255,0.05); border-radius: 30px; backdrop-filter: blur(20px); }
@@ -423,32 +276,14 @@
         .loading-progress-container { width: 100%; height: 6px; background: rgba(0,0,0,0.3); border-radius: 10px; overflow: hidden; margin: 20px auto; }
         .loading-progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #6366f1, #ec4899); border-radius: 10px; transition: width 0.3s ease; }
         .loading-percentage { color: white; font-size: 1.3rem; font-weight: 700; margin-top: 10px; }
-        
-        .message { position: fixed; top: calc(80px + var(--safe-area-top)); left: 50%; transform: translateX(-50%) translateY(-100%); background: var(--card-bg); color: var(--text-primary); padding: 10px 20px; border-radius: 40px; z-index: 3000; transition: transform 0.3s ease; font-size: 0.75rem; box-shadow: var(--box-shadow); border: 1px solid var(--border-color); }
+        .message { position: fixed; top: 80px; left: 50%; transform: translateX(-50%) translateY(-100%); background: var(--card-bg); color: var(--text-primary); padding: 10px 20px; border-radius: 40px; z-index: 3000; transition: transform 0.3s ease; font-size: 0.75rem; box-shadow: var(--box-shadow); border: 1px solid var(--border-color); }
         .message.show { transform: translateX(-50%) translateY(0); }
-        
         .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
         .empty-state i { font-size: 2.5rem; margin-bottom: 12px; opacity: 0.5; }
         
         @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        
-        @media (max-width: 480px) {
-            .hero-content h2 { font-size: 1.2rem; }
-            .hero-content p { font-size: 0.75rem; }
-            .hero-slider { height: 280px; }
-            .section-title { font-size: 1rem; }
-            .subjects-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
-            .videos-container { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
-            .gallery-container, .channels-container { grid-template-columns: 1fr; }
-        }
-        
-        @media (min-width: 768px) {
-            .hero-slider { height: 400px; }
-            .subjects-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-            .videos-container { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
-        }
     </style>
 </head>
 <body>
@@ -482,27 +317,13 @@
 
 <div class="announcement-modal" id="announcementModal"><div class="announcement-content"><div class="announcement-header"><h3><i class="fas fa-bell"></i> الإعلانات</h3><button class="close-announcement" id="closeAnnouncementModal"><i class="fas fa-times"></i></button></div><div class="announcement-list" id="announcementList"></div></div></div>
 <div class="dates-modal" id="datesModal"><div class="dates-content"><div class="dates-header"><h3><i class="fas fa-calendar-alt"></i> المواعيد المهمة</h3><button class="close-dates" id="closeDatesModal"><i class="fas fa-times"></i></button></div><div class="dates-list" id="datesList"></div></div></div>
-<div class="settings-modal" id="settingsModal"><div class="settings-content"><div class="settings-header"><h3><i class="fas fa-cog"></i> الإعدادات الشخصية</h3><button class="close-settings" id="closeSettingsModal"><i class="fas fa-times"></i></button></div><div class="settings-body"><form id="settingsForm"><div class="avatar-upload"><div class="avatar-preview" id="avatarPreview" onclick="document.getElementById('avatarInput').click()"><i class="fas fa-camera"></i></div><input type="file" id="avatarInput" accept="image/*" style="display:none;"><button type="button" class="avatar-upload-btn" id="avatarBtnChoose">اختيار صورة</button><button type="button" class="avatar-upload-btn" id="avatarBtnCamera">التقاط صورة</button><button type="button" class="avatar-upload-btn" id="removeAvatarBtn">إزالة الصورة</button></div><div class="form-group"><label>الاسم الكامل</label><input type="text" id="settingsFullName" class="form-control" required></div><div class="form-group"><label>اسم المستخدم</label><input type="text" id="settingsUsername" class="form-control" required></div><div class="form-group"><label>المرحلة</label><select id="settingsStage" class="form-control" required><option value="المرحلة الأولى">المرحلة الأولى</option><option value="المرحلة الثانية">المرحلة الثانية</option><option value="المرحلة الثالثة">المرحلة الثالثة</option><option value="المرحلة الرابعة">المرحلة الرابعة</option></select></div><div class="form-group"><label>الدوام</label><select id="settingsShift" class="form-control" required><option value="صباحي">صباحي</option><option value="مسائي">مسائي</option></select></div><div class="form-group"><label>كلمة المرور الجديدة</label><input type="password" id="settingsPassword" class="form-control" placeholder="اتركه فارغاً"></div><div class="form-group"><label>تأكيد كلمة المرور</label><input type="password" id="settingsConfirmPassword" class="form-control" placeholder="أعد كتابة كلمة المرور"></div><button type="submit" class="auth-btn" style="width:100%;">حفظ التغييرات</button></form></div></div></div>
+<div class="settings-modal" id="settingsModal"><div class="settings-content"><div class="settings-header"><h3><i class="fas fa-cog"></i> الإعدادات الشخصية</h3><button class="close-settings" id="closeSettingsModal"><i class="fas fa-times"></i></button></div><div class="settings-body"><form id="settingsForm"><div class="avatar-upload"><div class="avatar-preview" id="avatarPreview" onclick="document.getElementById('avatarInput').click()"><i class="fas fa-camera"></i></div><input type="file" id="avatarInput" accept="image/*" style="display:none;"><button type="button" class="avatar-upload-btn" id="removeAvatarBtn">إزالة الصورة</button></div><div class="form-group"><label>الاسم الكامل</label><input type="text" id="settingsFullName" class="form-control" required></div><div class="form-group"><label>اسم المستخدم</label><input type="text" id="settingsUsername" class="form-control" required></div><div class="form-group"><label>المرحلة</label><select id="settingsStage" class="form-control" required><option value="المرحلة الأولى">المرحلة الأولى</option><option value="المرحلة الثانية">المرحلة الثانية</option><option value="المرحلة الثالثة">المرحلة الثالثة</option><option value="المرحلة الرابعة">المرحلة الرابعة</option></select></div><div class="form-group"><label>الدوام</label><select id="settingsShift" class="form-control" required><option value="صباحي">صباحي</option><option value="مسائي">مسائي</option></select></div><div class="form-group"><label>كلمة المرور الجديدة</label><input type="password" id="settingsPassword" class="form-control" placeholder="اتركه فارغاً"></div><div class="form-group"><label>تأكيد كلمة المرور</label><input type="password" id="settingsConfirmPassword" class="form-control" placeholder="أعد كتابة كلمة المرور"></div><button type="submit" class="auth-btn" style="width:100%;">حفظ التغييرات</button></form></div></div></div>
 
 <div class="loading-screen" id="loadingScreen"><div class="loading-container"><img src="https://tse1.mm.bing.net/th/id/OIP.PFVipef1fbg98JZEG7gKyAHaHQ?rs=1&pid=ImgDetMain&o=7&rm=3" alt="شعار الكلية" class="college-logo"><h1 class="loading-title">CET Mazaya</h1><p class="loading-subtitle">نظام المحاضرات الإلكتروني</p><div class="loading-progress-container"><div class="loading-progress-bar" id="loadingProgressBar"></div></div><div class="loading-percentage" id="loadingPercentage">0%</div></div></div>
 
 <nav class="navbar" id="navbar"><div class="nav-container"><div class="logo-wrapper"><div class="logo-icon"><img src="https://tse1.mm.bing.net/th/id/OIP.PFVipef1fbg98JZEG7gKyAHaHQ?rs=1&pid=ImgDetMain&o=7&rm=3" alt="شعار CET"></div><div class="logo-text"><h1>CET Mazaya</h1><p>نظام المحاضرات الإلكتروني</p></div></div><div class="nav-actions"><button class="calendar-btn" id="calendarBtn"><i class="fas fa-calendar-alt"></i></button><button class="bell-btn" id="bellBtn"><i class="fas fa-bell"></i><span class="bell-badge" id="announcementBadge" style="display:none;">0</span></button><button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button></div></div></nav>
 
-<!-- ========== هيدر مع سلايدر خلفية ========== -->
-<div class="hero-slider" id="heroSlider">
-    <div class="slides-container" id="slidesContainer">
-        <div class="slide" style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR03AlIa0YzDiSSSN8E17UosWIrnioPXjZw-Q&s')"></div>
-        <div class="slide" style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpEUb25MIFp-VKtKoFSPxs7Owm5pMFRcdsFA&s')"></div>
-        <div class="slide" style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-RGUfvLDYHQ1mLVsaWaQO6oIjEhYbBcOS9w&s')"></div>
-    </div>
-    <div class="overlay"></div>
-    <div class="hero-content">
-        <h2>مرحباً بك في تطبيق CET</h2>
-        <p>نظام المحاضرات الإلكتروني لكلية مزايا الجامعة</p>
-        <a href="#" class="btn" id="exploreBtn">استعرض المواد الدراسية <i class="fas fa-arrow-down"></i></a>
-    </div>
-    <div class="slider-dots" id="sliderDots"></div>
-</div>
+<header class="hero" id="homeSection"><div class="container"><div class="hero-content"><h2>مرحباً بك في تطبيق CET</h2><p>نظام المحاضرات الإلكتروني لكلية مزايا الجامعة</p><a href="#" class="btn" id="exploreBtn">استعرض المواد الدراسية <i class="fas fa-arrow-down"></i></a></div></div></header>
 
 <div class="sidebar" id="sidebar"><div class="sidebar-header"><div class="user-avatar" id="userAvatar"><i class="fas fa-user"></i></div><h3 id="sidebarUsername">اسم المستخدم</h3><p id="sidebarInfo"></p></div><div class="sidebar-menu" id="sidebarMenu"><div class="sidebar-item active" data-nav="home"><i class="fas fa-home"></i><span>الرئيسية</span></div><div class="sidebar-item" data-nav="subjects"><i class="fas fa-book"></i><span>المواد الدراسية</span></div><div class="sidebar-item" data-nav="gallery"><i class="fas fa-images"></i><span>معرض الصور</span></div><div class="sidebar-item" data-nav="videos"><i class="fas fa-video"></i><span>الفيديوهات</span></div><div class="sidebar-item" data-nav="channels"><i class="fas fa-satellite-dish"></i><span>القنوات الرسمية</span></div><div class="sidebar-item" data-nav="settings"><i class="fas fa-cog"></i><span>الإعدادات</span></div><div class="sidebar-item" data-nav="developer"><i class="fas fa-code"></i><span>المطور</span></div></div><div class="theme-toggle" id="themeToggle"><div class="theme-toggle-text"><i class="fas fa-moon"></i> الوضع الليلي</div><label class="theme-switch"><input type="checkbox" id="themeSwitch"><span class="theme-slider"></span></label></div><button class="logout-sidebar" id="logoutSidebar"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button></div>
 
@@ -513,95 +334,13 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script>
-// ========== كود السلايدر ==========
-const slides = document.querySelectorAll('.slide');
-const dotsContainer = document.getElementById('sliderDots');
-let currentSlide = 0;
-let slideInterval;
-
-// إنشاء النقاط (dots)
-function createDots() {
-    dotsContainer.innerHTML = '';
-    slides.forEach((_, index) => {
-        const dot = document.createElement('div');
-        dot.classList.add('dot');
-        if (index === currentSlide) dot.classList.add('active');
-        dot.addEventListener('click', () => goToSlide(index));
-        dotsContainer.appendChild(dot);
-    });
-}
-
-// الانتقال إلى شريحة محددة
-function goToSlide(index) {
-    slides.forEach(slide => slide.classList.remove('active'));
-    slides[index].classList.add('active');
-    currentSlide = index;
-    updateDots();
-}
-
-// تحديث النقاط النشطة
-function updateDots() {
-    const dots = document.querySelectorAll('.dot');
-    dots.forEach((dot, index) => {
-        if (index === currentSlide) {
-            dot.classList.add('active');
-        } else {
-            dot.classList.remove('active');
-        }
-    });
-}
-
-// الانتقال إلى الشريحة التالية
-function nextSlide() {
-    let next = currentSlide + 1;
-    if (next >= slides.length) next = 0;
-    goToSlide(next);
-}
-
-// بدء التشغيل التلقائي
-function startAutoSlide() {
-    if (slideInterval) clearInterval(slideInterval);
-    slideInterval = setInterval(nextSlide, 5000); // تغيير كل 5 ثوانٍ
-}
-
-// إيقاف التشغيل التلقائي عند التفاعل مع المؤشرات
-function stopAutoSlide() {
-    if (slideInterval) clearInterval(slideInterval);
-}
-
-// إعادة بدء التشغيل عند الخروج من المؤشر
-function resetAutoSlide() {
-    startAutoSlide();
-}
-
-// تهيئة السلايدر
-function initSlider() {
-    if (slides.length > 0) {
-        slides[0].classList.add('active');
-        createDots();
-        startAutoSlide();
-        
-        // عند تمرير الماوس على السلايدر
-        const slider = document.getElementById('heroSlider');
-        slider.addEventListener('mouseenter', stopAutoSlide);
-        slider.addEventListener('mouseleave', resetAutoSlide);
-        
-        // للمس (الجوال)
-        slider.addEventListener('touchstart', stopAutoSlide);
-        slider.addEventListener('touchend', resetAutoSlide);
-    }
-}
-
-// ========== باقي كود Firebase والدوال ==========
 const firebaseConfig = { apiKey: "AIzaSyBFdxj6p-DAGrr-To_WZBxIk_FDX67Ygm0", authDomain: "mazaya-c7569.firebaseapp.com", projectId: "mazaya-c7569", storageBucket: "mazaya-c7569.appspot.com", messagingSenderId: "989358281766", appId: "1:989358281766:web:9d5d28ce94a2d5599c02e7" };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-function sanitize(text) { if(!text) return ''; if(typeof text!=='string') text=String(text); return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function sanitize(text) { if(!text) return ''; if(typeof text!=='string') text=String(text); return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/NonNull/g,'').replace(/Neon/g,''); }
 
 const authModal=document.getElementById('authModal'), closeAuth=document.getElementById('closeAuth'), loginForm=document.getElementById('loginForm'), registerForm=document.getElementById('registerForm'), loginError=document.getElementById('loginError'), registerError=document.getElementById('registerError'), sidebar=document.getElementById('sidebar'), menuToggle=document.getElementById('menuToggle'), navbar=document.getElementById('navbar'), bottomNav=document.getElementById('bottomNav'), userAvatar=document.getElementById('userAvatar'), sidebarUsername=document.getElementById('sidebarUsername'), sidebarInfo=document.getElementById('sidebarInfo'), subjectsList=document.getElementById('subjectsList'), lecturesContainer=document.getElementById('lecturesContainer'), lecturesList=document.getElementById('lecturesList'), lecturesSubtitle=document.getElementById('lecturesSubtitle'), closeLectures=document.getElementById('closeLectures'), logoutSidebar=document.getElementById('logoutSidebar'), announcementModal=document.getElementById('announcementModal'), announcementList=document.getElementById('announcementList'), closeAnnouncementModal=document.getElementById('closeAnnouncementModal'), bellBtn=document.getElementById('bellBtn'), announcementBadge=document.getElementById('announcementBadge'), calendarBtn=document.getElementById('calendarBtn'), datesModal=document.getElementById('datesModal'), datesList=document.getElementById('datesList'), closeDatesModal=document.getElementById('closeDatesModal'), settingsModal=document.getElementById('settingsModal'), closeSettingsModal=document.getElementById('closeSettingsModal'), settingsForm=document.getElementById('settingsForm'), settingsFullName=document.getElementById('settingsFullName'), settingsUsername=document.getElementById('settingsUsername'), settingsStage=document.getElementById('settingsStage'), settingsShift=document.getElementById('settingsShift'), settingsPassword=document.getElementById('settingsPassword'), settingsConfirmPassword=document.getElementById('settingsConfirmPassword'), avatarPreview=document.getElementById('avatarPreview'), avatarInput=document.getElementById('avatarInput'), removeAvatarBtn=document.getElementById('removeAvatarBtn'), loadingScreen=document.getElementById('loadingScreen'), loadingProgressBar=document.getElementById('loadingProgressBar'), loadingPercentage=document.getElementById('loadingPercentage'), backFromGallery=document.getElementById('backFromGallery'), backFromVideos=document.getElementById('backFromVideos'), backFromChannels=document.getElementById('backFromChannels'), backFromDeveloper=document.getElementById('backFromDeveloper'), exploreBtn=document.getElementById('exploreBtn'), galleryContainer=document.getElementById('galleryContainer'), videosContainer=document.getElementById('videosContainer'), channelsContainer=document.getElementById('channelsContainer');
-const avatarBtnChoose = document.getElementById('avatarBtnChoose');
-const avatarBtnCamera = document.getElementById('avatarBtnCamera');
 
 let currentUser=null, allSubjects=[], allImportantDates=[], allChannels=[], allVideos=[], allAnnouncements=[], allCustomButtons=[], readAnnouncements=new Set(), progress=0, currentSection='home', sectionHistory=[];
 let displayedSubjects=new Map(), displayedChannels=new Map(), displayedGallery=new Map(), displayedVideos=new Map(), displayedCustomButtons=new Map();
@@ -653,72 +392,62 @@ async function checkIfBlocked() {
     }
 }
 
-// دوال الصورة الشخصية
-function compressImage(dataUrl, maxWidth = 200, quality = 0.7) {
-    return new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => {
-            const canvas = document.createElement('canvas');
-            let width = img.width;
-            let height = img.height;
-            if (width > maxWidth) {
-                height = (height * maxWidth) / width;
-                width = maxWidth;
-            }
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, width, height);
-            resolve(canvas.toDataURL('image/jpeg', quality));
-        };
-        img.src = dataUrl;
-    });
-}
-
 function saveAvatarToLocalStorage(imageData) {
     if (!currentUser) return;
     const key = `user_avatar_${sanitize(currentUser.username)}`;
-    if (imageData && imageData.length < 2 * 1024 * 1024) localStorage.setItem(key, imageData);
-    else localStorage.removeItem(key);
+    if (imageData && imageData.length < 5 * 1024 * 1024) {
+        localStorage.setItem(key, imageData);
+    } else {
+        localStorage.removeItem(key);
+    }
 }
 
 function loadAvatarFromLocalStorage() {
     if (!currentUser) return null;
-    return localStorage.getItem(`user_avatar_${sanitize(currentUser.username)}`);
+    const key = `user_avatar_${sanitize(currentUser.username)}`;
+    return localStorage.getItem(key);
 }
 
 function updateAvatarDisplay() {
-    const saved = loadAvatarFromLocalStorage();
-    if (saved && userAvatar) userAvatar.innerHTML = `<img src="${saved}" alt="صورة المستخدم">`;
-    else if (userAvatar) userAvatar.innerHTML = '<i class="fas fa-user"></i>';
+    const savedAvatar = loadAvatarFromLocalStorage();
+    if (savedAvatar && userAvatar) {
+        userAvatar.innerHTML = `<img src="${savedAvatar}" alt="صورة المستخدم">`;
+    } else if (userAvatar) {
+        userAvatar.innerHTML = '<i class="fas fa-user"></i>';
+    }
     if (avatarPreview) {
-        if (saved) avatarPreview.innerHTML = `<img src="${saved}" alt="معاينة">`;
-        else avatarPreview.innerHTML = '<i class="fas fa-camera"></i>';
+        if (savedAvatar) {
+            avatarPreview.innerHTML = `<img src="${savedAvatar}" alt="معاينة الصورة">`;
+        } else {
+            avatarPreview.innerHTML = '<i class="fas fa-camera"></i>';
+        }
     }
 }
 
-async function handleAvatarUpload(file) {
+function handleAvatarUpload(file) {
     if (!file) return;
-    if (!file.type.match('image.*')) { showMessage("الرجاء اختيار ملف صورة", "error"); return; }
-    if (file.size > 10 * 1024 * 1024) { showMessage("حجم الصورة كبير جداً (الحد الأقصى 10 ميجابايت)", "error"); return; }
-    showMessage("جاري معالجة الصورة...", "warning");
+    if (!file.type.match('image.*')) {
+        showMessage("الرجاء اختيار ملف صورة", "error");
+        return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+        showMessage("حجم الصورة يجب أن لا يتجاوز 2 ميجابايت", "error");
+        return;
+    }
     const reader = new FileReader();
-    reader.onload = async function(e) {
-        try {
-            const compressed = await compressImage(e.target.result, 300, 0.6);
-            saveAvatarToLocalStorage(compressed);
-            updateAvatarDisplay();
-            showMessage("تم تحديث الصورة الشخصية!");
-        } catch(error) {
-            showMessage("حدث خطأ في معالجة الصورة", "error");
-        }
+    reader.onload = function(e) {
+        saveAvatarToLocalStorage(e.target.result);
+        updateAvatarDisplay();
+        showMessage("تم تحديث الصورة الشخصية!");
     };
     reader.readAsDataURL(file);
 }
 
-function removeAvatar() { saveAvatarToLocalStorage(null); updateAvatarDisplay(); showMessage("تم إزالة الصورة الشخصية"); }
-function chooseFromGallery() { const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*'; input.onchange = (e) => { if (e.target.files && e.target.files[0]) handleAvatarUpload(e.target.files[0]); }; input.click(); }
-function takePhoto() { const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*'; input.capture = 'environment'; input.onchange = (e) => { if (e.target.files && e.target.files[0]) handleAvatarUpload(e.target.files[0]); }; input.click(); }
+function removeAvatar() {
+    saveAvatarToLocalStorage(null);
+    updateAvatarDisplay();
+    showMessage("تم إزالة الصورة الشخصية");
+}
 
 function updateCalendarBadge(){ const today=new Date().toISOString().split('T')[0]; const hasUpcoming=allImportantDates.some(d=>d.date>=today); if(hasUpcoming) calendarBtn.classList.add('has-updates'); else calendarBtn.classList.remove('has-updates'); }
 function updateAnnouncementBadge(){ const unreadCount=allAnnouncements.filter(a=>!readAnnouncements.has(a.id)).length; if(unreadCount>0){ announcementBadge.style.display='flex'; announcementBadge.textContent=unreadCount>99?'99+':unreadCount; }else{ announcementBadge.style.display='none'; } }
@@ -928,7 +657,7 @@ function startListeners(){
     }); 
 }
 
-function navigateTo(section){ sectionHistory.push(currentSection); currentSection=section; document.getElementById('subjects').style.display='none'; document.getElementById('gallery').style.display='none'; document.getElementById('videos').style.display='none'; document.getElementById('channels').style.display='none'; document.getElementById('developer').style.display='none'; if(lecturesContainer) lecturesContainer.classList.remove('show'); if(section==='home'){ document.getElementById('homeSection')?.scrollIntoView({behavior:'smooth'}); document.getElementById('subjects').style.display='block'; }else if(section==='subjects'){ document.getElementById('subjects').style.display='block'; document.getElementById('subjects').scrollIntoView({behavior:'smooth'}); }else if(section==='gallery'){ document.getElementById('gallery').style.display='block'; document.getElementById('gallery').scrollIntoView({behavior:'smooth'}); }else if(section==='videos'){ document.getElementById('videos').style.display='block'; document.getElementById('videos').scrollIntoView({behavior:'smooth'}); }else if(section==='channels'){ document.getElementById('channels').style.display='block'; document.getElementById('channels').scrollIntoView({behavior:'smooth'}); }else if(section==='developer'){ document.getElementById('developer').style.display='block'; document.getElementById('developer').scrollIntoView({behavior:'smooth'}); }else if(section==='settings'){ settingsModal.classList.add('show'); if(sectionHistory.length>0) sectionHistory.pop(); currentSection=sectionHistory.length>0?sectionHistory[sectionHistory.length-1]:'home'; updateBottomNavActive(currentSection); return; } if(sidebar) sidebar.classList.remove('active'); updateBottomNavActive(section); }
+function navigateTo(section){ sectionHistory.push(currentSection); currentSection=section; document.getElementById('subjects').style.display='none'; document.getElementById('gallery').style.display='none'; document.getElementById('videos').style.display='none'; document.getElementById('channels').style.display='none'; document.getElementById('developer').style.display='none'; if(lecturesContainer) lecturesContainer.classList.remove('show'); if(section==='home'){ document.getElementById('homeSection').scrollIntoView({behavior:'smooth'}); document.getElementById('subjects').style.display='block'; }else if(section==='subjects'){ document.getElementById('subjects').style.display='block'; document.getElementById('subjects').scrollIntoView({behavior:'smooth'}); }else if(section==='gallery'){ document.getElementById('gallery').style.display='block'; document.getElementById('gallery').scrollIntoView({behavior:'smooth'}); }else if(section==='videos'){ document.getElementById('videos').style.display='block'; document.getElementById('videos').scrollIntoView({behavior:'smooth'}); }else if(section==='channels'){ document.getElementById('channels').style.display='block'; document.getElementById('channels').scrollIntoView({behavior:'smooth'}); }else if(section==='developer'){ document.getElementById('developer').style.display='block'; document.getElementById('developer').scrollIntoView({behavior:'smooth'}); }else if(section==='settings'){ settingsModal.classList.add('show'); if(sectionHistory.length>0) sectionHistory.pop(); currentSection=sectionHistory.length>0?sectionHistory[sectionHistory.length-1]:'home'; updateBottomNavActive(currentSection); return; } if(sidebar) sidebar.classList.remove('active'); updateBottomNavActive(section); }
 
 function updateBottomNavActive(section){ document.querySelectorAll('.bottom-nav-item').forEach(item=>{ if(item.dataset.nav===section) item.classList.add('active'); else item.classList.remove('active'); }); document.querySelectorAll('.sidebar-item').forEach(item=>{ if(item.dataset.nav===section) item.classList.add('active'); else item.classList.remove('active'); }); }
 
@@ -947,10 +676,11 @@ async function handleLogin(username,password,stay){
     else localStorage.removeItem('stayLoggedIn'); 
     await db.collection("loginLogs").add({username:cleanUsername,action:"login",timestamp:firebase.firestore.FieldValue.serverTimestamp()}); 
     
-    updateAvatarDisplay();
-    
     if(checkBlockedInterval) clearInterval(checkBlockedInterval);
-    checkBlockedInterval = setInterval(async () => { await checkIfBlocked(); }, 10000);
+    checkBlockedInterval = setInterval(async () => {
+        await checkIfBlocked();
+    }, 10000);
+    
     return true; 
 }
 
@@ -1017,16 +747,26 @@ function checkAutoLogin(){
     if(saved&&stay){ 
         try{ 
             currentUser=JSON.parse(saved); 
-            checkIfBlocked().then(isBlocked => { if(!isBlocked) showMainContent(); });
-        }catch(e){ authModal.style.display='flex'; hideLoading(); } 
-    }else{ authModal.style.display='flex'; hideLoading(); } 
+            checkIfBlocked().then(isBlocked => {
+                if(!isBlocked) {
+                    showMainContent();
+                }
+            });
+        }catch(e){ 
+            authModal.style.display='flex'; 
+            hideLoading(); 
+        } 
+    }else{ 
+        authModal.style.display='flex'; 
+        hideLoading(); 
+    } 
 }
 
 loginForm.addEventListener('submit',async(e)=>{ e.preventDefault(); const username=document.getElementById('loginUsername').value.trim(); const password=document.getElementById('loginPassword').value; const stay=document.getElementById('stayLoggedIn').checked; loginError.classList.remove('show'); if(!username||!password){ loginError.textContent='يرجى إدخال اسم المستخدم وكلمة المرور'; loginError.classList.add('show'); return; } try{ await handleLogin(username,password,stay); showMainContent(); loginForm.reset(); }catch(err){ loginError.textContent=err.message; loginError.classList.add('show'); } });
 
 registerForm.addEventListener('submit',async(e)=>{ e.preventDefault(); const fullName=document.getElementById('regFullName').value.trim(); const username=document.getElementById('regUsername').value.trim(); const stage=document.getElementById('regStage').value; const shift=document.getElementById('regShift').value; const password=document.getElementById('regPassword').value; registerError.classList.remove('show'); if(!fullName||!username||!stage||!shift||!password){ registerError.textContent='يرجى ملء جميع الحقول'; registerError.classList.add('show'); return; } if(password.length<4){ registerError.textContent='كلمة المرور يجب أن تكون 4 أحرف على الأقل'; registerError.classList.add('show'); return; } try{ await handleRegister(fullName,username,stage,shift,password); showMessage("تم إنشاء الحساب بنجاح! الرجاء تسجيل الدخول"); registerForm.reset(); document.querySelector('.auth-tab[data-auth-tab="login"]').click(); }catch(err){ registerError.textContent=err.message; registerError.classList.add('show'); } });
 
-settingsForm.addEventListener('submit',async(e)=>{ e.preventDefault(); const fullName=settingsFullName.value.trim(); const username=settingsUsername.value.trim(); const stage=settingsStage.value; const shift=settingsShift.value; const password=settingsPassword.value; const confirmPassword=settingsConfirmPassword.value; if(!fullName||!username){ showMessage("الاسم واسم المستخدم مطلوبان","error"); return; } if(password!==confirmPassword){ showMessage("كلمة المرور غير متطابقة","error"); return; } if(password&&password.length<4){ showMessage("كلمة المرور يجب أن تكون 4 أحرف على الأقل","error"); return; } try{ await updateUserProfile(fullName,username,stage,shift,password); showMessage("تم تحديث المعلومات بنجاح!"); sidebarUsername.textContent=fullName; sidebarInfo.textContent=`${stage} - ${shift}`; settingsModal.classList.remove('show'); 
+settingsForm.addEventListener('submit',async(e)=>{ e.preventDefault(); const fullName=settingsFullName.value.trim(); const username=settingsUsername.value.trim(); const stage=settingsStage.value; const shift=settingsShift.value; const password=settingsPassword.value; const confirmPassword=settingsConfirmPassword.value; if(!fullName||!username){ showMessage("الاسم واسم المستخدم مطلوبان","error"); return; } if(password!==confirmPassword){ showMessage("كلمة المرور غير متطابقة","error"); return; } if(password&&password.length<4){ showMessage("كلمة المرور يجب أن تكون 4 أحرف على الأقل","error"); return; } try{ await updateUserProfile(fullName,username,stage,shift,password); showMessage("تم تحديث المعلومات بنجاح!"); sidebarUsername.textContent=fullName; sidebarInfo.textContent=`${stage} - ${shift}`; settingsModal.classList.remove('show');
         loadInitialData().then(()=>{
             if(subjectsListener) subjectsListener();
             if(videosListener) videosListener();
@@ -1035,10 +775,7 @@ settingsForm.addEventListener('submit',async(e)=>{ e.preventDefault(); const ful
         });
     }catch(err){ showMessage("حدث خطأ: "+err.message,"error"); } });
 
-if(avatarBtnChoose) avatarBtnChoose.addEventListener('click', chooseFromGallery);
-if(avatarBtnCamera) avatarBtnCamera.addEventListener('click', takePhoto);
-if(removeAvatarBtn) removeAvatarBtn.addEventListener('click', removeAvatar);
-if(avatarPreview) avatarPreview.addEventListener('click', chooseFromGallery);
+avatarInput.addEventListener('change',(e)=>{ if(e.target.files&&e.target.files[0]) handleAvatarUpload(e.target.files[0]); }); removeAvatarBtn.addEventListener('click',()=>removeAvatar()); if(avatarPreview) avatarPreview.addEventListener('click',()=>avatarInput.click());
 
 document.querySelectorAll('.auth-tab').forEach(tab=>{ tab.addEventListener('click',()=>{ document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active')); document.querySelectorAll('.auth-form').forEach(f=>f.classList.remove('active')); tab.classList.add('active'); document.getElementById(`${tab.dataset.authTab}FormContainer`).classList.add('active'); registerError.classList.remove('show'); loginError.classList.remove('show'); }); });
 
@@ -1047,9 +784,6 @@ closeAuth.addEventListener('click',()=>{ if(!currentUser) authModal.style.displa
 document.querySelectorAll('.bottom-nav-item').forEach(btn=>btn.addEventListener('click',()=>navigateTo(btn.dataset.nav))); document.querySelectorAll('.sidebar-item').forEach(item=>{ if(item.dataset.nav) item.addEventListener('click',()=>navigateTo(item.dataset.nav)); });
 
 const themeSwitch=document.getElementById('themeSwitch'); themeSwitch.addEventListener('change',function(){ document.body.classList.toggle('night-mode',this.checked); localStorage.setItem('theme',this.checked?'night':'day'); }); if(localStorage.getItem('theme')==='night'){ document.body.classList.add('night-mode'); themeSwitch.checked=true; }
-
-// بدء تشغيل السلايدر
-initSlider();
 
 updateProgress(10); setTimeout(()=>{ updateProgress(30); checkAutoLogin(); },500);
 </script>
