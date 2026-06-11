@@ -18,12 +18,8 @@
     <link rel="apple-touch-icon" sizes="152x152" href="https://cdn-icons-png.flaticon.com/512/3067/3067010.png">
     <link rel="apple-touch-icon" sizes="120x120" href="https://cdn-icons-png.flaticon.com/512/3067/3067010.png">
     
-    <!-- أيقونة عامة -->
     <link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/512/3067/3067010.png">
 
-    <!-- ========== PWA Manifest - سيتم إنشاؤه ديناميكياً بواسطة JavaScript ========== -->
-    <!-- يتم إنشاء manifest.json ديناميكياً لضمان عمل الأيقونة على Android -->
-    
     <meta property="og:title" content="كلية مزايا الجامعة - نظام المحاضرات الإلكتروني">
     <meta property="og:description" content="نظام المحاضرات الإلكتروني لكلية مزايا الجامعة">
     <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/3067/3067010.png">
@@ -420,6 +416,104 @@
         .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
         .empty-state i { font-size: 2.5rem; margin-bottom: 12px; opacity: 0.5; }
         
+        /* ========== ستايل الإعلان المنبثق ========== */
+        .popup-ad-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .popup-ad-modal.show {
+            visibility: visible;
+            opacity: 1;
+        }
+        .popup-ad-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+        .popup-ad-container {
+            position: relative;
+            width: 85%;
+            max-width: 400px;
+            background: transparent;
+            border-radius: 20px;
+            animation: popupFadeIn 0.4s ease-out;
+            z-index: 10002;
+        }
+        @keyframes popupFadeIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        .popup-ad-container a {
+            display: block;
+            width: 100%;
+            cursor: pointer;
+        }
+        .popup-ad-container img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        .popup-ad-close {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10003;
+        }
+        .popup-ad-close:hover {
+            background: rgba(255, 255, 255, 0.9);
+            color: #e74c3c;
+            transform: rotate(90deg);
+        }
+        @media (max-width: 480px) {
+            .popup-ad-container {
+                width: 90%;
+                max-width: 320px;
+            }
+            .popup-ad-close {
+                top: -12px;
+                right: -12px;
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+        }
+        
         @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
@@ -524,6 +618,19 @@
 <div class="bottom-nav" id="bottomNav"><button class="bottom-nav-item active" data-nav="home"><i class="fas fa-home"></i><span>الرئيسية</span></button><button class="bottom-nav-item" data-nav="subjects"><i class="fas fa-book"></i><span>المواد</span></button><button class="bottom-nav-item" data-nav="gallery"><i class="fas fa-images"></i><span>معرض</span></button><button class="bottom-nav-item" data-nav="videos"><i class="fas fa-video"></i><span>فيديو</span></button><button class="bottom-nav-item" data-nav="channels"><i class="fas fa-satellite-dish"></i><span>قنوات</span></button></div>
 
 <div class="main-content" id="mainContent"><div class="container"><div id="subjects" class="subjects"><h2 class="section-title">المواد الدراسية</h2><div class="subjects-grid" id="subjectsList"></div></div><div class="lectures-container" id="lecturesContainer"><h2 class="section-title">المحاضرات</h2><p class="lectures-subtitle" id="lecturesSubtitle" style="text-align:center; font-size:0.75rem; color:var(--text-muted);"></p><div class="lectures-list" id="lecturesList"></div><button class="content-back-button" id="closeLectures"><i class="fas fa-arrow-right"></i> العودة للمواد الدراسية</button></div><div id="gallery" class="gallery-section"><div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;"><h2 class="section-title" style="margin-bottom:0;">معرض الصور والمقالات</h2><button class="content-back-button" id="backFromGallery"><i class="fas fa-arrow-right"></i> العودة للرئيسية</button></div><div class="gallery-container" id="galleryContainer"></div></div><div id="videos" class="videos-section"><div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;"><h2 class="section-title" style="margin-bottom:0;">معرض الفيديوهات</h2><button class="content-back-button" id="backFromVideos"><i class="fas fa-arrow-right"></i> العودة للرئيسية</button></div><div class="videos-container" id="videosContainer"></div></div><div id="channels" class="channels-section"><div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;"><h2 class="section-title" style="margin-bottom:0;">القنوات الرسمية</h2><button class="content-back-button" id="backFromChannels"><i class="fas fa-arrow-right"></i> العودة للرئيسية</button></div><div class="channels-container" id="channelsContainer"></div></div><div id="developer" class="developer-contact"><div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;"><h2 class="section-title" style="margin-bottom:0;">التواصل مع المطور</h2><button class="content-back-button" id="backFromDeveloper"><i class="fas fa-arrow-right"></i> العودة للرئيسية</button></div><div class="developer-card"><i class="fas fa-code" style="font-size:1.8rem; color:var(--accent-primary);"></i><h3 class="developer-name">محمد علاء</h3><p style="color:var(--text-muted); font-size:0.7rem;">مطور تطبيق CET</p><div class="developer-phone"><i class="fas fa-phone"></i> 07821531234</div></div></div></div><footer class="footer"><div class="container"><div class="footer-bottom"><p>تطبيق CET - كلية مزايا الجامعة</p></div></div></footer></div>
+
+<!-- ========== نافذة الإعلان المنبثق ========== -->
+<div id="popupAdModal" class="popup-ad-modal" style="display: none;">
+    <div class="popup-ad-overlay"></div>
+    <div class="popup-ad-container">
+        <button class="popup-ad-close" id="popupAdClose">
+            <i class="fas fa-times"></i>
+        </button>
+        <a href="#" id="popupAdLink" target="_blank">
+            <img id="popupAdImage" src="" alt="إعلان">
+        </a>
+    </div>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
@@ -747,6 +854,10 @@ let currentUser=null, allSubjects=[], allImportantDates=[], allChannels=[], allV
 let displayedSubjects=new Map(), displayedChannels=new Map(), displayedGallery=new Map(), displayedVideos=new Map(), displayedCustomButtons=new Map();
 let subjectsListener=null, datesListener=null, channelsListener=null, galleryListener=null, videosListener=null, announcementsListener=null, customButtonsListener=null;
 let checkBlockedInterval = null;
+
+// ========== متغيرات الإعلان المنبثق ==========
+let popupAdData = { isActive: false, imageUrl: '', link: '' };
+let popupShownInSession = false;
 
 function showMessage(msg,type='success'){ const div=document.createElement('div'); div.className=`message ${type}`; div.textContent=sanitize(msg); document.body.appendChild(div); setTimeout(()=>div.classList.add('show'),10); setTimeout(()=>{ div.classList.remove('show'); setTimeout(()=>div.remove(),300); },3000); }
 function updateProgress(p){ progress=Math.min(p,100); if(loadingProgressBar) loadingProgressBar.style.width=`${progress}%`; if(loadingPercentage) loadingPercentage.textContent=`${progress}%`; }
@@ -1096,7 +1207,6 @@ function navigateTo(section){
         document.getElementById('developer').style.display='block'; 
         document.getElementById('developer').scrollIntoView({behavior:'smooth'}); 
     } else if(section==='settings'){ 
-        // أهم تعديل: إخفاء السلايدر الجانبي أولاً، ثم عرض واجهة الإعدادات
         if(sidebar) sidebar.classList.remove('active');
         settingsModal.classList.add('show');
         if(sectionHistory.length>0) sectionHistory.pop(); 
@@ -1148,6 +1258,57 @@ async function updateUserProfile(fullName,username,stage,shift,password){
     return true; 
 }
 
+// ========== دوال الإعلان المنبثق ==========
+async function loadPopupAdData() {
+    try {
+        const docRef = db.collection("settings").doc("popupAd");
+        const docSnap = await docRef.get();
+        if (docSnap.exists) {
+            popupAdData = {
+                isActive: docSnap.data().isActive || false,
+                imageUrl: docSnap.data().imageUrl || '',
+                link: docSnap.data().link || ''
+            };
+        }
+    } catch(error) {
+        console.error("خطأ في تحميل الإعلان:", error);
+    }
+}
+
+function showPopupAd() {
+    if (!popupAdData.isActive) return;
+    if (popupShownInSession) return;
+    if (!popupAdData.imageUrl) return;
+    
+    const modal = document.getElementById('popupAdModal');
+    const image = document.getElementById('popupAdImage');
+    const link = document.getElementById('popupAdLink');
+    
+    image.src = popupAdData.imageUrl;
+    if (popupAdData.link && popupAdData.link.trim() !== '') {
+        link.href = popupAdData.link;
+        link.style.cursor = 'pointer';
+    } else {
+        link.href = 'javascript:void(0);';
+        link.style.cursor = 'default';
+    }
+    
+    modal.style.display = 'flex';
+    setTimeout(() => {
+        modal.classList.add('show');
+    }, 10);
+    popupShownInSession = true;
+}
+
+function closePopupAd() {
+    const modal = document.getElementById('popupAdModal');
+    modal.classList.remove('show');
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 300);
+}
+
+// دالة showMainContent المعدلة
 function showMainContent(){ 
     sidebarUsername.textContent=currentUser.name||currentUser.username; 
     sidebarInfo.textContent=`${currentUser.stage||''} - ${currentUser.shift||''}`; 
@@ -1161,10 +1322,14 @@ function showMainContent(){
     navbar.classList.add('show'); 
     bottomNav.style.display='flex'; 
     authModal.style.display='none'; 
-    loadInitialData().then(()=>{ 
+    loadInitialData().then(async () => { 
         startListeners(); 
         hideLoading(); 
-        showMessage(`مرحباً ${currentUser.name||currentUser.username}`); 
+        showMessage(`مرحباً ${currentUser.name||currentUser.username}`);
+        await loadPopupAdData();
+        setTimeout(() => {
+            showPopupAd();
+        }, 3000);
     }); 
 }
 
@@ -1198,6 +1363,14 @@ function checkAutoLogin(){
     }else{ authModal.style.display='flex'; hideLoading(); } 
 }
 
+// إضافة مستمعي الأحداث للإعلان المنبثق
+document.getElementById('popupAdClose')?.addEventListener('click', closePopupAd);
+document.getElementById('popupAdModal')?.addEventListener('click', function(e) {
+    if (e.target === this || e.target.classList.contains('popup-ad-overlay')) {
+        closePopupAd();
+    }
+});
+
 loginForm.addEventListener('submit',async(e)=>{ e.preventDefault(); const username=document.getElementById('loginUsername').value.trim(); const password=document.getElementById('loginPassword').value; const stay=document.getElementById('stayLoggedIn').checked; loginError.classList.remove('show'); if(!username||!password){ loginError.textContent='يرجى إدخال اسم المستخدم وكلمة المرور'; loginError.classList.add('show'); return; } try{ await handleLogin(username,password,stay); showMainContent(); loginForm.reset(); }catch(err){ loginError.textContent=err.message; loginError.classList.add('show'); } });
 
 registerForm.addEventListener('submit',async(e)=>{ e.preventDefault(); const fullName=document.getElementById('regFullName').value.trim(); const username=document.getElementById('regUsername').value.trim(); const stage=document.getElementById('regStage').value; const shift=document.getElementById('regShift').value; const password=document.getElementById('regPassword').value; registerError.classList.remove('show'); if(!fullName||!username||!stage||!shift||!password){ registerError.textContent='يرجى ملء جميع الحقول'; registerError.classList.add('show'); return; } if(password.length<4){ registerError.textContent='كلمة المرور يجب أن تكون 4 أحرف على الأقل'; registerError.classList.add('show'); return; } try{ await handleRegister(fullName,username,stage,shift,password); showMessage("تم إنشاء الحساب بنجاح! الرجاء تسجيل الدخول"); registerForm.reset(); document.querySelector('.auth-tab[data-auth-tab="login"]').click(); }catch(err){ registerError.textContent=err.message; registerError.classList.add('show'); } });
@@ -1227,7 +1400,6 @@ document.querySelectorAll('.bottom-nav-item').forEach(btn=>btn.addEventListener(
 document.querySelectorAll('.sidebar-item').forEach(item=>{ 
     if(item.dataset.nav) {
         item.addEventListener('click',()=>{
-            // عند النقر على أيقونة الإعدادات، تأكد من إخفاء القائمة أولاً
             navigateTo(item.dataset.nav);
         });
     }
