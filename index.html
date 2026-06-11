@@ -1067,7 +1067,46 @@ function startListeners(){
     }); 
 }
 
-function navigateTo(section){ sectionHistory.push(currentSection); currentSection=section; document.getElementById('subjects').style.display='none'; document.getElementById('gallery').style.display='none'; document.getElementById('videos').style.display='none'; document.getElementById('channels').style.display='none'; document.getElementById('developer').style.display='none'; if(lecturesContainer) lecturesContainer.classList.remove('show'); if(section==='home'){ document.getElementById('homeSection')?.scrollIntoView({behavior:'smooth'}); document.getElementById('subjects').style.display='block'; }else if(section==='subjects'){ document.getElementById('subjects').style.display='block'; document.getElementById('subjects').scrollIntoView({behavior:'smooth'}); }else if(section==='gallery'){ document.getElementById('gallery').style.display='block'; document.getElementById('gallery').scrollIntoView({behavior:'smooth'}); }else if(section==='videos'){ document.getElementById('videos').style.display='block'; document.getElementById('videos').scrollIntoView({behavior:'smooth'}); }else if(section==='channels'){ document.getElementById('channels').style.display='block'; document.getElementById('channels').scrollIntoView({behavior:'smooth'}); }else if(section==='developer'){ document.getElementById('developer').style.display='block'; document.getElementById('developer').scrollIntoView({behavior:'smooth'}); }else if(section==='settings'){ settingsModal.classList.add('show'); if(sectionHistory.length>0) sectionHistory.pop(); currentSection=sectionHistory.length>0?sectionHistory[sectionHistory.length-1]:'home'; updateBottomNavActive(currentSection); return; } if(sidebar) sidebar.classList.remove('active'); updateBottomNavActive(section); }
+function navigateTo(section){ 
+    sectionHistory.push(currentSection); 
+    currentSection=section; 
+    document.getElementById('subjects').style.display='none'; 
+    document.getElementById('gallery').style.display='none'; 
+    document.getElementById('videos').style.display='none'; 
+    document.getElementById('channels').style.display='none'; 
+    document.getElementById('developer').style.display='none'; 
+    if(lecturesContainer) lecturesContainer.classList.remove('show'); 
+    
+    if(section==='home'){ 
+        document.getElementById('homeSection')?.scrollIntoView({behavior:'smooth'}); 
+        document.getElementById('subjects').style.display='block'; 
+    } else if(section==='subjects'){ 
+        document.getElementById('subjects').style.display='block'; 
+        document.getElementById('subjects').scrollIntoView({behavior:'smooth'}); 
+    } else if(section==='gallery'){ 
+        document.getElementById('gallery').style.display='block'; 
+        document.getElementById('gallery').scrollIntoView({behavior:'smooth'}); 
+    } else if(section==='videos'){ 
+        document.getElementById('videos').style.display='block'; 
+        document.getElementById('videos').scrollIntoView({behavior:'smooth'}); 
+    } else if(section==='channels'){ 
+        document.getElementById('channels').style.display='block'; 
+        document.getElementById('channels').scrollIntoView({behavior:'smooth'}); 
+    } else if(section==='developer'){ 
+        document.getElementById('developer').style.display='block'; 
+        document.getElementById('developer').scrollIntoView({behavior:'smooth'}); 
+    } else if(section==='settings'){ 
+        // أهم تعديل: إخفاء السلايدر الجانبي أولاً، ثم عرض واجهة الإعدادات
+        if(sidebar) sidebar.classList.remove('active');
+        settingsModal.classList.add('show');
+        if(sectionHistory.length>0) sectionHistory.pop(); 
+        currentSection=sectionHistory.length>0?sectionHistory[sectionHistory.length-1]:'home'; 
+        updateBottomNavActive(currentSection); 
+        return; 
+    } 
+    if(sidebar) sidebar.classList.remove('active'); 
+    updateBottomNavActive(section); 
+}
 
 function updateBottomNavActive(section){ document.querySelectorAll('.bottom-nav-item').forEach(item=>{ if(item.dataset.nav===section) item.classList.add('active'); else item.classList.remove('active'); }); document.querySelectorAll('.sidebar-item').forEach(item=>{ if(item.dataset.nav===section) item.classList.add('active'); else item.classList.remove('active'); }); }
 
@@ -1179,9 +1218,20 @@ if(avatarPreview) avatarPreview.addEventListener('click', chooseFromGallery);
 
 document.querySelectorAll('.auth-tab').forEach(tab=>{ tab.addEventListener('click',()=>{ document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active')); document.querySelectorAll('.auth-form').forEach(f=>f.classList.remove('active')); tab.classList.add('active'); document.getElementById(`${tab.dataset.authTab}FormContainer`).classList.add('active'); registerError.classList.remove('show'); loginError.classList.remove('show'); }); });
 
-closeAuth.addEventListener('click',()=>{ if(!currentUser) authModal.style.display='none'; }); menuToggle.addEventListener('click',()=>sidebar.classList.toggle('active')); document.addEventListener('click',(e)=>{ if(sidebar&&menuToggle&&!sidebar.contains(e.target)&&!menuToggle.contains(e.target)&&sidebar.classList.contains('active')) sidebar.classList.remove('active'); }); bellBtn.addEventListener('click',()=>announcementModal.classList.add('show')); closeAnnouncementModal.addEventListener('click',()=>announcementModal.classList.remove('show')); calendarBtn.addEventListener('click',()=>{ datesModal.classList.add('show'); calendarBtn.classList.remove('has-updates'); }); closeDatesModal.addEventListener('click',()=>datesModal.classList.remove('show')); closeSettingsModal.addEventListener('click',()=>settingsModal.classList.remove('show')); announcementModal.addEventListener('click',(e)=>{ if(e.target===announcementModal) announcementModal.classList.remove('show'); }); datesModal.addEventListener('click',(e)=>{ if(e.target===datesModal) datesModal.classList.remove('show'); }); settingsModal.addEventListener('click',(e)=>{ if(e.target===settingsModal) settingsModal.classList.remove('show'); }); closeLectures.addEventListener('click',()=>{ lecturesContainer.classList.remove('show'); navigateTo('subjects'); }); backFromGallery.addEventListener('click',()=>navigateTo('home')); backFromVideos.addEventListener('click',()=>navigateTo('home')); backFromChannels.addEventListener('click',()=>navigateTo('home')); backFromDeveloper.addEventListener('click',()=>navigateTo('home')); logoutSidebar.addEventListener('click',logout); exploreBtn.addEventListener('click',(e)=>{ e.preventDefault(); navigateTo('subjects'); }); if(userAvatar) userAvatar.addEventListener('click',()=>settingsModal.classList.add('show'));
+closeAuth.addEventListener('click',()=>{ if(!currentUser) authModal.style.display='none'; }); menuToggle.addEventListener('click',()=>sidebar.classList.toggle('active')); document.addEventListener('click',(e)=>{ if(sidebar&&menuToggle&&!sidebar.contains(e.target)&&!menuToggle.contains(e.target)&&sidebar.classList.contains('active')) sidebar.classList.remove('active'); }); bellBtn.addEventListener('click',()=>announcementModal.classList.add('show')); closeAnnouncementModal.addEventListener('click',()=>announcementModal.classList.remove('show')); calendarBtn.addEventListener('click',()=>{ datesModal.classList.add('show'); calendarBtn.classList.remove('has-updates'); }); closeDatesModal.addEventListener('click',()=>datesModal.classList.remove('show')); closeSettingsModal.addEventListener('click',()=>settingsModal.classList.remove('show')); announcementModal.addEventListener('click',(e)=>{ if(e.target===announcementModal) announcementModal.classList.remove('show'); }); datesModal.addEventListener('click',(e)=>{ if(e.target===datesModal) datesModal.classList.remove('show'); }); settingsModal.addEventListener('click',(e)=>{ if(e.target===settingsModal) settingsModal.classList.remove('show'); }); closeLectures.addEventListener('click',()=>{ lecturesContainer.classList.remove('show'); navigateTo('subjects'); }); backFromGallery.addEventListener('click',()=>navigateTo('home')); backFromVideos.addEventListener('click',()=>navigateTo('home')); backFromChannels.addEventListener('click',()=>navigateTo('home')); backFromDeveloper.addEventListener('click',()=>navigateTo('home')); logoutSidebar.addEventListener('click',logout); exploreBtn.addEventListener('click',(e)=>{ e.preventDefault(); navigateTo('subjects'); }); if(userAvatar) userAvatar.addEventListener('click',()=>{
+    if(sidebar) sidebar.classList.remove('active');
+    settingsModal.classList.add('show');
+});
 
-document.querySelectorAll('.bottom-nav-item').forEach(btn=>btn.addEventListener('click',()=>navigateTo(btn.dataset.nav))); document.querySelectorAll('.sidebar-item').forEach(item=>{ if(item.dataset.nav) item.addEventListener('click',()=>navigateTo(item.dataset.nav)); });
+document.querySelectorAll('.bottom-nav-item').forEach(btn=>btn.addEventListener('click',()=>navigateTo(btn.dataset.nav))); 
+document.querySelectorAll('.sidebar-item').forEach(item=>{ 
+    if(item.dataset.nav) {
+        item.addEventListener('click',()=>{
+            // عند النقر على أيقونة الإعدادات، تأكد من إخفاء القائمة أولاً
+            navigateTo(item.dataset.nav);
+        });
+    }
+});
 
 const themeSwitch=document.getElementById('themeSwitch'); themeSwitch.addEventListener('change',function(){ document.body.classList.toggle('night-mode',this.checked); localStorage.setItem('theme',this.checked?'night':'day'); }); if(localStorage.getItem('theme')==='night'){ document.body.classList.add('night-mode'); themeSwitch.checked=true; }
 
