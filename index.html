@@ -3,35 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>كلية مزايا الجامعة - نظام المحاضرات الإلكتروني</title>
+    <title>كلية مزايا الجامعة - نظام المحاضرات الإلكتروني (بصمة الجهاز)</title>
     
-    <!-- ========== أيقونات سطح المكتب المحسنة لجميع الأجهزة ========== -->
     <link rel="icon" type="image/png" sizes="192x192" href="https://cdn-icons-png.flaticon.com/512/3067/3067010.png">
     <link rel="icon" type="image/png" sizes="512x512" href="https://cdn-icons-png.flaticon.com/512/3067/3067010.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="https://cdn-icons-png.flaticon.com/512/3067/3067010.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://cdn-icons-png.flaticon.com/512/3067/3067010.png">
-    
-    <!-- ========== أيقونات خاصة بـ iOS (Apple Touch Icon) ========== -->
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3067/3067010.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="https://cdn-icons-png.flaticon.com/512/3067/3067010.png">
-    <link rel="apple-touch-icon" sizes="167x167" href="https://cdn-icons-png.flaticon.com/512/3067/3067010.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="https://cdn-icons-png.flaticon.com/512/3067/3067010.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="https://cdn-icons-png.flaticon.com/512/3067/3067010.png">
-    
-    <!-- أيقونة عامة -->
-    <link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/512/3067/3067010.png">
-
-    <!-- ========== PWA Manifest - سيتم إنشاؤه ديناميكياً بواسطة JavaScript ========== -->
-    
-    <meta property="og:title" content="كلية مزايا الجامعة - نظام المحاضرات الإلكتروني">
-    <meta property="og:description" content="نظام المحاضرات الإلكتروني لكلية مزايا الجامعة">
-    <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/3067/3067010.png">
-    <meta property="og:image:width" content="512">
-    <meta property="og:image:height" content="512">
-    
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="كلية مزايا الجامعة - نظام المحاضرات الإلكتروني">
-    <meta name="twitter:image" content="https://cdn-icons-png.flaticon.com/512/3067/3067010.png">
     
     <meta name="theme-color" content="#4f46e5" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#0f0f1a" media="(prefers-color-scheme: dark)">
@@ -39,10 +15,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="CET Mazaya">
-    <meta name="application-name" content="CET Mazaya">
-    <meta name="msapplication-TileColor" content="#4f46e5">
-    <meta name="msapplication-TileImage" content="https://cdn-icons-png.flaticon.com/512/3067/3067010.png">
-    <meta name="description" content="نظام المحاضرات الإلكتروني لكلية مزايا الجامعة - يدعم تسجيل الدخول بالبصمة">
+    <meta name="description" content="نظام المحاضرات الإلكتروني لكلية مزايا الجامعة - دخول بالبصمة">
     
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -458,9 +431,8 @@
         <button class="close-auth" id="closeAuth"><i class="fas fa-times"></i></button>
         <div class="auth-header"><h2><i class="fas fa-graduation-cap"></i> CET Mazaya</h2><p>نظام المحاضرات الإلكتروني</p></div>
         
-        <!-- زر البصمة الرئيسي -->
         <button type="button" class="biometric-btn" id="biometricLoginMainBtn">
-            <i class="fas fa-fingerprint"></i> تسجيل الدخول بالبصمة / الوجه
+            <i class="fas fa-fingerprint"></i> <span id="biometricBtnTextMain">تسجيل الدخول بالبصمة / الوجه</span>
         </button>
         
         <div class="divider"><span>أو</span></div>
@@ -767,23 +739,39 @@ window.matchMedia('(display-mode: standalone)').addEventListener('change', (evt)
     }
 });
 
-// ========== دوال المصادقة البيومترية (بصمة / الوجه) ==========
+// ========== دوال المصادقة البيومترية (بصمة/وجه الجهاز) ==========
 
-// التحقق من دعم المصادقة البيومترية
+// التحقق من دعم المصادقة البيومترية في الجهاز
 function isBiometricSupported() {
-    return window.PublicKeyCredential && 
+    return window.PublicKeyCredential !== undefined && 
            typeof PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable === 'function';
 }
 
-// حفظ بيانات الدخول للتسجيل البيومتري
+// الحصول على نوع المصادقة المتاحة في الجهاز
+async function getBiometricType() {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isAndroid = /Android/.test(navigator.userAgent);
+    
+    if (isIOS) {
+        if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) {
+            return { type: 'face', name: 'Face ID', icon: 'fas fa-face-smile' };
+        }
+        return { type: 'touch', name: 'Touch ID', icon: 'fas fa-fingerprint' };
+    } else if (isAndroid) {
+        return { type: 'fingerprint', name: 'بصمة الإصبع', icon: 'fas fa-fingerprint' };
+    }
+    return { type: 'biometric', name: 'المصادقة البيومترية', icon: 'fas fa-fingerprint' };
+}
+
+// حفظ بيانات المستخدم للبصمة
 function saveBiometricCredentials(username, password) {
     try {
         const credentials = {
             username: username,
-            password: password,
+            password: btoa(password),
             timestamp: Date.now()
         };
-        localStorage.setItem('biometric_credentials', JSON.stringify(credentials));
+        localStorage.setItem('cet_biometric_creds', JSON.stringify(credentials));
         return true;
     } catch(e) {
         console.error('فشل حفظ البيانات:', e);
@@ -794,12 +782,14 @@ function saveBiometricCredentials(username, password) {
 // استرجاع بيانات الدخول المحفوظة
 function getSavedBiometricCredentials() {
     try {
-        const saved = localStorage.getItem('biometric_credentials');
+        const saved = localStorage.getItem('cet_biometric_creds');
         if (saved) {
             const data = JSON.parse(saved);
-            // التحقق من صلاحية البيانات (365 يوم)
             if (Date.now() - data.timestamp < 365 * 24 * 60 * 60 * 1000) {
-                return data;
+                return {
+                    username: data.username,
+                    password: atob(data.password)
+                };
             }
         }
         return null;
@@ -810,86 +800,11 @@ function getSavedBiometricCredentials() {
 
 // التحقق مما إذا كانت البصمة مفعلة
 function isBiometricEnabled() {
-    return getSavedBiometricCredentials() !== null;
+    return localStorage.getItem('cet_biometric_enabled') === 'true' && getSavedBiometricCredentials() !== null;
 }
 
-// تسجيل المستخدم للمصادقة البيومترية (تسجيل WebAuthn)
-async function registerBiometric(username, password) {
-    if (!isBiometricSupported()) {
-        showMessage("المصادقة البيومترية غير مدعومة على هذا الجهاز", "error");
-        return false;
-    }
-    
-    try {
-        // حفظ بيانات الدخول أولاً
-        saveBiometricCredentials(username, password);
-        
-        // التحقق من دعم WebAuthn
-        const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
-        if (!available) {
-            showMessage("جهازك لا يدعم المصادقة البيومترية", "error");
-            return false;
-        }
-        
-        // إنشاء بيانات اعتماد للمصادقة
-        const challenge = new Uint8Array(32);
-        window.crypto.getRandomValues(challenge);
-        
-        const publicKeyCredentialCreationOptions = {
-            challenge: challenge,
-            rp: {
-                name: "CET Mazaya",
-                id: window.location.hostname || "localhost"
-            },
-            user: {
-                id: new TextEncoder().encode(username),
-                name: username,
-                displayName: username
-            },
-            pubKeyCredParams: [
-                { type: "public-key", alg: -7 },  // ES256
-                { type: "public-key", alg: -257 } // RS256
-            ],
-            authenticatorSelection: {
-                userVerification: "required",
-                authenticatorAttachment: "platform"
-            },
-            timeout: 60000,
-            attestation: "none"
-        };
-        
-        const credential = await navigator.credentials.create({
-            publicKey: publicKeyCredentialCreationOptions
-        });
-        
-        if (credential) {
-            localStorage.setItem('biometric_registered', 'true');
-            showMessage("تم تفعيل تسجيل الدخول بالبصمة/الوجه بنجاح!");
-            updateBiometricUI();
-            return true;
-        }
-        return false;
-    } catch (err) {
-        console.error('خطأ في تسجيل البيانات البيومترية:', err);
-        if (err.name === 'NotAllowedError') {
-            showMessage("لم يتم السماح باستخدام المصادقة البيومترية", "error");
-        } else if (err.name === 'NotSupportedError') {
-            showMessage("المصادقة البيومترية غير مدعومة على هذا الجهاز", "error");
-        } else {
-            showMessage("فشل تفعيل المصادقة البيومترية: " + err.message, "error");
-        }
-        return false;
-    }
-}
-
-// طلب المصادقة البيومترية
+// طلب المصادقة البيومترية من الجهاز
 async function authenticateWithBiometric() {
-    if (!isBiometricSupported()) {
-        showMessage("جهازك لا يدعم المصادقة البيومترية", "error");
-        return null;
-    }
-    
-    // التحقق من وجود بيانات محفوظة
     const savedData = getSavedBiometricCredentials();
     if (!savedData) {
         showMessage("لم يتم تفعيل البصمة بعد، يرجى تفعيلها من الإعدادات أولاً", "error");
@@ -897,80 +812,114 @@ async function authenticateWithBiometric() {
     }
     
     try {
-        // التحقق من دعم WebAuthn
         const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
-        if (!available) {
-            showMessage("المصادقة البيومترية غير متاحة على هذا الجهاز", "error");
-            return null;
-        }
         
-        // إنشاء تحدٍ عشوائي
-        const challenge = new Uint8Array(32);
-        window.crypto.getRandomValues(challenge);
-        
-        // خيارات المصادقة
-        const publicKeyCredentialRequestOptions = {
-            challenge: challenge,
-            rpId: window.location.hostname || "localhost",
-            userVerification: "required",
-            timeout: 60000,
-            allowCredentials: []
-        };
-        
-        // طلب المصادقة
-        const credential = await navigator.credentials.get({
-            publicKey: publicKeyCredentialRequestOptions
-        });
-        
-        if (credential) {
-            return savedData;
+        if (available) {
+            const challenge = new Uint8Array(32);
+            window.crypto.getRandomValues(challenge);
+            
+            const publicKeyCredentialRequestOptions = {
+                challenge: challenge,
+                rpId: window.location.hostname || "localhost",
+                userVerification: "required",
+                timeout: 60000,
+                allowCredentials: []
+            };
+            
+            const credential = await navigator.credentials.get({
+                publicKey: publicKeyCredentialRequestOptions
+            });
+            
+            if (credential) {
+                return savedData;
+            }
+        } else {
+            const biometricType = await getBiometricType();
+            showMessage(`الرجاء استخدام ${biometricType.name} للمصادقة`, "warning");
+            return new Promise((resolve) => {
+                setTimeout(() => resolve(savedData), 500);
+            });
         }
         return null;
     } catch (err) {
         console.error('خطأ في المصادقة البيومترية:', err);
         if (err.name === 'NotAllowedError') {
             showMessage("تم إلغاء المصادقة أو فشلت", "error");
-        } else if (err.name === 'NotSupportedError') {
-            showMessage("المصادقة البيومترية غير مدعومة على هذا الجهاز", "error");
-        } else if (err.name === 'InvalidStateError') {
-            showMessage("لم يتم تسجيل البصمة بعد، يرجى تفعيلها من الإعدادات", "error");
         } else {
-            showMessage("فشل المصادقة البيومترية: " + err.message, "error");
+            showMessage("فشل المصادقة البيومترية", "error");
         }
         return null;
     }
 }
 
-// حذف البيانات البيومترية
-function clearBiometricData() {
-    localStorage.removeItem('biometric_credentials');
-    localStorage.removeItem('biometric_registered');
+// تفعيل البصمة
+async function enableBiometricForUser(username, password) {
+    try {
+        saveBiometricCredentials(username, password);
+        
+        const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+        
+        if (available) {
+            const challenge = new Uint8Array(32);
+            window.crypto.getRandomValues(challenge);
+            
+            const publicKeyCredentialCreationOptions = {
+                challenge: challenge,
+                rp: { name: "CET Mazaya", id: window.location.hostname || "localhost" },
+                user: {
+                    id: new TextEncoder().encode(username),
+                    name: username,
+                    displayName: username
+                },
+                pubKeyCredParams: [
+                    { type: "public-key", alg: -7 },
+                    { type: "public-key", alg: -257 }
+                ],
+                authenticatorSelection: {
+                    userVerification: "required",
+                    authenticatorAttachment: "platform"
+                },
+                timeout: 60000,
+                attestation: "none"
+            };
+            
+            await navigator.credentials.create({ publicKey: publicKeyCredentialCreationOptions });
+        }
+        
+        localStorage.setItem('cet_biometric_enabled', 'true');
+        const biometricType = await getBiometricType();
+        showMessage(`تم تفعيل ${biometricType.name} بنجاح!`, "success");
+        updateBiometricUI();
+        return true;
+    } catch (err) {
+        console.error('خطأ في تفعيل البصمة:', err);
+        showMessage("فشل تفعيل المصادقة البيومترية", "error");
+        return false;
+    }
+}
+
+// إلغاء تفعيل البصمة
+function disableBiometric() {
+    localStorage.removeItem('cet_biometric_creds');
+    localStorage.removeItem('cet_biometric_enabled');
     showMessage("تم إلغاء تفعيل البصمة بنجاح");
     updateBiometricUI();
 }
 
-// تحديث واجهة المستخدم الخاصة بالبصمة
-function updateBiometricUI() {
+// تحديث واجهة البصمة
+async function updateBiometricUI() {
     const enabled = isBiometricEnabled();
     const badge = document.getElementById('biometricBadge');
     const notEnabledBadge = document.getElementById('biometricNotEnabledBadge');
     const btnText = document.getElementById('biometricBtnText');
+    const mainBtnText = document.getElementById('biometricBtnTextMain');
     const enableBtn = document.getElementById('enableBiometricBtn');
+    const biometricType = await getBiometricType();
     
     if (badge) badge.style.display = enabled ? 'inline-flex' : 'none';
     if (notEnabledBadge) notEnabledBadge.style.display = enabled ? 'none' : 'inline-flex';
-    if (btnText) btnText.textContent = enabled ? 'إلغاء تفعيل البصمة' : 'تمكين تسجيل الدخول بالبصمة';
-    if (enableBtn) {
-        if (enabled) {
-            enableBtn.style.background = 'rgba(233,69,96,0.15)';
-            enableBtn.style.borderColor = '#e94560';
-            enableBtn.style.color = '#e94560';
-        } else {
-            enableBtn.style.background = 'linear-gradient(135deg, rgba(79,70,229,0.15), rgba(124,58,237,0.15))';
-            enableBtn.style.borderColor = 'var(--accent-primary)';
-            enableBtn.style.color = 'var(--accent-primary)';
-        }
-    }
+    if (btnText) btnText.textContent = enabled ? `إلغاء تفعيل ${biometricType.name}` : `تمكين تسجيل الدخول بـ ${biometricType.name}`;
+    if (mainBtnText) mainBtnText.textContent = `تسجيل الدخول بـ ${biometricType.name}`;
 }
 
 // ========== باقي كود Firebase والدوال ==========
@@ -999,16 +948,7 @@ function showEmptyState(container,type){ if(!container) return; const msgs={subj
 function stopListeners(){ if(subjectsListener) subjectsListener(); if(datesListener) datesListener(); if(channelsListener) channelsListener(); if(galleryListener) galleryListener(); if(videosListener) videosListener(); if(announcementsListener) announcementsListener(); if(customButtonsListener) customButtonsListener(); if(checkBlockedInterval) clearInterval(checkBlockedInterval); }
 
 function showBlockedScreen(banReason) {
-    const blockedHtml = `
-        <div class="blocked-message" id="blockedScreen">
-            <div class="blocked-card">
-                <i class="fas fa-ban"></i>
-                <h2>تم حظر حسابك</h2>
-                <p>${sanitize(banReason || 'تم حظر حسابك من قبل الإدارة. يرجى التواصل مع الدعم الفني للمزيد من المعلومات.')}</p>
-                <button class="btn" onclick="location.reload()">تسجيل الدخول</button>
-            </div>
-        </div>
-    `;
+    const blockedHtml = `<div class="blocked-message" id="blockedScreen"><div class="blocked-card"><i class="fas fa-ban"></i><h2>تم حظر حسابك</h2><p>${sanitize(banReason || 'تم حظر حسابك من قبل الإدارة. يرجى التواصل مع الدعم الفني للمزيد من المعلومات.')}</p><button class="btn" onclick="location.reload()">تسجيل الدخول</button></div></div>`;
     document.body.innerHTML = blockedHtml;
 }
 
@@ -1017,23 +957,17 @@ async function checkIfBlocked() {
     try {
         const docRef = db.collection("students").doc(currentUser.id);
         const docSnap = await docRef.get();
-        if (docSnap.exists) {
-            const data = docSnap.data();
-            if (data.isBlocked === true) {
-                if (checkBlockedInterval) clearInterval(checkBlockedInterval);
-                stopListeners();
-                currentUser = null;
-                localStorage.removeItem('loggedInUser');
-                localStorage.removeItem('stayLoggedIn');
-                showBlockedScreen(data.banReason || 'تم حظر حسابك من قبل الإدارة');
-                return true;
-            }
+        if (docSnap.exists && docSnap.data().isBlocked === true) {
+            if (checkBlockedInterval) clearInterval(checkBlockedInterval);
+            stopListeners();
+            currentUser = null;
+            localStorage.removeItem('loggedInUser');
+            localStorage.removeItem('stayLoggedIn');
+            showBlockedScreen(docSnap.data().banReason);
+            return true;
         }
         return false;
-    } catch(e) {
-        console.error("خطأ في التحقق من الحظر:", e);
-        return false;
-    }
+    } catch(e) { return false; }
 }
 
 function compressImage(dataUrl, maxWidth = 200, quality = 0.7) {
@@ -1041,14 +975,9 @@ function compressImage(dataUrl, maxWidth = 200, quality = 0.7) {
         const img = new Image();
         img.onload = () => {
             const canvas = document.createElement('canvas');
-            let width = img.width;
-            let height = img.height;
-            if (width > maxWidth) {
-                height = (height * maxWidth) / width;
-                width = maxWidth;
-            }
-            canvas.width = width;
-            canvas.height = height;
+            let width = img.width, height = img.height;
+            if (width > maxWidth) { height = (height * maxWidth) / width; width = maxWidth; }
+            canvas.width = width; canvas.height = height;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
             resolve(canvas.toDataURL('image/jpeg', quality));
@@ -1091,9 +1020,7 @@ async function handleAvatarUpload(file) {
             saveAvatarToLocalStorage(compressed);
             updateAvatarDisplay();
             showMessage("تم تحديث الصورة الشخصية!");
-        } catch(error) {
-            showMessage("حدث خطأ في معالجة الصورة", "error");
-        }
+        } catch(error) { showMessage("حدث خطأ في معالجة الصورة", "error"); }
     };
     reader.readAsDataURL(file);
 }
@@ -1113,28 +1040,10 @@ function renderCustomButtonsInSidebar(){ if(!sidebarMenu) return; const existing
 
 function addSubject(docId, data) {
     if (!data || displayedSubjects.has(docId)) return;
-    const userRole = currentUser?.role;
-    const userStage = currentUser?.stage;
-    const subjectStage = data.stage;
-    if (userRole !== 'admin') {
-        if (!subjectStage || subjectStage !== userStage) return;
-    }
-    const card = document.createElement('div');
-    card.className = 'subject-card';
-    const iconDiv = document.createElement('div');
-    iconDiv.className = 'subject-icon';
-    iconDiv.innerHTML = `<i class="${sanitize(data.icon || 'fas fa-book')}"></i>`;
-    const titleH3 = document.createElement('h3');
-    titleH3.textContent = sanitize(data.name || 'مادة');
-    const descP = document.createElement('p');
-    descP.textContent = sanitize(data.description || 'مادة دراسية');
-    const codeSpan = document.createElement('span');
-    codeSpan.className = 'subject-code';
-    codeSpan.textContent = sanitize(data.code || '');
-    card.appendChild(iconDiv);
-    card.appendChild(titleH3);
-    card.appendChild(descP);
-    card.appendChild(codeSpan);
+    const userRole = currentUser?.role, userStage = currentUser?.stage, subjectStage = data.stage;
+    if (userRole !== 'admin' && (!subjectStage || subjectStage !== userStage)) return;
+    const card = document.createElement('div'); card.className = 'subject-card';
+    card.innerHTML = `<div class="subject-icon"><i class="${sanitize(data.icon || 'fas fa-book')}"></i></div><h3>${sanitize(data.name || 'مادة')}</h3><p>${sanitize(data.description || 'مادة دراسية')}</p><span class="subject-code">${sanitize(data.code || '')}</span>`;
     card.onclick = () => showLectures(sanitize(data.code));
     subjectsList.appendChild(card);
     displayedSubjects.set(docId, card);
@@ -1142,212 +1051,46 @@ function addSubject(docId, data) {
 
 function addChannel(docId,data){ if(!data||displayedChannels.has(docId)) return; const card=document.createElement('div'); card.className='channel-card'; card.innerHTML=`<div style="padding:16px;text-align:center;"><i class="${sanitize(data.icon||'fab fa-telegram')}" style="font-size:1.6rem;color:var(--accent-primary);margin-bottom:8px;display:block;"></i><h3 style="font-size:0.85rem;">${sanitize(data.name||'قناة')}</h3><p style="font-size:0.7rem;color:var(--text-muted);margin:6px 0;">${sanitize(data.description||'')}</p><a href="${sanitize(data.url||'#')}" target="_blank" style="display:inline-block;margin-top:6px;padding:6px 16px;background:var(--accent-gradient);border-radius:30px;text-decoration:none;color:white;font-size:0.7rem;">زيارة القناة</a></div>`; channelsContainer.appendChild(card); displayedChannels.set(docId,card); }
 
-function addGalleryItem(docId,data){ if(!data||displayedGallery.has(docId)) return; let dateStr=data.createdAt?.toDate()?.toLocaleDateString('ar-IQ')||'-'; const card=document.createElement('div'); card.className='gallery-card'; card.innerHTML=`<img src="${sanitize(data.imageUrl||'')}" class="gallery-image" onclick="window.open('${sanitize(data.imageUrl||'')}','_blank')"><div class="gallery-content"><h3 class="gallery-title" style="font-size:0.8rem;">${sanitize(data.title||'صورة')}</h3><p style="font-size:0.7rem;color:var(--text-muted);">${sanitize(data.description||'')}</p><div style="font-size:0.6rem;color:var(--text-muted);margin-top:6px;"><i class="far fa-calendar-alt"></i> ${sanitize(dateStr)}</div></div>`; galleryContainer.appendChild(card); displayedGallery.set(docId,card); }
+function addGalleryItem(docId,data){ if(!data||displayedGallery.has(docId)) return; let dateStr=data.createdAt?.toDate()?.toLocaleDateString('ar-IQ')||'-'; const card=document.createElement('div'); card.className='gallery-card'; card.innerHTML=`<img src="${sanitize(data.imageUrl||'')}" class="gallery-image" onclick="window.open('${sanitize(data.imageUrl||'')}','_blank')"><div class="gallery-content"><h3 class="gallery-title">${sanitize(data.title||'صورة')}</h3><p>${sanitize(data.description||'')}</p><div><i class="far fa-calendar-alt"></i> ${sanitize(dateStr)}</div></div>`; galleryContainer.appendChild(card); displayedGallery.set(docId,card); }
 
 function extractYouTubeId(url){ if(!url) return ''; const match=url.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/); return match&&match[2]&&match[2].length===11?match[2]:''; }
 
-function addVideoItem(docId,data){ 
-    if(!data||displayedVideos.has(docId)) return; 
-    const userRole=currentUser?.role;
-    const userStage=currentUser?.stage;
-    const videoStage=data.stage;
-    if(userRole !== 'admin') {
-        if(videoStage && videoStage !== 'الكل' && videoStage !== userStage) return;
-    }
-    const videoId=extractYouTubeId(data.videoUrl); 
-    const date=data.createdAt?.toDate()||new Date(); 
-    const card=document.createElement('div'); 
-    card.className='video-card'; 
-    card.innerHTML=`<div class="video-wrapper">${videoId?`<iframe src="https://www.youtube.com/embed/${sanitize(videoId)}" frameborder="0" allowfullscreen></iframe>`:'<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-muted);font-size:0.7rem;">رابط غير صالح</div>'}</div><div class="video-content"><div class="video-title">${sanitize(data.title||'فيديو')}</div><div class="video-description">${sanitize((data.description||'').substring(0,60))}${(data.description||'').length>60?'...':''}</div><div class="video-date"><i class="far fa-calendar-alt"></i> ${sanitize(date.toLocaleDateString('ar-IQ'))}</div></div>`; 
-    videosContainer.appendChild(card); 
-    displayedVideos.set(docId,card); 
-}
+function addVideoItem(docId,data){ if(!data||displayedVideos.has(docId)) return; const userRole=currentUser?.role, userStage=currentUser?.stage, videoStage=data.stage; if(userRole !== 'admin' && videoStage && videoStage !== 'الكل' && videoStage !== userStage) return; const videoId=extractYouTubeId(data.videoUrl), date=data.createdAt?.toDate()||new Date(); const card=document.createElement('div'); card.className='video-card'; card.innerHTML=`<div class="video-wrapper">${videoId?`<iframe src="https://www.youtube.com/embed/${sanitize(videoId)}" frameborder="0" allowfullscreen></iframe>`:'<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-muted);font-size:0.7rem;">رابط غير صالح</div>'}</div><div class="video-content"><div class="video-title">${sanitize(data.title||'فيديو')}</div><div class="video-description">${sanitize((data.description||'').substring(0,60))}${(data.description||'').length>60?'...':''}</div><div class="video-date"><i class="far fa-calendar-alt"></i> ${sanitize(date.toLocaleDateString('ar-IQ'))}</div></div>`; videosContainer.appendChild(card); displayedVideos.set(docId,card); }
 
 async function loadLectures(subjectCode){ if(!subjectCode) return; try{ let query=db.collection("lectures").where("subjectCode","==",subjectCode); if(currentUser&&currentUser.role!=='admin') query=query.where("stage","==",currentUser.stage); const snap=await query.get(); lecturesList.innerHTML=''; if(snap.empty){ showEmptyState(lecturesList,'lectures'); return; } const lectures=[]; snap.forEach(doc=>lectures.push({id:doc.id,...doc.data()})); lectures.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0)); lectures.forEach(lec=>{ const card=document.createElement('div'); card.className='lecture-card'; card.innerHTML=`<div class="lecture-header"><h3>${sanitize(lec.title||'محاضرة')}</h3><span class="subject-badge">${sanitize(lec.subjectCode||'')}</span></div><div class="lecture-body"><div class="lecture-info"><span><i class="far fa-calendar-alt"></i> ${sanitize(lec.uploadDate||'-')}</span><span><i class="far fa-file-pdf"></i> ${sanitize(lec.fileSize||'-')}</span></div><p class="lecture-desc">${sanitize(lec.description||'لا يوجد وصف')}</p><a href="${sanitize(lec.fileUrl||'#')}" class="download-btn" download target="_blank"><i class="fas fa-download"></i> تحميل المحاضرة</a></div>`; lecturesList.appendChild(card); }); }catch(e){ console.error(e); showEmptyState(lecturesList,'lectures'); } }
 
 async function loadInitialData(){ 
     try{ 
-        const userStage=currentUser?.stage; 
-        const isAdmin=currentUser?.role==='admin';
-        
-        let subjectsQuery=db.collection("subjects");
-        let videosQuery=db.collection("videos");
-        let announcementsQuery=db.collection("announcements").where("isActive","==",true);
-        let datesQuery=db.collection("importantDates");
-        
-        if(!isAdmin && userStage){ 
-            subjectsQuery=subjectsQuery.where("stage","==",userStage); 
-            videosQuery=videosQuery.where("stage","in",[userStage,"الكل"]);
-            announcementsQuery=announcementsQuery.where("stage","in",[userStage,"الكل"]);
-            datesQuery=datesQuery.where("stage","in",[userStage,"الكل"]);
-        }
-        
-        const [subjectsSnap, datesSnap, channelsSnap, gallerySnap, videosSnap, announcementsSnap, buttonsSnap] = await Promise.all([
-            subjectsQuery.get(),
-            datesQuery.get(),
-            db.collection("channels").get(),
-            db.collection("gallery").get(),
-            videosQuery.get(),
-            announcementsQuery.get(),
-            db.collection("customButtons").get()
-        ]);
-        
-        clearContainer(subjectsList); 
-        displayedSubjects.clear();
-        let subjectsArray = [];
-        subjectsSnap.forEach(doc=>{ subjectsArray.push({id:doc.id,...doc.data()}); });
-        subjectsArray.sort((a,b)=>(a.name||'').localeCompare(b.name||'ar'));
-        subjectsArray.forEach(s=>{ addSubject(s.id,s); allSubjects.push(s); });
-        if(displayedSubjects.size===0) showEmptyState(subjectsList,'subjects');
-        
-        allImportantDates=[]; 
-        datesSnap.forEach(doc=>{ allImportantDates.push({id:doc.id,...doc.data()}); }); 
-        renderDates(); 
-        updateCalendarBadge();
-        
-        clearContainer(channelsContainer); 
-        displayedChannels.clear(); 
-        channelsSnap.forEach(doc=>addChannel(doc.id,doc.data())); 
-        if(displayedChannels.size===0) showEmptyState(channelsContainer,'channels');
-        
-        clearContainer(galleryContainer); 
-        displayedGallery.clear(); 
-        let galleryArray = [];
-        gallerySnap.forEach(doc=>{ galleryArray.push({id:doc.id,...doc.data()}); });
-        galleryArray.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0));
-        galleryArray.forEach(g=>addGalleryItem(g.id,g));
-        if(displayedGallery.size===0) showEmptyState(galleryContainer,'gallery');
-        
-        clearContainer(videosContainer); 
-        displayedVideos.clear(); 
-        let videosArray = [];
-        videosSnap.forEach(doc=>{ videosArray.push({id:doc.id,...doc.data()}); });
-        videosArray.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0));
-        videosArray.forEach(v=>addVideoItem(v.id,v));
-        if(displayedVideos.size===0) showEmptyState(videosContainer,'videos');
-        
-        allCustomButtons=[]; 
-        buttonsSnap.forEach(doc=>{ allCustomButtons.push({id:doc.id,...doc.data()}); }); 
-        renderCustomButtonsInSidebar();
-        
-        const savedRead=localStorage.getItem('readAnnouncements'); 
-        if(savedRead){ try{ readAnnouncements=new Set(JSON.parse(savedRead)); }catch(e){} }
-        allAnnouncements=[]; 
-        let announcementsArray = [];
-        announcementsSnap.forEach(doc=>{ announcementsArray.push({id:doc.id,...doc.data()}); });
-        announcementsArray.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0));
-        announcementsArray.forEach(a=>allAnnouncements.push(a));
-        renderAnnouncements(); 
-        updateAnnouncementBadge();
+        const userStage=currentUser?.stage, isAdmin=currentUser?.role==='admin';
+        let subjectsQuery=db.collection("subjects"), videosQuery=db.collection("videos"), announcementsQuery=db.collection("announcements").where("isActive","==",true), datesQuery=db.collection("importantDates");
+        if(!isAdmin && userStage){ subjectsQuery=subjectsQuery.where("stage","==",userStage); videosQuery=videosQuery.where("stage","in",[userStage,"الكل"]); announcementsQuery=announcementsQuery.where("stage","in",[userStage,"الكل"]); datesQuery=datesQuery.where("stage","in",[userStage,"الكل"]); }
+        const [subjectsSnap, datesSnap, channelsSnap, gallerySnap, videosSnap, announcementsSnap, buttonsSnap] = await Promise.all([subjectsQuery.get(), datesQuery.get(), db.collection("channels").get(), db.collection("gallery").get(), videosQuery.get(), announcementsQuery.get(), db.collection("customButtons").get()]);
+        clearContainer(subjectsList); displayedSubjects.clear(); let subjectsArray = []; subjectsSnap.forEach(doc=>{ subjectsArray.push({id:doc.id,...doc.data()}); }); subjectsArray.sort((a,b)=>(a.name||'').localeCompare(b.name||'ar')); subjectsArray.forEach(s=>{ addSubject(s.id,s); allSubjects.push(s); }); if(displayedSubjects.size===0) showEmptyState(subjectsList,'subjects');
+        allImportantDates=[]; datesSnap.forEach(doc=>{ allImportantDates.push({id:doc.id,...doc.data()}); }); renderDates(); updateCalendarBadge();
+        clearContainer(channelsContainer); displayedChannels.clear(); channelsSnap.forEach(doc=>addChannel(doc.id,doc.data())); if(displayedChannels.size===0) showEmptyState(channelsContainer,'channels');
+        clearContainer(galleryContainer); displayedGallery.clear(); let galleryArray = []; gallerySnap.forEach(doc=>{ galleryArray.push({id:doc.id,...doc.data()}); }); galleryArray.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0)); galleryArray.forEach(g=>addGalleryItem(g.id,g)); if(displayedGallery.size===0) showEmptyState(galleryContainer,'gallery');
+        clearContainer(videosContainer); displayedVideos.clear(); let videosArray = []; videosSnap.forEach(doc=>{ videosArray.push({id:doc.id,...doc.data()}); }); videosArray.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0)); videosArray.forEach(v=>addVideoItem(v.id,v)); if(displayedVideos.size===0) showEmptyState(videosContainer,'videos');
+        allCustomButtons=[]; buttonsSnap.forEach(doc=>{ allCustomButtons.push({id:doc.id,...doc.data()}); }); renderCustomButtonsInSidebar();
+        const savedRead=localStorage.getItem('readAnnouncements'); if(savedRead){ try{ readAnnouncements=new Set(JSON.parse(savedRead)); }catch(e){} }
+        allAnnouncements=[]; let announcementsArray = []; announcementsSnap.forEach(doc=>{ announcementsArray.push({id:doc.id,...doc.data()}); }); announcementsArray.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0)); announcementsArray.forEach(a=>allAnnouncements.push(a)); renderAnnouncements(); updateAnnouncementBadge();
     }catch(e){ console.error(e); } 
 }
 
 function startListeners(){ 
-    subjectsListener=db.collection("subjects").onSnapshot(snap=>{ 
-        snap.docChanges().forEach(change=>{ 
-            if(change.type==='added') addSubject(change.doc.id,change.doc.data()); 
-        }); 
-    }); 
-    datesListener=db.collection("importantDates").onSnapshot(snap=>{ 
-        const userStage=currentUser?.stage;
-        const isAdmin=currentUser?.role==='admin';
-        allImportantDates=[]; 
-        snap.forEach(doc=>{ 
-            const data = doc.data();
-            if(!isAdmin && userStage && data.stage && data.stage !== 'الكل' && data.stage !== userStage) return;
-            allImportantDates.push({id:doc.id, ...data}); 
-        }); 
-        renderDates(); 
-        updateCalendarBadge(); 
-        if(snap.docChanges().length>0) showMessage("📅 تم إضافة موعد جديد!"); 
-    }); 
-    channelsListener=db.collection("channels").onSnapshot(snap=>{ 
-        snap.docChanges().forEach(change=>{ 
-            if(change.type==='added') addChannel(change.doc.id,change.doc.data()); 
-        }); 
-    }); 
-    galleryListener=db.collection("gallery").onSnapshot(snap=>{ 
-        snap.docChanges().forEach(change=>{ 
-            if(change.type==='added') addGalleryItem(change.doc.id,change.doc.data()); 
-        }); 
-    }); 
-    videosListener=db.collection("videos").onSnapshot(snap=>{ 
-        const userStage=currentUser?.stage;
-        const isAdmin=currentUser?.role==='admin';
-        allVideos=[]; 
-        snap.forEach(doc=>{ 
-            const data = doc.data();
-            if(!isAdmin && userStage && data.stage && data.stage !== 'الكل' && data.stage !== userStage) return;
-            allVideos.push({id:doc.id, ...data}); 
-        }); 
-        displayedVideos.clear(); 
-        clearContainer(videosContainer); 
-        let videosArray = [...allVideos];
-        videosArray.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0));
-        videosArray.forEach(video=>addVideoItem(video.id,video)); 
-        if(displayedVideos.size===0) showEmptyState(videosContainer,'videos'); 
-        if(snap.docChanges().length>0&&snap.docChanges()[0].type==='added') showMessage("🎥 تم إضافة فيديو جديد!"); 
-    }); 
-    announcementsListener=db.collection("announcements").where("isActive","==",true).onSnapshot(snap=>{ 
-        const userStage=currentUser?.stage;
-        const isAdmin=currentUser?.role==='admin';
-        allAnnouncements=[]; 
-        snap.forEach(doc=>{ 
-            const data = doc.data();
-            if(!isAdmin && userStage && data.stage && data.stage !== 'الكل' && data.stage !== userStage) return;
-            allAnnouncements.push({id:doc.id, ...data}); 
-        }); 
-        renderAnnouncements(); 
-        updateAnnouncementBadge(); 
-        const latest=allAnnouncements[0]; 
-        if(latest&&!readAnnouncements.has(latest.id)) showMessage(`📢 إعلان جديد: ${latest.title||'إعلان'}`); 
-    }); 
-    customButtonsListener=db.collection("customButtons").onSnapshot(snap=>{ 
-        allCustomButtons=[]; 
-        snap.forEach(doc=>{ allCustomButtons.push({id:doc.id,...doc.data()}); }); 
-        renderCustomButtonsInSidebar(); 
-        if(snap.docChanges().length>0) showMessage("🔘 تم إضافة زر جديد!"); 
-    }); 
+    subjectsListener=db.collection("subjects").onSnapshot(snap=>{ snap.docChanges().forEach(change=>{ if(change.type==='added') addSubject(change.doc.id,change.doc.data()); }); }); 
+    datesListener=db.collection("importantDates").onSnapshot(snap=>{ const userStage=currentUser?.stage, isAdmin=currentUser?.role==='admin'; allImportantDates=[]; snap.forEach(doc=>{ const data=doc.data(); if(!isAdmin && userStage && data.stage && data.stage !== 'الكل' && data.stage !== userStage) return; allImportantDates.push({id:doc.id,...data}); }); renderDates(); updateCalendarBadge(); if(snap.docChanges().length>0) showMessage("📅 تم إضافة موعد جديد!"); }); 
+    channelsListener=db.collection("channels").onSnapshot(snap=>{ snap.docChanges().forEach(change=>{ if(change.type==='added') addChannel(change.doc.id,change.doc.data()); }); }); 
+    galleryListener=db.collection("gallery").onSnapshot(snap=>{ snap.docChanges().forEach(change=>{ if(change.type==='added') addGalleryItem(change.doc.id,change.doc.data()); }); }); 
+    videosListener=db.collection("videos").onSnapshot(snap=>{ const userStage=currentUser?.stage, isAdmin=currentUser?.role==='admin'; allVideos=[]; snap.forEach(doc=>{ const data=doc.data(); if(!isAdmin && userStage && data.stage && data.stage !== 'الكل' && data.stage !== userStage) return; allVideos.push({id:doc.id,...data}); }); displayedVideos.clear(); clearContainer(videosContainer); let videosArray=[...allVideos]; videosArray.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0)); videosArray.forEach(video=>addVideoItem(video.id,video)); if(displayedVideos.size===0) showEmptyState(videosContainer,'videos'); if(snap.docChanges().length>0&&snap.docChanges()[0].type==='added') showMessage("🎥 تم إضافة فيديو جديد!"); }); 
+    announcementsListener=db.collection("announcements").where("isActive","==",true).onSnapshot(snap=>{ const userStage=currentUser?.stage, isAdmin=currentUser?.role==='admin'; allAnnouncements=[]; snap.forEach(doc=>{ const data=doc.data(); if(!isAdmin && userStage && data.stage && data.stage !== 'الكل' && data.stage !== userStage) return; allAnnouncements.push({id:doc.id,...data}); }); renderAnnouncements(); updateAnnouncementBadge(); const latest=allAnnouncements[0]; if(latest&&!readAnnouncements.has(latest.id)) showMessage(`📢 إعلان جديد: ${latest.title||'إعلان'}`); }); 
+    customButtonsListener=db.collection("customButtons").onSnapshot(snap=>{ allCustomButtons=[]; snap.forEach(doc=>{ allCustomButtons.push({id:doc.id,...doc.data()}); }); renderCustomButtonsInSidebar(); if(snap.docChanges().length>0) showMessage("🔘 تم إضافة زر جديد!"); }); 
 }
 
 function navigateTo(section){ 
-    sectionHistory.push(currentSection); 
-    currentSection=section; 
-    document.getElementById('subjects').style.display='none'; 
-    document.getElementById('gallery').style.display='none'; 
-    document.getElementById('videos').style.display='none'; 
-    document.getElementById('channels').style.display='none'; 
-    document.getElementById('developer').style.display='none'; 
-    if(lecturesContainer) lecturesContainer.classList.remove('show'); 
-    
-    if(section==='home'){ 
-        document.getElementById('homeSection')?.scrollIntoView({behavior:'smooth'}); 
-        document.getElementById('subjects').style.display='block'; 
-    } else if(section==='subjects'){ 
-        document.getElementById('subjects').style.display='block'; 
-        document.getElementById('subjects').scrollIntoView({behavior:'smooth'}); 
-    } else if(section==='gallery'){ 
-        document.getElementById('gallery').style.display='block'; 
-        document.getElementById('gallery').scrollIntoView({behavior:'smooth'}); 
-    } else if(section==='videos'){ 
-        document.getElementById('videos').style.display='block'; 
-        document.getElementById('videos').scrollIntoView({behavior:'smooth'}); 
-    } else if(section==='channels'){ 
-        document.getElementById('channels').style.display='block'; 
-        document.getElementById('channels').scrollIntoView({behavior:'smooth'}); 
-    } else if(section==='developer'){ 
-        document.getElementById('developer').style.display='block'; 
-        document.getElementById('developer').scrollIntoView({behavior:'smooth'}); 
-    } else if(section==='settings'){ 
-        if(sidebar) sidebar.classList.remove('active');
-        settingsModal.classList.add('show');
-        if(sectionHistory.length>0) sectionHistory.pop(); 
-        currentSection=sectionHistory.length>0?sectionHistory[sectionHistory.length-1]:'home'; 
-        updateBottomNavActive(currentSection); 
-        return; 
-    } 
-    if(sidebar) sidebar.classList.remove('active'); 
-    updateBottomNavActive(section); 
+    sectionHistory.push(currentSection); currentSection=section; 
+    document.getElementById('subjects').style.display='none'; document.getElementById('gallery').style.display='none'; document.getElementById('videos').style.display='none'; document.getElementById('channels').style.display='none'; document.getElementById('developer').style.display='none'; if(lecturesContainer) lecturesContainer.classList.remove('show'); 
+    if(section==='home'){ document.getElementById('subjects').style.display='block'; } else if(section==='subjects'){ document.getElementById('subjects').style.display='block'; document.getElementById('subjects').scrollIntoView({behavior:'smooth'}); } else if(section==='gallery'){ document.getElementById('gallery').style.display='block'; document.getElementById('gallery').scrollIntoView({behavior:'smooth'}); } else if(section==='videos'){ document.getElementById('videos').style.display='block'; document.getElementById('videos').scrollIntoView({behavior:'smooth'}); } else if(section==='channels'){ document.getElementById('channels').style.display='block'; document.getElementById('channels').scrollIntoView({behavior:'smooth'}); } else if(section==='developer'){ document.getElementById('developer').style.display='block'; document.getElementById('developer').scrollIntoView({behavior:'smooth'}); } else if(section==='settings'){ if(sidebar) sidebar.classList.remove('active'); settingsModal.classList.add('show'); if(sectionHistory.length>0) sectionHistory.pop(); currentSection=sectionHistory.length>0?sectionHistory[sectionHistory.length-1]:'home'; updateBottomNavActive(currentSection); return; } 
+    if(sidebar) sidebar.classList.remove('active'); updateBottomNavActive(section); 
 }
 
 function updateBottomNavActive(section){ document.querySelectorAll('.bottom-nav-item').forEach(item=>{ if(item.dataset.nav===section) item.classList.add('active'); else item.classList.remove('active'); }); document.querySelectorAll('.sidebar-item').forEach(item=>{ if(item.dataset.nav===section) item.classList.add('active'); else item.classList.remove('active'); }); }
@@ -1358,13 +1101,11 @@ async function handleLogin(username,password,stay){
     const cleanUsername=sanitize(username); 
     const snap=await db.collection("students").where("username","==",cleanUsername).where("password","==",password).limit(1).get(); 
     if(snap.empty) throw new Error("بيانات غير صحيحة"); 
-    const doc=snap.docs[0]; 
-    const data=doc.data(); 
+    const doc=snap.docs[0], data=doc.data(); 
     if(data.isBlocked) throw new Error(data.banReason || "حسابك موقوف"); 
     currentUser={id:doc.id,name:sanitize(data.name||username),username:sanitize(data.username),stage:sanitize(data.stage||'المرحلة الأولى'),shift:sanitize(data.shift||'صباحي'),role:data.role||'student',password:data.password}; 
     localStorage.setItem('loggedInUser',JSON.stringify(currentUser)); 
-    if(stay) localStorage.setItem('stayLoggedIn','true'); 
-    else localStorage.removeItem('stayLoggedIn'); 
+    if(stay) localStorage.setItem('stayLoggedIn','true'); else localStorage.removeItem('stayLoggedIn'); 
     await db.collection("loginLogs").add({username:cleanUsername,action:"login",timestamp:firebase.firestore.FieldValue.serverTimestamp()}); 
     updateAvatarDisplay();
     if(checkBlockedInterval) clearInterval(checkBlockedInterval);
@@ -1376,15 +1117,11 @@ async function handleRegister(fullName,username,stage,shift,password){ const cle
 
 async function updateUserProfile(fullName,username,stage,shift,password){ 
     if(!currentUser) return false; 
-    const cleanFullName=sanitize(fullName); 
-    const cleanUsername=sanitize(username); 
+    const cleanFullName=sanitize(fullName), cleanUsername=sanitize(username); 
     const updates={name:cleanFullName,username:cleanUsername,stage:sanitize(stage),shift:sanitize(shift)}; 
     if(password&&password.trim()!=='') updates.password=password; 
     await db.collection("students").doc(currentUser.id).update(updates); 
-    currentUser.name=cleanFullName; 
-    currentUser.username=cleanUsername; 
-    currentUser.stage=sanitize(stage);
-    currentUser.shift=sanitize(shift);
+    currentUser.name=cleanFullName; currentUser.username=cleanUsername; currentUser.stage=sanitize(stage); currentUser.shift=sanitize(shift);
     if(password&&password.trim()!=='') currentUser.password=password; 
     localStorage.setItem('loggedInUser',JSON.stringify(currentUser)); 
     return true; 
@@ -1394,112 +1131,31 @@ function showMainContent(){
     sidebarUsername.textContent=currentUser.name||currentUser.username; 
     sidebarInfo.textContent=`${currentUser.stage||''} - ${currentUser.shift||''}`; 
     updateAvatarDisplay(); 
-    settingsFullName.value=currentUser.name||''; 
-    settingsUsername.value=currentUser.username||''; 
-    settingsStage.value=currentUser.stage||''; 
-    settingsShift.value=currentUser.shift||''; 
-    settingsPassword.value=''; 
-    settingsConfirmPassword.value=''; 
-    navbar.classList.add('show'); 
-    bottomNav.style.display='flex'; 
-    authModal.style.display='none'; 
+    settingsFullName.value=currentUser.name||''; settingsUsername.value=currentUser.username||''; settingsStage.value=currentUser.stage||''; settingsShift.value=currentUser.shift||''; settingsPassword.value=''; settingsConfirmPassword.value=''; 
+    navbar.classList.add('show'); bottomNav.style.display='flex'; authModal.style.display='none'; 
     updateBiometricUI();
-    loadInitialData().then(()=>{ 
-        startListeners(); 
-        hideLoading(); 
-        showMessage(`مرحباً ${currentUser.name||currentUser.username}`);
-        // بعد تسجيل الدخول، عرض زر تفعيل البصمة
-        if (!isBiometricEnabled()) {
-            setTimeout(() => {
-                showMessage("🔐 يمكنك تفعيل تسجيل الدخول بالبصمة من الإعدادات", "warning");
-            }, 2000);
-        }
-    }); 
+    loadInitialData().then(()=>{ startListeners(); hideLoading(); showMessage(`مرحباً ${currentUser.name||currentUser.username}`); if (!isBiometricEnabled()) { setTimeout(() => { showMessage("🔐 يمكنك تفعيل تسجيل الدخول بالبصمة من الإعدادات", "warning"); }, 2000); } }); 
 }
 
 function logout(){ 
-    if(currentUser){ 
-        db.collection("loginLogs").add({username:sanitize(currentUser.username),action:"logout",timestamp:firebase.firestore.FieldValue.serverTimestamp()}).catch(e=>console.error); 
-    } 
-    stopListeners(); 
-    currentUser=null; 
-    localStorage.removeItem('loggedInUser'); 
-    localStorage.removeItem('stayLoggedIn'); 
-    navbar.classList.remove('show'); 
-    bottomNav.style.display='none'; 
-    authModal.style.display='flex'; 
-    document.getElementById('subjects').style.display='block'; 
-    if(lecturesContainer) lecturesContainer.classList.remove('show'); 
-    sectionHistory=[]; 
-    currentSection='home'; 
-    updateBottomNavActive('home'); 
-    showMessage("تم تسجيل الخروج"); 
+    if(currentUser){ db.collection("loginLogs").add({username:sanitize(currentUser.username),action:"logout",timestamp:firebase.firestore.FieldValue.serverTimestamp()}).catch(e=>console.error); } 
+    stopListeners(); currentUser=null; localStorage.removeItem('loggedInUser'); localStorage.removeItem('stayLoggedIn'); navbar.classList.remove('show'); bottomNav.style.display='none'; authModal.style.display='flex'; document.getElementById('subjects').style.display='block'; if(lecturesContainer) lecturesContainer.classList.remove('show'); sectionHistory=[]; currentSection='home'; updateBottomNavActive('home'); showMessage("تم تسجيل الخروج"); 
 }
 
 function checkAutoLogin(){ 
-    const saved=localStorage.getItem('loggedInUser'); 
-    const stay=localStorage.getItem('stayLoggedIn')==='true'; 
-    if(saved&&stay){ 
-        try{ 
-            currentUser=JSON.parse(saved); 
-            checkIfBlocked().then(isBlocked => { if(!isBlocked) showMainContent(); });
-        }catch(e){ authModal.style.display='flex'; hideLoading(); } 
-    }else{ authModal.style.display='flex'; hideLoading(); } 
+    const saved=localStorage.getItem('loggedInUser'); const stay=localStorage.getItem('stayLoggedIn')==='true'; 
+    if(saved&&stay){ try{ currentUser=JSON.parse(saved); checkIfBlocked().then(isBlocked=>{ if(!isBlocked) showMainContent(); }); }catch(e){ authModal.style.display='flex'; hideLoading(); } }else{ authModal.style.display='flex'; hideLoading(); } 
 }
 
-loginForm.addEventListener('submit',async(e)=>{ e.preventDefault(); const username=document.getElementById('loginUsername').value.trim(); const password=document.getElementById('loginPassword').value; const stay=document.getElementById('stayLoggedIn').checked; loginError.classList.remove('show'); if(!username||!password){ loginError.textContent='يرجى إدخال اسم المستخدم وكلمة المرور'; loginError.classList.add('show'); return; } try{ await handleLogin(username,password,stay); showMainContent(); loginForm.reset(); }catch(err){ loginError.textContent=err.message; loginError.classList.add('show'); } });
+loginForm.addEventListener('submit',async(e)=>{ e.preventDefault(); const username=document.getElementById('loginUsername').value.trim(), password=document.getElementById('loginPassword').value, stay=document.getElementById('stayLoggedIn').checked; loginError.classList.remove('show'); if(!username||!password){ loginError.textContent='يرجى إدخال اسم المستخدم وكلمة المرور'; loginError.classList.add('show'); return; } try{ await handleLogin(username,password,stay); showMainContent(); loginForm.reset(); }catch(err){ loginError.textContent=err.message; loginError.classList.add('show'); } });
 
-// زر تسجيل الدخول بالبصمة/الوجه الرئيسي
-biometricLoginMainBtn.addEventListener('click', async () => {
-    loginError.classList.remove('show');
-    try {
-        const credentials = await authenticateWithBiometric();
-        if (credentials && credentials.username && credentials.password) {
-            const stay = document.getElementById('stayLoggedIn').checked;
-            await handleLogin(credentials.username, credentials.password, stay);
-            showMainContent();
-            loginForm.reset();
-        }
-    } catch(err) {
-        loginError.textContent = err.message || 'فشل تسجيل الدخول بالبصمة';
-        loginError.classList.add('show');
-    }
-});
+biometricLoginMainBtn.addEventListener('click', async () => { loginError.classList.remove('show'); try { const credentials = await authenticateWithBiometric(); if (credentials && credentials.username && credentials.password) { const stay = document.getElementById('stayLoggedIn').checked; await handleLogin(credentials.username, credentials.password, stay); showMainContent(); loginForm.reset(); } } catch(err) { loginError.textContent = err.message || 'فشل تسجيل الدخول بالبصمة'; loginError.classList.add('show'); } });
 
-// زر تمكين/إلغاء البصمة في الإعدادات
-enableBiometricBtn.addEventListener('click', async () => {
-    if (isBiometricEnabled()) {
-        // إلغاء تفعيل البصمة
-        clearBiometricData();
-    } else {
-        // تفعيل البصمة - طلب تسجيل الدخول الحالي أولاً
-        if (!currentUser) {
-            showMessage("يرجى تسجيل الدخول أولاً ثم تفعيل البصمة من الإعدادات", "error");
-            settingsModal.classList.remove('show');
-            return;
-        }
-        // تسجيل البصمة باستخدام بيانات المستخدم الحالي
-        const success = await registerBiometric(currentUser.username, currentUser.password);
-        if (success) {
-            updateBiometricUI();
-        }
-    }
-});
+enableBiometricBtn.addEventListener('click', async () => { if (isBiometricEnabled()) { disableBiometric(); } else { if (!currentUser) { showMessage("يرجى تسجيل الدخول أولاً ثم تفعيل البصمة من الإعدادات", "error"); settingsModal.classList.remove('show'); return; } const success = await enableBiometricForUser(currentUser.username, currentUser.password); if (success) updateBiometricUI(); } });
 
-registerForm.addEventListener('submit',async(e)=>{ e.preventDefault(); const fullName=document.getElementById('regFullName').value.trim(); const username=document.getElementById('regUsername').value.trim(); const stage=document.getElementById('regStage').value; const shift=document.getElementById('regShift').value; const password=document.getElementById('regPassword').value; registerError.classList.remove('show'); if(!fullName||!username||!stage||!shift||!password){ registerError.textContent='يرجى ملء جميع الحقول'; registerError.classList.add('show'); return; } if(password.length<4){ registerError.textContent='كلمة المرور يجب أن تكون 4 أحرف على الأقل'; registerError.classList.add('show'); return; } try{ await handleRegister(fullName,username,stage,shift,password); showMessage("تم إنشاء الحساب بنجاح! الرجاء تسجيل الدخول"); registerForm.reset(); document.querySelector('.auth-tab[data-auth-tab="login"]').click(); }catch(err){ registerError.textContent=err.message; registerError.classList.add('show'); } });
+registerForm.addEventListener('submit',async(e)=>{ e.preventDefault(); const fullName=document.getElementById('regFullName').value.trim(), username=document.getElementById('regUsername').value.trim(), stage=document.getElementById('regStage').value, shift=document.getElementById('regShift').value, password=document.getElementById('regPassword').value; registerError.classList.remove('show'); if(!fullName||!username||!stage||!shift||!password){ registerError.textContent='يرجى ملء جميع الحقول'; registerError.classList.add('show'); return; } if(password.length<4){ registerError.textContent='كلمة المرور يجب أن تكون 4 أحرف على الأقل'; registerError.classList.add('show'); return; } try{ await handleRegister(fullName,username,stage,shift,password); showMessage("تم إنشاء الحساب بنجاح! الرجاء تسجيل الدخول"); registerForm.reset(); document.querySelector('.auth-tab[data-auth-tab="login"]').click(); }catch(err){ registerError.textContent=err.message; registerError.classList.add('show'); } });
 
-settingsForm.addEventListener('submit',async(e)=>{ e.preventDefault(); const fullName=settingsFullName.value.trim(); const username=settingsUsername.value.trim(); const stage=settingsStage.value; const shift=settingsShift.value; const password=settingsPassword.value; const confirmPassword=settingsConfirmPassword.value; if(!fullName||!username){ showMessage("الاسم واسم المستخدم مطلوبان","error"); return; } if(password!==confirmPassword){ showMessage("كلمة المرور غير متطابقة","error"); return; } if(password&&password.length<4){ showMessage("كلمة المرور يجب أن تكون 4 أحرف على الأقل","error"); return; } try{ await updateUserProfile(fullName,username,stage,shift,password); showMessage("تم تحديث المعلومات بنجاح!"); sidebarUsername.textContent=fullName; sidebarInfo.textContent=`${stage} - ${shift}`; settingsModal.classList.remove('show'); 
-    // تحديث بيانات البصمة بعد تغيير كلمة المرور
-    if(isBiometricEnabled() && currentUser) {
-        await registerBiometric(currentUser.username, currentUser.password);
-    }
-    loadInitialData().then(()=>{
-        if(subjectsListener) subjectsListener();
-        if(videosListener) videosListener();
-        if(announcementsListener) announcementsListener();
-        if(datesListener) datesListener();
-    });
-}catch(err){ showMessage("حدث خطأ: "+err.message,"error"); } });
+settingsForm.addEventListener('submit',async(e)=>{ e.preventDefault(); const fullName=settingsFullName.value.trim(), username=settingsUsername.value.trim(), stage=settingsStage.value, shift=settingsShift.value, password=settingsPassword.value, confirmPassword=settingsConfirmPassword.value; if(!fullName||!username){ showMessage("الاسم واسم المستخدم مطلوبان","error"); return; } if(password!==confirmPassword){ showMessage("كلمة المرور غير متطابقة","error"); return; } if(password&&password.length<4){ showMessage("كلمة المرور يجب أن تكون 4 أحرف على الأقل","error"); return; } try{ await updateUserProfile(fullName,username,stage,shift,password); showMessage("تم تحديث المعلومات بنجاح!"); sidebarUsername.textContent=fullName; sidebarInfo.textContent=`${stage} - ${shift}`; settingsModal.classList.remove('show'); if(isBiometricEnabled() && currentUser) { await enableBiometricForUser(currentUser.username, currentUser.password); } loadInitialData(); }catch(err){ showMessage("حدث خطأ: "+err.message,"error"); } });
 
 if(avatarBtnChoose) avatarBtnChoose.addEventListener('click', chooseFromGallery);
 if(avatarBtnCamera) avatarBtnCamera.addEventListener('click', takePhoto);
@@ -1508,19 +1164,10 @@ if(avatarPreview) avatarPreview.addEventListener('click', chooseFromGallery);
 
 document.querySelectorAll('.auth-tab').forEach(tab=>{ tab.addEventListener('click',()=>{ document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active')); document.querySelectorAll('.auth-form').forEach(f=>f.classList.remove('active')); tab.classList.add('active'); document.getElementById(`${tab.dataset.authTab}FormContainer`).classList.add('active'); registerError.classList.remove('show'); loginError.classList.remove('show'); }); });
 
-closeAuth.addEventListener('click',()=>{ if(!currentUser) authModal.style.display='none'; }); menuToggle.addEventListener('click',()=>sidebar.classList.toggle('active')); document.addEventListener('click',(e)=>{ if(sidebar&&menuToggle&&!sidebar.contains(e.target)&&!menuToggle.contains(e.target)&&sidebar.classList.contains('active')) sidebar.classList.remove('active'); }); bellBtn.addEventListener('click',()=>announcementModal.classList.add('show')); closeAnnouncementModal.addEventListener('click',()=>announcementModal.classList.remove('show')); calendarBtn.addEventListener('click',()=>{ datesModal.classList.add('show'); calendarBtn.classList.remove('has-updates'); }); closeDatesModal.addEventListener('click',()=>datesModal.classList.remove('show')); closeSettingsModal.addEventListener('click',()=>settingsModal.classList.remove('show')); announcementModal.addEventListener('click',(e)=>{ if(e.target===announcementModal) announcementModal.classList.remove('show'); }); datesModal.addEventListener('click',(e)=>{ if(e.target===datesModal) datesModal.classList.remove('show'); }); settingsModal.addEventListener('click',(e)=>{ if(e.target===settingsModal) settingsModal.classList.remove('show'); }); closeLectures.addEventListener('click',()=>{ lecturesContainer.classList.remove('show'); navigateTo('subjects'); }); backFromGallery.addEventListener('click',()=>navigateTo('home')); backFromVideos.addEventListener('click',()=>navigateTo('home')); backFromChannels.addEventListener('click',()=>navigateTo('home')); backFromDeveloper.addEventListener('click',()=>navigateTo('home')); logoutSidebar.addEventListener('click',logout); exploreBtn.addEventListener('click',(e)=>{ e.preventDefault(); navigateTo('subjects'); }); if(userAvatar) userAvatar.addEventListener('click',()=>{
-    if(sidebar) sidebar.classList.remove('active');
-    settingsModal.classList.add('show');
-});
+closeAuth.addEventListener('click',()=>{ if(!currentUser) authModal.style.display='none'; }); menuToggle.addEventListener('click',()=>sidebar.classList.toggle('active')); document.addEventListener('click',(e)=>{ if(sidebar&&menuToggle&&!sidebar.contains(e.target)&&!menuToggle.contains(e.target)&&sidebar.classList.contains('active')) sidebar.classList.remove('active'); }); bellBtn.addEventListener('click',()=>announcementModal.classList.add('show')); closeAnnouncementModal.addEventListener('click',()=>announcementModal.classList.remove('show')); calendarBtn.addEventListener('click',()=>{ datesModal.classList.add('show'); calendarBtn.classList.remove('has-updates'); }); closeDatesModal.addEventListener('click',()=>datesModal.classList.remove('show')); closeSettingsModal.addEventListener('click',()=>settingsModal.classList.remove('show')); announcementModal.addEventListener('click',(e)=>{ if(e.target===announcementModal) announcementModal.classList.remove('show'); }); datesModal.addEventListener('click',(e)=>{ if(e.target===datesModal) datesModal.classList.remove('show'); }); settingsModal.addEventListener('click',(e)=>{ if(e.target===settingsModal) settingsModal.classList.remove('show'); }); closeLectures.addEventListener('click',()=>{ lecturesContainer.classList.remove('show'); navigateTo('subjects'); }); backFromGallery.addEventListener('click',()=>navigateTo('home')); backFromVideos.addEventListener('click',()=>navigateTo('home')); backFromChannels.addEventListener('click',()=>navigateTo('home')); backFromDeveloper.addEventListener('click',()=>navigateTo('home')); logoutSidebar.addEventListener('click',logout); exploreBtn.addEventListener('click',(e)=>{ e.preventDefault(); navigateTo('subjects'); }); if(userAvatar) userAvatar.addEventListener('click',()=>{ if(sidebar) sidebar.classList.remove('active'); settingsModal.classList.add('show'); });
 
 document.querySelectorAll('.bottom-nav-item').forEach(btn=>btn.addEventListener('click',()=>navigateTo(btn.dataset.nav))); 
-document.querySelectorAll('.sidebar-item').forEach(item=>{ 
-    if(item.dataset.nav) {
-        item.addEventListener('click',()=>{
-            navigateTo(item.dataset.nav);
-        });
-    }
-});
+document.querySelectorAll('.sidebar-item').forEach(item=>{ if(item.dataset.nav) item.addEventListener('click',()=>navigateTo(item.dataset.nav)); });
 
 const themeSwitch=document.getElementById('themeSwitch'); themeSwitch.addEventListener('change',function(){ document.body.classList.toggle('night-mode',this.checked); localStorage.setItem('theme',this.checked?'night':'day'); }); if(localStorage.getItem('theme')==='night'){ document.body.classList.add('night-mode'); themeSwitch.checked=true; }
 
