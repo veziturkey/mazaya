@@ -256,9 +256,6 @@
         body.night-mode .form-control { background: #1e293b; border-color: #334155; color: #f1f5f9; }
         .form-control:focus { outline: none; border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
         .auth-btn { width: 100%; padding: 14px; background: var(--accent-gradient); color: white; border: none; border-radius: 40px; font-size: 0.9rem; font-weight: 600; cursor: pointer; font-family: 'Cairo',sans-serif; margin-top: 8px; }
-        .biometric-btn { width: 100%; padding: 12px; background: rgba(79,70,229,0.1); color: var(--accent-primary); border: 1px solid var(--border-color); border-radius: 40px; font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: 'Cairo',sans-serif; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: var(--transition); }
-        .biometric-btn:hover { background: rgba(79,70,229,0.2); transform: translateY(-2px); }
-        .biometric-btn i { font-size: 1rem; }
         .auth-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(79,70,229,0.3); }
         .auth-error { color: #ef4444; text-align: center; margin-top: 12px; font-size: 0.75rem; display: none; }
         .auth-error.show { display: block; }
@@ -444,10 +441,6 @@
         }
         
         .hide-install-btn { display: none !important; }
-        .divider-with-biometric { position: relative; text-align: center; margin: 12px 0; }
-        .divider-with-biometric::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--border-color); }
-        .divider-with-biometric span { position: relative; background: var(--card-bg); padding: 0 10px; font-size: 0.7rem; color: var(--text-muted); }
-        body.night-mode .divider-with-biometric span { background: rgba(15,23,42,0.95); }
     </style>
 </head>
 <body>
@@ -462,8 +455,6 @@
                 <div class="form-group"><label>الرقم السري</label><input type="password" id="loginPassword" class="form-control" required></div>
                 <div class="form-group"><label class="stay-logged-label"><input type="checkbox" id="stayLoggedIn"> <span>ابقني متصلاً</span></label></div>
                 <button type="submit" class="auth-btn">تسجيل الدخول</button>
-                <div class="divider-with-biometric"><span>أو</span></div>
-                <button type="button" class="biometric-btn" id="biometricLoginBtn"><i class="fas fa-fingerprint"></i> تسجيل الدخول بالبصمة / الوجه</button>
                 <div class="auth-error" id="loginError"></div>
             </form>
         </div>
@@ -573,7 +564,7 @@
     document.head.appendChild(link);
 })();
 
-// ========== كود السلايدر (تم تغيير السرعة إلى 3 ثوانٍ) ==========
+// ========== كود السلايدر ==========
 const slides = document.querySelectorAll('.slide');
 const dotsContainer = document.getElementById('sliderDots');
 let currentSlide = 0;
@@ -613,7 +604,7 @@ function nextSlide() {
 
 function startAutoSlide() {
     if (slideInterval) clearInterval(slideInterval);
-    slideInterval = setInterval(nextSlide, 3000); // تم التغيير من 5000 إلى 3000 (3 ثوانٍ)
+    slideInterval = setInterval(nextSlide, 5000);
 }
 
 function stopAutoSlide() {
@@ -741,155 +732,6 @@ window.matchMedia('(display-mode: standalone)').addEventListener('change', (evt)
     }
 });
 
-// ========== دوال المصادقة البيومترية (بصمة / الوجه) ==========
-let savedBiometricCredential = null;
-
-// التحقق من دعم المصادقة البيومترية
-function isBiometricSupported() {
-    return window.PublicKeyCredential && 
-           PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable && 
-           typeof window.PasswordCredential !== 'undefined';
-}
-
-// حفظ بيانات الدخول للتسجيل البيومتري
-async function saveBiometricCredentials(username, password) {
-    if (!isBiometricSupported()) return false;
-    try {
-        // تخزين بيانات الدخول مشفرة في localStorage
-        const credentials = {
-            username: username,
-            password: password,
-            timestamp: Date.now()
-        };
-        localStorage.setItem('biometric_credentials', JSON.stringify(credentials));
-        return true;
-    } catch(e) {
-        console.error('فشل حفظ البيانات:', e);
-        return false;
-    }
-}
-
-// استرجاع بيانات الدخول المحفوظة
-function getSavedBiometricCredentials() {
-    try {
-        const saved = localStorage.getItem('biometric_credentials');
-        if (saved) {
-            const data = JSON.parse(saved);
-            // التحقق من صلاحية البيانات (30 يوم)
-            if (Date.now() - data.timestamp < 30 * 24 * 60 * 60 * 1000) {
-                return data;
-            }
-        }
-        return null;
-    } catch(e) {
-        return null;
-    }
-}
-
-// طلب المصادقة البيومترية
-async function authenticateWithBiometric() {
-    if (!isBiometricSupported()) {
-        showMessage("جهازك لا يدعم المصادقة البيومترية", "error");
-        return null;
-    }
-    
-    try {
-        // إنشاء تحدٍ عشوائي
-        const challenge = new Uint8Array(32);
-        window.crypto.getRandomValues(challenge);
-        
-        // خيارات المصادقة
-        const publicKeyCredentialRequestOptions = {
-            challenge: challenge,
-            rpId: window.location.hostname,
-            userVerification: "required",
-            timeout: 60000,
-        };
-        
-        // طلب المصادقة
-        const credential = await navigator.credentials.get({
-            publicKey: publicKeyCredentialRequestOptions
-        });
-        
-        if (credential) {
-            // استرجاع بيانات الدخول المحفوظة
-            const savedData = getSavedBiometricCredentials();
-            if (savedData) {
-                return savedData;
-            }
-        }
-        return null;
-    } catch (err) {
-        console.error('خطأ في المصادقة البيومترية:', err);
-        if (err.name === 'NotAllowedError') {
-            showMessage("تم إلغاء المصادقة أو فشلت", "error");
-        } else if (err.name === 'NotSupportedError') {
-            showMessage("المصادقة البيومترية غير مدعومة على هذا الجهاز", "error");
-        } else {
-            showMessage("فشل المصادقة البيومترية", "error");
-        }
-        return null;
-    }
-}
-
-// تسجيل المستخدم للمصادقة البيومترية
-async function registerBiometric(username, password) {
-    if (!isBiometricSupported()) {
-        showMessage("المصادقة البيومترية غير مدعومة على هذا الجهاز", "error");
-        return false;
-    }
-    
-    try {
-        // حفظ بيانات الدخول أولاً
-        await saveBiometricCredentials(username, password);
-        
-        // إنشاء بيانات اعتماد للمصادقة
-        const challenge = new Uint8Array(32);
-        window.crypto.getRandomValues(challenge);
-        
-        const publicKeyCredentialCreationOptions = {
-            challenge: challenge,
-            rp: {
-                name: "CET Mazaya",
-                id: window.location.hostname
-            },
-            user: {
-                id: new TextEncoder().encode(username),
-                name: username,
-                displayName: username
-            },
-            pubKeyCredParams: [
-                { type: "public-key", alg: -7 },  // ES256
-                { type: "public-key", alg: -257 } // RS256
-            ],
-            authenticatorSelection: {
-                userVerification: "required",
-                authenticatorAttachment: "platform"
-            },
-            timeout: 60000,
-            attestation: "none"
-        };
-        
-        const credential = await navigator.credentials.create({
-            publicKey: publicKeyCredentialCreationOptions
-        });
-        
-        if (credential) {
-            showMessage("تم تفعيل تسجيل الدخول بالبصمة/الوجه بنجاح!");
-            return true;
-        }
-        return false;
-    } catch (err) {
-        console.error('خطأ في تسجيل البيانات البيومترية:', err);
-        if (err.name === 'NotAllowedError') {
-            showMessage("لم يتم السماح باستخدام المصادقة البيومترية", "error");
-        } else {
-            showMessage("فشل تفعيل المصادقة البيومترية", "error");
-        }
-        return false;
-    }
-}
-
 // ========== باقي كود Firebase والدوال ==========
 const firebaseConfig = { apiKey: "AIzaSyBFdxj6p-DAGrr-To_WZBxIk_FDX67Ygm0", authDomain: "mazaya-c7569.firebaseapp.com", projectId: "mazaya-c7569", storageBucket: "mazaya-c7569.appspot.com", messagingSenderId: "989358281766", appId: "1:989358281766:web:9d5d28ce94a2d5599c02e7" };
 firebase.initializeApp(firebaseConfig);
@@ -900,7 +742,6 @@ function sanitize(text) { if(!text) return ''; if(typeof text!=='string') text=S
 const authModal=document.getElementById('authModal'), closeAuth=document.getElementById('closeAuth'), loginForm=document.getElementById('loginForm'), registerForm=document.getElementById('registerForm'), loginError=document.getElementById('loginError'), registerError=document.getElementById('registerError'), sidebar=document.getElementById('sidebar'), menuToggle=document.getElementById('menuToggle'), navbar=document.getElementById('navbar'), bottomNav=document.getElementById('bottomNav'), userAvatar=document.getElementById('userAvatar'), sidebarUsername=document.getElementById('sidebarUsername'), sidebarInfo=document.getElementById('sidebarInfo'), subjectsList=document.getElementById('subjectsList'), lecturesContainer=document.getElementById('lecturesContainer'), lecturesList=document.getElementById('lecturesList'), lecturesSubtitle=document.getElementById('lecturesSubtitle'), closeLectures=document.getElementById('closeLectures'), logoutSidebar=document.getElementById('logoutSidebar'), announcementModal=document.getElementById('announcementModal'), announcementList=document.getElementById('announcementList'), closeAnnouncementModal=document.getElementById('closeAnnouncementModal'), bellBtn=document.getElementById('bellBtn'), announcementBadge=document.getElementById('announcementBadge'), calendarBtn=document.getElementById('calendarBtn'), datesModal=document.getElementById('datesModal'), datesList=document.getElementById('datesList'), closeDatesModal=document.getElementById('closeDatesModal'), settingsModal=document.getElementById('settingsModal'), closeSettingsModal=document.getElementById('closeSettingsModal'), settingsForm=document.getElementById('settingsForm'), settingsFullName=document.getElementById('settingsFullName'), settingsUsername=document.getElementById('settingsUsername'), settingsStage=document.getElementById('settingsStage'), settingsShift=document.getElementById('settingsShift'), settingsPassword=document.getElementById('settingsPassword'), settingsConfirmPassword=document.getElementById('settingsConfirmPassword'), avatarPreview=document.getElementById('avatarPreview'), avatarInput=document.getElementById('avatarInput'), removeAvatarBtn=document.getElementById('removeAvatarBtn'), loadingScreen=document.getElementById('loadingScreen'), loadingProgressBar=document.getElementById('loadingProgressBar'), loadingPercentage=document.getElementById('loadingPercentage'), backFromGallery=document.getElementById('backFromGallery'), backFromVideos=document.getElementById('backFromVideos'), backFromChannels=document.getElementById('backFromChannels'), backFromDeveloper=document.getElementById('backFromDeveloper'), exploreBtn=document.getElementById('exploreBtn'), galleryContainer=document.getElementById('galleryContainer'), videosContainer=document.getElementById('videosContainer'), channelsContainer=document.getElementById('channelsContainer');
 const avatarBtnChoose = document.getElementById('avatarBtnChoose');
 const avatarBtnCamera = document.getElementById('avatarBtnCamera');
-const biometricLoginBtn = document.getElementById('biometricLoginBtn');
 
 let currentUser=null, allSubjects=[], allImportantDates=[], allChannels=[], allVideos=[], allAnnouncements=[], allCustomButtons=[], readAnnouncements=new Set(), progress=0, currentSection='home', sectionHistory=[];
 let displayedSubjects=new Map(), displayedChannels=new Map(), displayedGallery=new Map(), displayedVideos=new Map(), displayedCustomButtons=new Map();
@@ -1255,6 +1096,7 @@ function navigateTo(section){
         document.getElementById('developer').style.display='block'; 
         document.getElementById('developer').scrollIntoView({behavior:'smooth'}); 
     } else if(section==='settings'){ 
+        // أهم تعديل: إخفاء السلايدر الجانبي أولاً، ثم عرض واجهة الإعدادات
         if(sidebar) sidebar.classList.remove('active');
         settingsModal.classList.add('show');
         if(sectionHistory.length>0) sectionHistory.pop(); 
@@ -1358,56 +1200,9 @@ function checkAutoLogin(){
 
 loginForm.addEventListener('submit',async(e)=>{ e.preventDefault(); const username=document.getElementById('loginUsername').value.trim(); const password=document.getElementById('loginPassword').value; const stay=document.getElementById('stayLoggedIn').checked; loginError.classList.remove('show'); if(!username||!password){ loginError.textContent='يرجى إدخال اسم المستخدم وكلمة المرور'; loginError.classList.add('show'); return; } try{ await handleLogin(username,password,stay); showMainContent(); loginForm.reset(); }catch(err){ loginError.textContent=err.message; loginError.classList.add('show'); } });
 
-// زر تسجيل الدخول بالبصمة/الوجه
-biometricLoginBtn.addEventListener('click', async () => {
-    loginError.classList.remove('show');
-    try {
-        const credentials = await authenticateWithBiometric();
-        if (credentials && credentials.username && credentials.password) {
-            const stay = document.getElementById('stayLoggedIn').checked;
-            await handleLogin(credentials.username, credentials.password, stay);
-            showMainContent();
-            loginForm.reset();
-        } else {
-            loginError.textContent = 'لا توجد بيانات محفوظة للبصمة، يرجى تسجيل الدخول أولاً بشكل طبيعي ثم سيتم تفعيل البصمة تلقائياً';
-            loginError.classList.add('show');
-        }
-    } catch(err) {
-        loginError.textContent = err.message || 'فشل تسجيل الدخول بالبصمة';
-        loginError.classList.add('show');
-    }
-});
-
-// بعد تسجيل الدخول الناجح، نقوم بحفظ بيانات المستخدم للبصمة
-async function saveUserForBiometric(username, password) {
-    if (isBiometricSupported()) {
-        await saveBiometricCredentials(username, password);
-        // محاولة تسجيل WebAuthn تلقائياً
-        try {
-            await registerBiometric(username, password);
-        } catch(e) {
-            console.log('التسجيل البيومتري التلقائي غير متاح، سيتم حفظ البيانات فقط');
-        }
-    }
-}
-
-// تعديل دالة showMainContent لحفظ بيانات البصمة
-const originalShowMainContent = showMainContent;
-showMainContent = function() {
-    // حفظ بيانات المستخدم الحالي للبصمة
-    if (currentUser && currentUser.username && currentUser.password) {
-        saveUserForBiometric(currentUser.username, currentUser.password);
-    }
-    originalShowMainContent();
-}.bind(this);
-
 registerForm.addEventListener('submit',async(e)=>{ e.preventDefault(); const fullName=document.getElementById('regFullName').value.trim(); const username=document.getElementById('regUsername').value.trim(); const stage=document.getElementById('regStage').value; const shift=document.getElementById('regShift').value; const password=document.getElementById('regPassword').value; registerError.classList.remove('show'); if(!fullName||!username||!stage||!shift||!password){ registerError.textContent='يرجى ملء جميع الحقول'; registerError.classList.add('show'); return; } if(password.length<4){ registerError.textContent='كلمة المرور يجب أن تكون 4 أحرف على الأقل'; registerError.classList.add('show'); return; } try{ await handleRegister(fullName,username,stage,shift,password); showMessage("تم إنشاء الحساب بنجاح! الرجاء تسجيل الدخول"); registerForm.reset(); document.querySelector('.auth-tab[data-auth-tab="login"]').click(); }catch(err){ registerError.textContent=err.message; registerError.classList.add('show'); } });
 
 settingsForm.addEventListener('submit',async(e)=>{ e.preventDefault(); const fullName=settingsFullName.value.trim(); const username=settingsUsername.value.trim(); const stage=settingsStage.value; const shift=settingsShift.value; const password=settingsPassword.value; const confirmPassword=settingsConfirmPassword.value; if(!fullName||!username){ showMessage("الاسم واسم المستخدم مطلوبان","error"); return; } if(password!==confirmPassword){ showMessage("كلمة المرور غير متطابقة","error"); return; } if(password&&password.length<4){ showMessage("كلمة المرور يجب أن تكون 4 أحرف على الأقل","error"); return; } try{ await updateUserProfile(fullName,username,stage,shift,password); showMessage("تم تحديث المعلومات بنجاح!"); sidebarUsername.textContent=fullName; sidebarInfo.textContent=`${stage} - ${shift}`; settingsModal.classList.remove('show'); 
-    // تحديث بيانات البصمة بعد تغيير كلمة المرور
-    if(currentUser && currentUser.username && password) {
-        await saveUserForBiometric(currentUser.username, password);
-    }
     loadInitialData().then(()=>{
         if(subjectsListener) subjectsListener();
         if(videosListener) videosListener();
@@ -1432,6 +1227,7 @@ document.querySelectorAll('.bottom-nav-item').forEach(btn=>btn.addEventListener(
 document.querySelectorAll('.sidebar-item').forEach(item=>{ 
     if(item.dataset.nav) {
         item.addEventListener('click',()=>{
+            // عند النقر على أيقونة الإعدادات، تأكد من إخفاء القائمة أولاً
             navigateTo(item.dataset.nav);
         });
     }
