@@ -69,9 +69,6 @@
             --transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
             --safe-area-top: env(safe-area-inset-top, 0px);
             --safe-area-bottom: env(safe-area-inset-bottom, 0px);
-            --ticker-bg: linear-gradient(135deg, #1e293b, #0f172a);
-            --ticker-text: #f1f5f9;
-            --ticker-speed: 20s;
         }
         
         body.night-mode {
@@ -86,8 +83,6 @@
             --text-secondary: #cbd5e1;
             --text-muted: #94a3b8;
             --border-color: #334155;
-            --ticker-bg: linear-gradient(135deg, #1a1a2e, #0f0f1a);
-            --ticker-text: #f1f5f9;
         }
         
         body { 
@@ -104,97 +99,9 @@
         .hero-slider {
             position: relative;
             height: 350px;
-            margin-bottom: 0;
-            overflow: hidden;
-            border-radius: 0 0 30px 30px;
-        }
-        
-        /* ========== شريط الأخبار المتحرك (Ticker) ========== */
-        .news-ticker {
-            background: var(--ticker-bg);
-            border-radius: 0 0 20px 20px;
             margin-bottom: 30px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            position: relative;
-            z-index: 10;
-        }
-        
-        .ticker-container {
-            display: flex;
-            align-items: center;
-            background: rgba(0,0,0,0.3);
-            border-radius: 20px;
-            overflow: hidden;
-        }
-        
-        .ticker-label {
-            background: var(--accent-gradient);
-            color: white;
-            padding: 12px 20px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            white-space: nowrap;
-            border-radius: 20px 0 0 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            z-index: 2;
-        }
-        
-        .ticker-label i {
-            font-size: 1rem;
-            animation: pulse 1.5s infinite;
-        }
-        
-        .ticker-wrapper {
-            flex: 1;
-            overflow: hidden;
-            position: relative;
-            height: 50px;
-        }
-        
-        .ticker-content {
-            position: absolute;
-            white-space: nowrap;
-            animation: tickerScroll var(--ticker-speed) linear infinite;
-            direction: ltr;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: var(--ticker-text);
-            padding: 14px 0;
-        }
-        
-        .ticker-content span {
-            display: inline-block;
-            padding: 0 40px;
-            position: relative;
-        }
-        
-        .ticker-content span::after {
-            content: "•";
-            position: absolute;
-            left: -5px;
-            color: var(--accent-primary);
-            font-size: 1.2rem;
-        }
-        
-        .ticker-content span:last-child::after {
-            display: none;
-        }
-        
-        @keyframes tickerScroll {
-            0% {
-                transform: translateX(100%);
-            }
-            100% {
-                transform: translateX(-100%);
-            }
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(0.95); }
+            border-radius: 0 0 30px 30px;
         }
         
         .slides-container {
@@ -525,9 +432,6 @@
             .subjects-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
             .videos-container { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
             .gallery-container, .channels-container { grid-template-columns: 1fr; }
-            .ticker-label { padding: 8px 12px; font-size: 0.7rem; }
-            .ticker-wrapper { height: 40px; }
-            .ticker-content { font-size: 0.75rem; padding: 10px 0; }
         }
         
         @media (min-width: 768px) {
@@ -589,21 +493,6 @@
         <a href="#" class="btn" id="exploreBtn">استعرض المواد الدراسية <i class="fas fa-arrow-down"></i></a>
     </div>
     <div class="slider-dots" id="sliderDots"></div>
-</div>
-
-<!-- ========== شريط الأخبار المتحرك (بين الصورة والمواد الدراسية) ========== -->
-<div class="news-ticker" id="newsTicker" style="display: none;">
-    <div class="ticker-container">
-        <div class="ticker-label">
-            <i class="fas fa-newspaper"></i>
-            <span>أخبار عاجلة</span>
-        </div>
-        <div class="ticker-wrapper">
-            <div class="ticker-content" id="tickerContent">
-                <span>مرحباً بكم في كلية مزايا الجامعة</span>
-            </div>
-        </div>
-    </div>
 </div>
 
 <div class="sidebar" id="sidebar">
@@ -859,55 +748,6 @@ let displayedSubjects=new Map(), displayedChannels=new Map(), displayedGallery=n
 let subjectsListener=null, datesListener=null, channelsListener=null, galleryListener=null, videosListener=null, announcementsListener=null, customButtonsListener=null;
 let checkBlockedInterval = null;
 
-// ========== دوال الشريط الإخباري ==========
-let tickerMessages = [];
-let tickerInterval = null;
-let tickerAnimationSpeed = 20; // seconds
-
-function loadTickerMessages() {
-    if (!currentUser) return;
-    
-    const tickerElement = document.getElementById('newsTicker');
-    const tickerContent = document.getElementById('tickerContent');
-    
-    // تحميل الرسائل من قاعدة البيانات
-    db.collection("tickerMessages").where("isActive", "==", true).orderBy("order").onSnapshot((snapshot) => {
-        tickerMessages = [];
-        snapshot.forEach((doc) => {
-            const data = doc.data();
-            // التحقق من صلاحية المرحلة
-            if (currentUser.role === 'admin' || !data.stage || data.stage === 'الكل' || data.stage === currentUser.stage) {
-                tickerMessages.push({
-                    id: doc.id,
-                    message: data.message,
-                    order: data.order || 0
-                });
-            }
-        });
-        
-        // ترتيب حسب الأولوية
-        tickerMessages.sort((a, b) => (a.order || 0) - (b.order || 0));
-        
-        if (tickerMessages.length > 0) {
-            // بناء محتوى الشريط
-            let html = '';
-            tickerMessages.forEach(msg => {
-                html += `<span>${sanitize(msg.message)}</span>`;
-            });
-            tickerContent.innerHTML = html;
-            tickerElement.style.display = 'block';
-            
-            // إعادة تعيين سرعة الحركة بناءً على عدد الرسائل
-            const newSpeed = Math.max(15, tickerMessages.length * 4);
-            tickerElement.style.setProperty('--ticker-speed', `${newSpeed}s`);
-        } else {
-            tickerElement.style.display = 'none';
-        }
-    }, (error) => {
-        console.error("خطأ في تحميل رسائل الشريط:", error);
-    });
-}
-
 function showMessage(msg,type='success'){ const div=document.createElement('div'); div.className=`message ${type}`; div.textContent=sanitize(msg); document.body.appendChild(div); setTimeout(()=>div.classList.add('show'),10); setTimeout(()=>{ div.classList.remove('show'); setTimeout(()=>div.remove(),300); },3000); }
 function updateProgress(p){ progress=Math.min(p,100); if(loadingProgressBar) loadingProgressBar.style.width=`${progress}%`; if(loadingPercentage) loadingPercentage.textContent=`${progress}%`; }
 function hideLoading(){ updateProgress(100); setTimeout(()=>{ if(loadingScreen) loadingScreen.classList.add('hidden'); setTimeout(()=>{ if(loadingScreen) loadingScreen.style.display='none'; },500); },300); }
@@ -1156,9 +996,6 @@ async function loadInitialData(){
         announcementsArray.forEach(a=>allAnnouncements.push(a));
         renderAnnouncements(); 
         updateAnnouncementBadge();
-        
-        // تحميل رسائل الشريط الإخباري
-        loadTickerMessages();
     }catch(e){ console.error(e); } 
 }
 
@@ -1259,6 +1096,7 @@ function navigateTo(section){
         document.getElementById('developer').style.display='block'; 
         document.getElementById('developer').scrollIntoView({behavior:'smooth'}); 
     } else if(section==='settings'){ 
+        // أهم تعديل: إخفاء السلايدر الجانبي أولاً، ثم عرض واجهة الإعدادات
         if(sidebar) sidebar.classList.remove('active');
         settingsModal.classList.add('show');
         if(sectionHistory.length>0) sectionHistory.pop(); 
@@ -1389,6 +1227,7 @@ document.querySelectorAll('.bottom-nav-item').forEach(btn=>btn.addEventListener(
 document.querySelectorAll('.sidebar-item').forEach(item=>{ 
     if(item.dataset.nav) {
         item.addEventListener('click',()=>{
+            // عند النقر على أيقونة الإعدادات، تأكد من إخفاء القائمة أولاً
             navigateTo(item.dataset.nav);
         });
     }
