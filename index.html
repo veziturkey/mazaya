@@ -971,7 +971,11 @@ async function triggerInstall(){
         deferredPrompt=null;
     }else{
         const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
-        alert(isIOS?'📱 لتثبيت التطبيق:\n1. اضغط على زر المشاركة 📤\n2. اختر "إضافة إلى الشاشة الرئيسية"':'📱 لتثبيت التطبيق:\nاضغط على القائمة ثم "تثبيت التطبيق"');
+        if(isIOS){
+            alert('📱 لتثبيت التطبيق على iPhone/iPad:\n1. اضغط على زر المشاركة 📤\n2. اختر "إضافة إلى الشاشة الرئيسية"\n3. اضغط على "إضافة"');
+        }else{
+            alert('📱 لتثبيت التطبيق:\nاضغط على القائمة (النقاط الثلاث) ثم اختر "تثبيت التطبيق"');
+        }
     }
 }
 if(installBtn)installBtn.addEventListener('click',triggerInstall);
