@@ -44,13 +44,11 @@
             background:var(--bg);
             color:var(--text);
             direction:rtl;
-            padding-top:0;
             padding-top:var(--safe-top);
             min-height:100vh;
             overflow-x:hidden;
         }
 
-        /* ======== LOADING ======== */
         .loading-screen{
             position:fixed;inset:0;
             background:radial-gradient(ellipse at 50% 0%,#1a0008 0%,var(--bg) 70%);
@@ -81,7 +79,6 @@
         .loading-pct{color:var(--gold);font-weight:700;font-size:1.1rem;margin-top:12px;}
         @keyframes spin{to{transform:rotate(360deg);}}
 
-        /* ======== AUTH MODAL ======== */
         .auth-modal{
             display:flex;position:fixed;inset:0;
             background:linear-gradient(160deg,#1a0008 0%,#0a0a0f 60%);
@@ -133,7 +130,6 @@
         .stay-logged-label{display:flex;align-items:center;gap:8px;font-size:0.78rem;color:var(--text2);cursor:pointer;}
         .stay-logged-label input{accent-color:var(--red);}
 
-        /* ======== TOP NAV - FIXED FOR IOS ======== */
         .navbar{
             position:fixed;
             top:0;
@@ -183,7 +179,6 @@
             border:2px solid var(--bg2);
         }
 
-        /* ======== HERO SLIDER ======== */
         .hero-slider{
             position:relative;height:220px;overflow:hidden;
             margin-bottom:0;
@@ -213,7 +208,6 @@
         .dot{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,0.35);transition:all 0.3s;cursor:pointer;}
         .dot.active{width:18px;background:var(--red);}
 
-        /* ======== QUICK STATS STRIP ======== */
         .stats-strip{
             display:flex;gap:10px;padding:14px 16px;overflow-x:auto;scrollbar-width:none;
         }
@@ -234,7 +228,6 @@
         .stat-chip-label{font-size:0.6rem;color:var(--text3);}
         .stat-chip-val{font-size:0.95rem;font-weight:800;color:var(--text);}
 
-        /* ======== SECTION HEADER ======== */
         .section-header{
             display:flex;align-items:center;justify-content:space-between;
             padding:16px 16px 10px;
@@ -244,7 +237,6 @@
         .section-header-left{display:flex;align-items:center;gap:0;}
         .see-all{font-size:0.72rem;color:var(--red);font-weight:700;border:none;background:none;cursor:pointer;font-family:'Cairo',sans-serif;}
 
-        /* ======== SUBJECTS GRID ======== */
         .subjects-section{padding:0 16px 16px;}
         .subjects-grid{
             display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
@@ -284,7 +276,6 @@
             font-size:0.55rem;font-weight:700;padding:2px 7px;border-radius:6px;margin-top:5px;
         }
 
-        /* ======== LECTURES VIEW ======== */
         .lectures-container{display:none;padding:0 16px 16px;}
         .lectures-container.show{display:block;}
         .back-bar{
@@ -321,7 +312,6 @@
             width:100%;font-family:'Cairo',sans-serif;
         }
 
-        /* ======== VIDEO CARDS ======== */
         .videos-section{padding:0 16px 16px;display:none;}
         .videos-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:4px;}
         .video-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
@@ -331,7 +321,6 @@
         .video-title{font-size:0.72rem;font-weight:700;color:var(--text);margin-bottom:3px;}
         .video-date{font-size:0.58rem;color:var(--text3);}
 
-        /* ======== GALLERY ======== */
         .gallery-section{padding:0 16px 16px;display:none;}
         .gallery-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:4px;}
         .gallery-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
@@ -340,7 +329,6 @@
         .gallery-title{font-size:0.72rem;font-weight:700;color:var(--text);margin-bottom:3px;}
         .gallery-date{font-size:0.58rem;color:var(--text3);}
 
-        /* ======== CHANNELS ======== */
         .channels-section{padding:0 16px 16px;display:none;}
         .channel-card{
             background:var(--card);border:1px solid var(--border);border-radius:16px;
@@ -359,7 +347,6 @@
             font-size:0.68rem;font-weight:700;text-decoration:none;border:none;cursor:pointer;flex-shrink:0;
         }
 
-        /* ======== DEVELOPER ======== */
         .developer-section{padding:0 16px 16px;display:none;}
         .dev-card{
             background:var(--card);border:1px solid var(--border);border-radius:20px;
@@ -379,7 +366,6 @@
             font-size:0.82rem;font-weight:700;margin-top:14px;
         }
 
-        /* ======== ANNOUNCEMENTS MODAL ======== */
         .modal-overlay{
             display:none;position:fixed;inset:0;
             background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);
@@ -421,7 +407,6 @@
         .dates-item-desc{font-size:0.68rem;color:var(--text3);margin-top:2px;}
         .dates-badge{background:rgba(200,16,46,0.12);color:var(--red);padding:5px 12px;border-radius:10px;font-size:0.65rem;font-weight:700;white-space:nowrap;}
 
-        /* ======== SIDEBAR - اغلاق باللمس والتحريك ======== */
         .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1800;backdrop-filter:blur(4px);}
         .sidebar-overlay.show{display:block;}
         .sidebar{
@@ -478,7 +463,6 @@
             display:flex;align-items:center;justify-content:center;gap:8px;
         }
 
-        /* ======== SETTINGS MODAL ======== */
         .settings-full{
             display:none;position:fixed;inset:0;z-index:2500;
             background:var(--bg);overflow-y:auto;padding-bottom:calc(var(--bottom-h) + var(--safe-bottom) + 20px);
@@ -519,7 +503,6 @@
             cursor:pointer;font-family:'Cairo',sans-serif;box-shadow:0 6px 20px rgba(200,16,46,0.4);
         }
 
-        /* ======== POPUP AD ======== */
         .popup-ad-modal{
             display:none;position:fixed;inset:0;z-index:10001;
             justify-content:center;align-items:center;
@@ -542,7 +525,6 @@
         }
         .popup-close-btn:hover{background:#fff;color:var(--red);transform:rotate(90deg);}
 
-        /* ======== BOTTOM NAV ======== */
         .bottom-nav{
             position:fixed;bottom:var(--safe-bottom);left:0;right:0;
             background:var(--bg2);border-top:1px solid var(--border);
@@ -569,7 +551,6 @@
         }
         .bn-center:active{transform:scale(0.93);}
 
-        /* ======== INSTALL PROMPT ======== */
         .install-bar{
             position:fixed;bottom:calc(var(--bottom-h) + var(--safe-bottom) + 12px);left:50%;
             transform:translateX(-50%) translateY(20px);
@@ -584,7 +565,6 @@
         .install-bar.show{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:all;}
         .install-x{background:rgba(255,255,255,0.2);border:none;color:#fff;width:22px;height:22px;border-radius:50%;font-size:0.65rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 
-        /* ======== BLOCKED ======== */
         .blocked-screen{
             position:fixed;inset:0;background:radial-gradient(ellipse at center,#1a0008,var(--bg));
             z-index:10000;display:flex;justify-content:center;align-items:center;padding:20px;
@@ -598,7 +578,6 @@
         .blocked-card p{font-size:0.78rem;color:var(--text2);line-height:1.7;margin-bottom:20px;}
         .blocked-card button{background:var(--red);color:#fff;border:none;padding:12px 28px;border-radius:12px;font-family:'Cairo',sans-serif;font-weight:700;cursor:pointer;}
 
-        /* ======== TOAST ======== */
         .toast{
             position:fixed;top:calc(var(--nav-h) + var(--safe-top) + 12px);left:50%;
             transform:translateX(-50%) translateY(-12px);
@@ -610,16 +589,13 @@
         }
         .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
 
-        /* ======== EMPTY STATE ======== */
         .empty-state{text-align:center;padding:40px 20px;color:var(--text3);}
         .empty-state i{font-size:2.5rem;margin-bottom:12px;opacity:0.4;display:block;}
         .empty-state h4{font-size:0.9rem;color:var(--text2);margin-bottom:4px;}
         .empty-state p{font-size:0.72rem;}
 
-        /* ======== MAIN CONTENT ======== */
         .main-content{padding-bottom:calc(var(--bottom-h) + var(--safe-bottom) + 16px);margin-top:var(--nav-h);}
 
-        /* ======== UTILS ======== */
         @keyframes slideUp{from{transform:translateY(30px);opacity:0;}to{transform:translateY(0);opacity:1;}}
         @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
 
@@ -634,7 +610,6 @@
 </head>
 <body>
 
-<!-- LOADING -->
 <div class="loading-screen" id="loadingScreen">
     <div class="loading-logo-wrap">
         <div class="loading-logo-ring"></div>
@@ -648,7 +623,6 @@
     <div class="loading-pct" id="loadingPct">0%</div>
 </div>
 
-<!-- AUTH SHEET -->
 <div class="auth-modal" id="authModal">
     <div class="auth-sheet">
         <div class="auth-logo-top">
@@ -694,10 +668,8 @@
     </div>
 </div>
 
-<!-- SIDEBAR OVERLAY -->
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-<!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
     <div class="sidebar-top">
         <div class="sidebar-avatar" id="userAvatar"><i class="fas fa-user"></i></div>
@@ -723,7 +695,6 @@
     </div>
 </div>
 
-<!-- TOP NAVBAR -->
 <nav class="navbar" id="navbar">
     <div class="nav-inner">
         <div class="nav-brand">
@@ -738,12 +709,9 @@
     </div>
 </nav>
 
-<!-- MAIN CONTENT -->
 <div class="main-content" id="mainContent">
 
-    <!-- HOME SECTION -->
     <div id="homeView">
-        <!-- HERO -->
         <div class="hero-slider" id="heroSlider">
             <div class="slide" style="background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR03AlIa0YzDiSSSN8E17UosWIrnioPXjZw-Q&s')"></div>
             <div class="slide" style="background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpEUb25MIFp-VKtKoFSPxs7Owm5pMFRcdsFA&s')"></div>
@@ -757,7 +725,6 @@
             <div class="slider-dots" id="sliderDots"></div>
         </div>
 
-        <!-- STATS STRIP -->
         <div class="stats-strip">
             <div class="stat-chip">
                 <div class="stat-chip-icon red"><i class="fas fa-book"></i></div>
@@ -777,7 +744,6 @@
             </div>
         </div>
 
-        <!-- SUBJECTS SECTION -->
         <div class="section-header">
             <div class="section-header-left">
                 <div class="section-header-line"></div>
@@ -790,7 +756,6 @@
         </div>
     </div>
 
-    <!-- SUBJECTS PAGE -->
     <div id="subjectsView" style="display:none;padding:0 16px 16px;">
         <div class="section-header" style="padding:16px 0 10px;">
             <div class="section-header-left">
@@ -801,7 +766,6 @@
         <div class="subjects-grid" id="subjectsPageList"></div>
     </div>
 
-    <!-- LECTURES VIEW -->
     <div class="lectures-container" id="lecturesContainer">
         <div class="back-bar" id="lecturesBackBar">
             <div class="back-btn"><i class="fas fa-chevron-right"></i></div>
@@ -810,7 +774,6 @@
         <div id="lecturesList"></div>
     </div>
 
-    <!-- VIDEOS PAGE -->
     <div class="videos-section" id="videosView">
         <div class="back-bar" id="videosBackBar">
             <div class="back-btn"><i class="fas fa-chevron-right"></i></div>
@@ -819,7 +782,6 @@
         <div class="videos-grid" id="videosContainer"></div>
     </div>
 
-    <!-- GALLERY PAGE -->
     <div class="gallery-section" id="galleryView">
         <div class="back-bar" id="galleryBackBar">
             <div class="back-btn"><i class="fas fa-chevron-right"></i></div>
@@ -828,7 +790,6 @@
         <div class="gallery-grid" id="galleryContainer"></div>
     </div>
 
-    <!-- CHANNELS PAGE -->
     <div class="channels-section" id="channelsView">
         <div class="back-bar" id="channelsBackBar">
             <div class="back-btn"><i class="fas fa-chevron-right"></i></div>
@@ -837,7 +798,6 @@
         <div id="channelsContainer"></div>
     </div>
 
-    <!-- DEVELOPER PAGE -->
     <div class="developer-section" id="developerView">
         <div class="back-bar" id="developerBackBar">
             <div class="back-btn"><i class="fas fa-chevron-right"></i></div>
@@ -853,7 +813,6 @@
 
 </div>
 
-<!-- SETTINGS FULL PAGE -->
 <div class="settings-full" id="settingsView">
     <div class="settings-nav">
         <div class="settings-back" id="settingsBack"><i class="fas fa-chevron-right"></i></div>
@@ -894,7 +853,6 @@
     </div>
 </div>
 
-<!-- ANNOUNCEMENTS MODAL -->
 <div class="modal-overlay" id="announcementModal">
     <div class="modal-sheet">
         <div class="modal-handle"></div>
@@ -906,7 +864,6 @@
     </div>
 </div>
 
-<!-- DATES MODAL -->
 <div class="modal-overlay" id="datesModal">
     <div class="modal-sheet">
         <div class="modal-handle"></div>
@@ -918,7 +875,6 @@
     </div>
 </div>
 
-<!-- POPUP AD -->
 <div id="popupAdModal" class="popup-ad-modal">
     <div class="popup-ad-bg"></div>
     <div class="popup-ad-box">
@@ -927,14 +883,12 @@
     </div>
 </div>
 
-<!-- INSTALL BAR -->
 <div class="install-bar" id="installBar">
     <i class="fas fa-download"></i>
     <span>تثبيت التطبيق على الجهاز</span>
     <button class="install-x" id="closeInstallBar"><i class="fas fa-times"></i></button>
 </div>
 
-<!-- BOTTOM NAV -->
 <nav class="bottom-nav" id="bottomNav">
     <button class="bn-item active" data-nav="home"><i class="fas fa-home"></i><span>الرئيسية</span></button>
     <button class="bn-item" data-nav="subjects"><i class="fas fa-book-open"></i><span>المواد</span></button>
@@ -1040,9 +994,6 @@ function showSection(section){
     window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// إصلاح تكرار المحاضرة: إضافة تحقق قبل عرض المحاضرات
-const displayedLecturesMap = new Map();
-
 function showLectures(subjectCode){
     const subj=allSubjects.find(s=>s.code===subjectCode);
     document.getElementById('lecturesTitle').textContent='محاضرات '+(subj?.name||subjectCode);
@@ -1062,34 +1013,30 @@ function updateBottomNav(section){
 document.getElementById('menuToggle').addEventListener('click',()=>{document.getElementById('sidebar').classList.add('active');document.getElementById('sidebarOverlay').classList.add('active');});
 document.getElementById('sidebarOverlay').addEventListener('click',()=>{document.getElementById('sidebar').classList.remove('active');document.getElementById('sidebarOverlay').classList.remove('active');});
 
-// سحب الشاشة أو الضغط عليها يغلق السايدبار
-const sidebarEl = document.getElementById('sidebar');
-const sidebarOverlayEl = document.getElementById('sidebarOverlay');
-let touchStartX = 0;
-let touchEndX = 0;
+document.addEventListener('click', (e) => {
+    const sidebar = document.getElementById('sidebar');
+    const menuToggle = document.getElementById('menuToggle');
+    if (sidebar && sidebar.classList.contains('active') && !sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+        sidebar.classList.remove('active');
+        document.getElementById('sidebarOverlay').classList.remove('active');
+    }
+});
 
+let touchStartX = 0;
 document.addEventListener('touchstart', (e) => {
     touchStartX = e.changedTouches[0].screenX;
 }, false);
-
 document.addEventListener('touchend', (e) => {
-    touchEndX = e.changedTouches[0].screenX;
-    if (sidebarEl.classList.contains('active')) {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar && sidebar.classList.contains('active')) {
+        const touchEndX = e.changedTouches[0].screenX;
         const swipeDistance = touchStartX - touchEndX;
-        if (swipeDistance > 50) {
-            sidebarEl.classList.remove('active');
-            sidebarOverlayEl.classList.remove('active');
+        if (swipeDistance > 40) {
+            sidebar.classList.remove('active');
+            document.getElementById('sidebarOverlay').classList.remove('active');
         }
     }
-});
-
-// ضغط على الشاشة يغلق السايدبار
-document.addEventListener('click', (e) => {
-    if (sidebarEl.classList.contains('active') && !sidebarEl.contains(e.target) && !document.getElementById('menuToggle').contains(e.target)) {
-        sidebarEl.classList.remove('active');
-        sidebarOverlayEl.classList.remove('active');
-    }
-});
+}, false);
 
 document.querySelectorAll('.sidebar-item[data-nav]').forEach(item=>item.addEventListener('click',()=>showSection(item.dataset.nav)));
 document.querySelectorAll('.bn-item[data-nav]').forEach(item=>item.addEventListener('click',()=>showSection(item.dataset.nav)));
@@ -1284,16 +1231,17 @@ function addVideoItem(id,data){
 async function loadLectures(code){
     const list=document.getElementById('lecturesList');
     if(!list)return;
-    displayedLecturesMap.clear();
+    const processedIds = new Set();
     try{
         let q=db.collection("lectures").where("subjectCode","==",code);
         if(currentUser?.role!=='admin')q=q.where("stage","==",currentUser.stage);
         const snap=await q.get();
         clearEl(list);
         if(snap.empty){emptyState(list,'lectures');return;}
-        const lecs=[];snap.forEach(d=>{
-            if(!displayedLecturesMap.has(d.id)){
-                displayedLecturesMap.set(d.id,true);
+        const lecs=[];
+        snap.forEach(d=>{
+            if(!processedIds.has(d.id)){
+                processedIds.add(d.id);
                 lecs.push({id:d.id,...d.data()});
             }
         });
