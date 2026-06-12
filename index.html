@@ -956,31 +956,45 @@ let deferredPrompt=null;
 const installBtn=document.getElementById('installAppBtn');
 const installBar=document.getElementById('installBar');
 function isInstalled(){return window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;}
+
 window.addEventListener('beforeinstallprompt',e=>{
-    e.preventDefault();deferredPrompt=e;
+    e.preventDefault();
+    deferredPrompt=e;
     if(installBtn)installBtn.style.display='flex';
-    if(!isInstalled()&&!localStorage.getItem('installDismissed')){
-        setTimeout(()=>installBar.classList.add('show'),3000);
+    if(!isInstalled() && !localStorage.getItem('installDismissed')){
+        setTimeout(()=>installBar.classList.add('show'),2000);
     }
 });
+
 async function triggerInstall(){
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    
+    if(isIOS){
+        alert('📱 لتثبيت التطبيق على iPhone/iPad:\n\n1. اضغط على زر المشاركة 📤\n2. اختر "إضافة إلى الشاشة الرئيسية"\n3. اضغط على "إضافة"');
+        return;
+    }
+    
     if(deferredPrompt){
         deferredPrompt.prompt();
-        const{outcome}=await deferredPrompt.userChoice;
-        if(outcome==='accepted'){showMessage('✅ تم تثبيت التطبيق!');installBar.classList.remove('show');if(installBtn)installBtn.style.display='none';}
-        deferredPrompt=null;
-    }else{
-        const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
-        if(isIOS){
-            alert('📱 لتثبيت التطبيق على iPhone/iPad:\n1. اضغط على زر المشاركة 📤\n2. اختر "إضافة إلى الشاشة الرئيسية"\n3. اضغط على "إضافة"');
-        }else{
-            alert('📱 لتثبيت التطبيق:\nاضغط على القائمة (النقاط الثلاث) ثم اختر "تثبيت التطبيق"');
+        const {outcome} = await deferredPrompt.userChoice;
+        if(outcome === 'accepted'){
+            showMessage('✅ تم تثبيت التطبيق!');
+            installBar.classList.remove('show');
+            if(installBtn) installBtn.style.display='none';
         }
+        deferredPrompt=null;
+    } else {
+        alert('📱 لتثبيت التطبيق:\nاضغط على القائمة (النقاط الثلاث) ثم اختر "تثبيت التطبيق"');
     }
 }
-if(installBtn)installBtn.addEventListener('click',triggerInstall);
-installBar.addEventListener('click',e=>{if(!e.target.closest('.install-x'))triggerInstall();});
-document.getElementById('closeInstallBar').addEventListener('click',e=>{e.stopPropagation();installBar.classList.remove('show');localStorage.setItem('installDismissed','true');});
+
+if(installBtn) installBtn.addEventListener('click', triggerInstall);
+if(installBar) installBar.addEventListener('click', (e) => { if(!e.target.closest('.install-x')) triggerInstall(); });
+document.getElementById('closeInstallBar')?.addEventListener('click', (e) => { e.stopPropagation(); installBar.classList.remove('show'); localStorage.setItem('installDismissed','true'); });
+
+if(!isInstalled() && !localStorage.getItem('installDismissed')){
+    setTimeout(() => { if(installBtn) installBtn.style.display='flex'; }, 2000);
+}
 
 const slides=document.querySelectorAll('.slide');
 const dotsC=document.getElementById('sliderDots');
