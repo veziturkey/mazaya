@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -45,6 +44,7 @@
             background:var(--bg);
             color:var(--text);
             direction:rtl;
+            padding-top:0;
             padding-top:var(--safe-top);
             min-height:100vh;
             overflow-x:hidden;
@@ -133,13 +133,20 @@
         .stay-logged-label{display:flex;align-items:center;gap:8px;font-size:0.78rem;color:var(--text2);cursor:pointer;}
         .stay-logged-label input{accent-color:var(--red);}
 
-        /* ======== TOP NAV ======== */
+        /* ======== TOP NAV - FIXED FOR IOS ======== */
         .navbar{
-            position:sticky;top:var(--safe-top);z-index:900;
+            position:fixed;
+            top:0;
+            left:0;
+            right:0;
+            z-index:900;
             background:var(--bg2);
             border-bottom:1px solid var(--border);
-            height:var(--nav-h);display:none;
-            backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+            height:var(--nav-h);
+            display:none;
+            backdrop-filter:blur(20px);
+            -webkit-backdrop-filter:blur(20px);
+            padding-top:var(--safe-top);
         }
         .navbar.show{display:flex;align-items:center;}
         .nav-inner{
@@ -414,16 +421,17 @@
         .dates-item-desc{font-size:0.68rem;color:var(--text3);margin-top:2px;}
         .dates-badge{background:rgba(200,16,46,0.12);color:var(--red);padding:5px 12px;border-radius:10px;font-size:0.65rem;font-weight:700;white-space:nowrap;}
 
-        /* ======== SIDEBAR ======== */
+        /* ======== SIDEBAR - اغلاق باللمس والتحريك ======== */
         .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1800;backdrop-filter:blur(4px);}
         .sidebar-overlay.show{display:block;}
         .sidebar{
-            position:fixed;top:var(--safe-top);right:-100%;width:78%;max-width:290px;
-            height:calc(100vh - var(--safe-top));
+            position:fixed;top:0;right:-100%;width:78%;max-width:290px;
+            height:100vh;
             background:var(--bg2);z-index:1900;
             transition:right 0.3s cubic-bezier(0.4,0,0.2,1);
             display:flex;flex-direction:column;
             border-left:1px solid var(--border);
+            padding-top:var(--safe-top);
         }
         .sidebar.active{right:0;}
         .sidebar-top{
@@ -609,7 +617,7 @@
         .empty-state p{font-size:0.72rem;}
 
         /* ======== MAIN CONTENT ======== */
-        .main-content{padding-bottom:calc(var(--bottom-h) + var(--safe-bottom) + 16px);}
+        .main-content{padding-bottom:calc(var(--bottom-h) + var(--safe-bottom) + 16px);margin-top:var(--nav-h);}
 
         /* ======== UTILS ======== */
         @keyframes slideUp{from{transform:translateY(30px);opacity:0;}to{transform:translateY(0);opacity:1;}}
@@ -938,7 +946,6 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script>
-// PWA Manifest
 (function(){
     var icon='https://cdn-icons-png.flaticon.com/512/3067/3067010.png';
     var m={name:'CET Mazaya',short_name:'CET',start_url:location.href,display:'standalone',theme_color:'#C8102E',background_color:'#0A0A0F',lang:'ar',dir:'rtl',icons:[{src:icon,sizes:'192x192',type:'image/png',purpose:'any maskable'},{src:icon,sizes:'512x512',type:'image/png',purpose:'any maskable'}]};
@@ -946,15 +953,12 @@
     var link=document.createElement('link');link.rel='manifest';link.href=URL.createObjectURL(blob);document.head.appendChild(link);
 })();
 
-// Firebase
 const firebaseConfig={apiKey:"AIzaSyBFdxj6p-DAGrr-To_WZBxIk_FDX67Ygm0",authDomain:"mazaya-c7569.firebaseapp.com",projectId:"mazaya-c7569",storageBucket:"mazaya-c7569.appspot.com",messagingSenderId:"989358281766",appId:"1:989358281766:web:9d5d28ce94a2d5599c02e7"};
 firebase.initializeApp(firebaseConfig);
 const db=firebase.firestore();
 
-// Sanitize
 function san(t){if(!t)return'';return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 
-// State
 let currentUser=null,allSubjects=[],allImportantDates=[],allAnnouncements=[],allCustomButtons=[];
 let displayedSubjects=new Map(),displayedChannels=new Map(),displayedGallery=new Map(),displayedVideos=new Map();
 let readAnnouncements=new Set();
@@ -965,13 +969,11 @@ let popupAdData={isActive:false,imageUrl:'',link:''};
 let popupShown=false;
 const colorsC=['c0','c1','c2','c3','c4','c5'];
 
-// Loading
 const loadingBar=document.getElementById('loadingBar');
 const loadingPct=document.getElementById('loadingPct');
 function setProgress(p){p=Math.min(p,100);loadingBar.style.width=p+'%';loadingPct.textContent=p+'%';}
 function hideLoading(){setProgress(100);setTimeout(()=>{const s=document.getElementById('loadingScreen');s.classList.add('hidden');setTimeout(()=>s.style.display='none',600);},300);}
 
-// Toast
 function showMessage(msg){
     const t=document.createElement('div');t.className='toast';t.textContent=msg;
     document.body.appendChild(t);
@@ -979,7 +981,6 @@ function showMessage(msg){
     setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300);},3000);
 }
 
-// PWA Install
 let deferredPrompt=null;
 const installBtn=document.getElementById('installAppBtn');
 const installBar=document.getElementById('installBar');
@@ -1006,7 +1007,6 @@ if(installBtn)installBtn.addEventListener('click',triggerInstall);
 installBar.addEventListener('click',e=>{if(!e.target.closest('.install-x'))triggerInstall();});
 document.getElementById('closeInstallBar').addEventListener('click',e=>{e.stopPropagation();installBar.classList.remove('show');localStorage.setItem('installDismissed','true');});
 
-// Hero Slider
 const slides=document.querySelectorAll('.slide');
 const dotsC=document.getElementById('sliderDots');
 let cur=0,slideTimer;
@@ -1020,7 +1020,6 @@ function initSlider(){
 function goTo(i){slides.forEach(s=>s.classList.remove('active'));slides[i].classList.add('active');cur=i;document.querySelectorAll('.dot').forEach((d,j)=>d.classList.toggle('active',j===i));}
 initSlider();
 
-// Navigation
 function showSection(section){
     currentSection=section;
     const views=['homeView','subjectsView','lecturesContainer','videosView','galleryView','channelsView','developerView'];
@@ -1040,6 +1039,10 @@ function showSection(section){
     document.getElementById('sidebarOverlay')?.classList.remove('active');
     window.scrollTo({top:0,behavior:'smooth'});
 }
+
+// إصلاح تكرار المحاضرة: إضافة تحقق قبل عرض المحاضرات
+const displayedLecturesMap = new Map();
+
 function showLectures(subjectCode){
     const subj=allSubjects.find(s=>s.code===subjectCode);
     document.getElementById('lecturesTitle').textContent='محاضرات '+(subj?.name||subjectCode);
@@ -1050,20 +1053,49 @@ function showLectures(subjectCode){
     loadLectures(subjectCode);
     window.scrollTo({top:0,behavior:'smooth'});
 }
+
 function updateBottomNav(section){
     document.querySelectorAll('.bn-item').forEach(b=>b.classList.toggle('active',b.dataset.nav===section));
     document.querySelectorAll('.sidebar-item[data-nav]').forEach(b=>b.classList.toggle('active',b.dataset.nav===section));
 }
 
-// Sidebar
 document.getElementById('menuToggle').addEventListener('click',()=>{document.getElementById('sidebar').classList.add('active');document.getElementById('sidebarOverlay').classList.add('active');});
 document.getElementById('sidebarOverlay').addEventListener('click',()=>{document.getElementById('sidebar').classList.remove('active');document.getElementById('sidebarOverlay').classList.remove('active');});
+
+// سحب الشاشة أو الضغط عليها يغلق السايدبار
+const sidebarEl = document.getElementById('sidebar');
+const sidebarOverlayEl = document.getElementById('sidebarOverlay');
+let touchStartX = 0;
+let touchEndX = 0;
+
+document.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+}, false);
+
+document.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    if (sidebarEl.classList.contains('active')) {
+        const swipeDistance = touchStartX - touchEndX;
+        if (swipeDistance > 50) {
+            sidebarEl.classList.remove('active');
+            sidebarOverlayEl.classList.remove('active');
+        }
+    }
+});
+
+// ضغط على الشاشة يغلق السايدبار
+document.addEventListener('click', (e) => {
+    if (sidebarEl.classList.contains('active') && !sidebarEl.contains(e.target) && !document.getElementById('menuToggle').contains(e.target)) {
+        sidebarEl.classList.remove('active');
+        sidebarOverlayEl.classList.remove('active');
+    }
+});
+
 document.querySelectorAll('.sidebar-item[data-nav]').forEach(item=>item.addEventListener('click',()=>showSection(item.dataset.nav)));
 document.querySelectorAll('.bn-item[data-nav]').forEach(item=>item.addEventListener('click',()=>showSection(item.dataset.nav)));
 document.querySelectorAll('[data-nav]').forEach(el=>{if(el.classList.contains('see-all'))el.addEventListener('click',()=>showSection(el.dataset.nav));});
 document.getElementById('centerBtn').addEventListener('click',()=>showSection('subjects'));
 
-// Back bars
 document.getElementById('lecturesBackBar').addEventListener('click',()=>{document.getElementById('lecturesContainer').style.display='none';showSection(allSubjects.length?'subjects':'home');});
 document.getElementById('videosBackBar').addEventListener('click',()=>showSection('home'));
 document.getElementById('galleryBackBar').addEventListener('click',()=>showSection('home'));
@@ -1071,7 +1103,6 @@ document.getElementById('channelsBackBar').addEventListener('click',()=>showSect
 document.getElementById('developerBackBar').addEventListener('click',()=>showSection('home'));
 document.getElementById('settingsBack').addEventListener('click',()=>{document.getElementById('settingsView').classList.remove('show');});
 
-// Theme
 const themeSwitch=document.getElementById('themeSwitch');
 const root=document.documentElement;
 function applyTheme(light){
@@ -1100,7 +1131,6 @@ function applyTheme(light){
 themeSwitch.addEventListener('change',function(){applyTheme(this.checked);localStorage.setItem('theme',this.checked?'light':'dark');});
 if(localStorage.getItem('theme')==='light'){themeSwitch.checked=true;applyTheme(true);}
 
-// Bell / Calendar
 document.getElementById('bellBtn').addEventListener('click',()=>document.getElementById('announcementModal').classList.add('show'));
 document.getElementById('closeAnnModal').addEventListener('click',()=>document.getElementById('announcementModal').classList.remove('show'));
 document.getElementById('announcementModal').addEventListener('click',e=>{if(e.target===document.getElementById('announcementModal'))document.getElementById('announcementModal').classList.remove('show');});
@@ -1108,10 +1138,8 @@ document.getElementById('calendarBtn').addEventListener('click',()=>document.get
 document.getElementById('closeDatesModal').addEventListener('click',()=>document.getElementById('datesModal').classList.remove('show'));
 document.getElementById('datesModal').addEventListener('click',e=>{if(e.target===document.getElementById('datesModal'))document.getElementById('datesModal').classList.remove('show');});
 
-// Logout
 document.getElementById('logoutSidebar').addEventListener('click',logout);
 
-// Auth tabs
 document.querySelectorAll('.auth-tab').forEach(tab=>{
     tab.addEventListener('click',()=>{
         document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));
@@ -1123,14 +1151,12 @@ document.querySelectorAll('.auth-tab').forEach(tab=>{
     });
 });
 
-// Settings modal
 document.getElementById('userAvatar').addEventListener('click',()=>{document.getElementById('sidebar').classList.remove('active');document.getElementById('sidebarOverlay').classList.remove('active');showSection('settings');});
 document.getElementById('avatarBtnChoose').addEventListener('click',chooseFromGallery);
 document.getElementById('avatarBtnCamera').addEventListener('click',takePhoto);
 document.getElementById('removeAvatarBtn').addEventListener('click',removeAvatar);
 document.getElementById('avatarPreview').addEventListener('click',chooseFromGallery);
 
-// Avatar
 function compressImage(dataUrl,maxW=300,q=0.7){return new Promise(res=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');let w=img.width,h=img.height;if(w>maxW){h=h*maxW/w;w=maxW;}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',q));};img.src=dataUrl;});}
 function saveAvatar(data){if(!currentUser)return;const k='avatar_'+san(currentUser.username);if(data&&data.length<2*1024*1024)localStorage.setItem(k,data);else localStorage.removeItem(k);}
 function loadAvatar(){if(!currentUser)return null;return localStorage.getItem('avatar_'+san(currentUser.username));}
@@ -1146,7 +1172,6 @@ function chooseFromGallery(){const i=document.createElement('input');i.type='fil
 function takePhoto(){const i=document.createElement('input');i.type='file';i.accept='image/*';i.capture='environment';i.onchange=e=>handleAvatarFile(e.target.files[0]);i.click();}
 function removeAvatar(){saveAvatar(null);updateAvatarUI();showMessage('تم إزالة الصورة');}
 
-// Render helpers
 function clearEl(el){if(el)while(el.firstChild)el.removeChild(el.firstChild);}
 function emptyState(container,type){
     if(!container)return;
@@ -1164,7 +1189,6 @@ function renderSubjectCard(data,idx,container){
     container.appendChild(card);
 }
 
-// Badges
 function updateAnnBadge(){
     const ub=document.getElementById('announcementBadge');
     const cnt=allAnnouncements.filter(a=>!readAnnouncements.has(a.id)).length;
@@ -1219,7 +1243,6 @@ function addSubjectToGrids(id,data,forceAdd){
     const homeGrid=document.getElementById('homeSubjectsList');
     const subjGrid=document.getElementById('subjectsPageList');
     if(homeGrid){
-        // show up to 6 on home
         const existing=homeGrid.querySelectorAll('.subject-card');
         if(existing.length<6){const c=document.createElement('div');homeGrid.appendChild(c);renderSubjectCard(data,colorIdx,homeGrid);homeGrid.removeChild(c);const last=homeGrid.lastElementChild;renderSubjectCard(data,colorIdx,last.parentNode);}
     }
@@ -1261,13 +1284,19 @@ function addVideoItem(id,data){
 async function loadLectures(code){
     const list=document.getElementById('lecturesList');
     if(!list)return;
+    displayedLecturesMap.clear();
     try{
         let q=db.collection("lectures").where("subjectCode","==",code);
         if(currentUser?.role!=='admin')q=q.where("stage","==",currentUser.stage);
         const snap=await q.get();
         clearEl(list);
         if(snap.empty){emptyState(list,'lectures');return;}
-        const lecs=[];snap.forEach(d=>lecs.push({id:d.id,...d.data()}));
+        const lecs=[];snap.forEach(d=>{
+            if(!displayedLecturesMap.has(d.id)){
+                displayedLecturesMap.set(d.id,true);
+                lecs.push({id:d.id,...d.data()});
+            }
+        });
         lecs.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0));
         lecs.forEach(lec=>{
             const c=document.createElement('div');c.className='lecture-card';
@@ -1285,7 +1314,6 @@ async function loadInitialData(){
         if(!isAdmin&&userStage){sQ=sQ.where("stage","==",userStage);vQ=vQ.where("stage","in",[userStage,"الكل"]);annQ=annQ.where("stage","in",[userStage,"الكل"]);dQ=dQ.where("stage","in",[userStage,"الكل"]);}
         const[sSnap,dSnap,cSnap,gSnap,vSnap,annSnap,btnSnap]=await Promise.all([sQ.get(),dQ.get(),db.collection("channels").get(),db.collection("gallery").get(),vQ.get(),annQ.get(),db.collection("customButtons").get()]);
 
-        // Subjects
         clearEl(document.getElementById('homeSubjectsList'));clearEl(document.getElementById('subjectsPageList'));
         displayedSubjects.clear();allSubjects=[];
         const sArr=[];sSnap.forEach(d=>sArr.push({id:d.id,...d.data()}));
@@ -1294,22 +1322,18 @@ async function loadInitialData(){
         if(!displayedSubjects.size){emptyState(document.getElementById('homeSubjectsList'),'subjects');emptyState(document.getElementById('subjectsPageList'),'subjects');}
         document.getElementById('statsSubjects').textContent=allSubjects.length;
 
-        // Dates
         allImportantDates=[];dSnap.forEach(d=>allImportantDates.push({id:d.id,...d.data()}));renderDates();updateCalBadge();
 
-        // Channels
         clearEl(document.getElementById('channelsContainer'));displayedChannels.clear();
         cSnap.forEach(d=>addChannel(d.id,d.data()));
         if(!displayedChannels.size)emptyState(document.getElementById('channelsContainer'),'channels');
 
-        // Gallery
         clearEl(document.getElementById('galleryContainer'));displayedGallery.clear();
         const gArr=[];gSnap.forEach(d=>gArr.push({id:d.id,...d.data()}));
         gArr.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0));
         gArr.forEach(g=>addGalleryItem(g.id,g));
         if(!displayedGallery.size)emptyState(document.getElementById('galleryContainer'),'gallery');
 
-        // Videos
         clearEl(document.getElementById('videosContainer'));displayedVideos.clear();
         const vArr=[];vSnap.forEach(d=>vArr.push({id:d.id,...d.data()}));
         vArr.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0));
@@ -1317,10 +1341,8 @@ async function loadInitialData(){
         document.getElementById('statsVideos').textContent=displayedVideos.size;
         if(!displayedVideos.size)emptyState(document.getElementById('videosContainer'),'videos');
 
-        // Custom Buttons
         allCustomButtons=[];btnSnap.forEach(d=>allCustomButtons.push({id:d.id,...d.data()}));renderCustomButtons();
 
-        // Announcements
         const saved=localStorage.getItem('readAnnouncements');
         if(saved){try{readAnnouncements=new Set(JSON.parse(saved));}catch(e){}}
         allAnnouncements=[];
@@ -1400,7 +1422,6 @@ async function updateUserProfile(fn,un,stage,shift,password){
     localStorage.setItem('loggedInUser',JSON.stringify(currentUser));
 }
 
-// Popup Ad
 async function loadPopupAd(){
     try{const d=await db.collection("settings").doc("popupAd").get();if(d.exists){const dat=d.data();popupAdData={isActive:dat.isActive||false,imageUrl:dat.imageUrl||'',link:dat.link||''}; }}catch(e){}
 }
@@ -1415,7 +1436,6 @@ function showPopupAd(){
 document.getElementById('popupAdClose').addEventListener('click',()=>{document.getElementById('popupAdModal').style.display='none';});
 document.getElementById('popupAdModal').addEventListener('click',e=>{if(e.target===document.getElementById('popupAdModal')||e.target.classList.contains('popup-ad-bg'))document.getElementById('popupAdModal').style.display='none';});
 
-// Show main UI
 function showMainContent(){
     document.getElementById('sidebarUsername').textContent=currentUser.name||currentUser.username;
     document.getElementById('sidebarInfo').textContent=`${currentUser.stage||''} - ${currentUser.shift||''}`;
@@ -1449,7 +1469,6 @@ function logout(){
     showMessage('تم تسجيل الخروج');
 }
 
-// Auth forms
 document.getElementById('loginForm').addEventListener('submit',async e=>{
     e.preventDefault();
     const u=document.getElementById('loginUsername').value.trim();
@@ -1496,7 +1515,6 @@ document.getElementById('settingsForm').addEventListener('submit',async e=>{
     }catch(e2){showMessage('خطأ: '+e2.message);}
 });
 
-// Auto login
 function checkAutoLogin(){
     const saved=localStorage.getItem('loggedInUser');
     const stay=localStorage.getItem('stayLoggedIn')==='true';
@@ -1506,7 +1524,6 @@ function checkAutoLogin(){
     }else{document.getElementById('authModal').style.display='flex';hideLoading();}
 }
 
-// Boot
 setProgress(10);
 setTimeout(()=>{setProgress(30);checkAutoLogin();},500);
 </script>
