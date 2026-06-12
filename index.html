@@ -1191,7 +1191,9 @@ function addSubjectToGrids(id,data,forceAdd){
     const subjGrid=document.getElementById('subjectsPageList');
     if(homeGrid){
         const existing=homeGrid.querySelectorAll('.subject-card');
-        if(existing.length<6){const c=document.createElement('div');homeGrid.appendChild(c);renderSubjectCard(data,colorIdx,homeGrid);homeGrid.removeChild(c);const last=homeGrid.lastElementChild;renderSubjectCard(data,colorIdx,last.parentNode);}
+        if(existing.length<6){
+            renderSubjectCard(data,colorIdx,homeGrid);
+        }
     }
     if(subjGrid)renderSubjectCard(data,colorIdx,subjGrid);
     displayedSubjects.set(id,true);
@@ -1262,11 +1264,19 @@ async function loadInitialData(){
         if(!isAdmin&&userStage){sQ=sQ.where("stage","==",userStage);vQ=vQ.where("stage","in",[userStage,"الكل"]);annQ=annQ.where("stage","in",[userStage,"الكل"]);dQ=dQ.where("stage","in",[userStage,"الكل"]);}
         const[sSnap,dSnap,cSnap,gSnap,vSnap,annSnap,btnSnap]=await Promise.all([sQ.get(),dQ.get(),db.collection("channels").get(),db.collection("gallery").get(),vQ.get(),annQ.get(),db.collection("customButtons").get()]);
 
-        clearEl(document.getElementById('homeSubjectsList'));clearEl(document.getElementById('subjectsPageList'));
-        displayedSubjects.clear();allSubjects=[];
-        const sArr=[];sSnap.forEach(d=>sArr.push({id:d.id,...d.data()}));
+        clearEl(document.getElementById('homeSubjectsList'));
+        clearEl(document.getElementById('subjectsPageList'));
+        displayedSubjects.clear();
+        allSubjects=[];
+        
+        const sArr=[];
+        sSnap.forEach(d=>sArr.push({id:d.id,...d.data()}));
         sArr.sort((a,b)=>(a.name||'').localeCompare(b.name||'','ar'));
-        sArr.forEach((s,i)=>{allSubjects.push(s);addSubjectToGrids(s.id,s,true);});
+        sArr.forEach((s,i)=>{
+            allSubjects.push(s);
+            addSubjectToGrids(s.id,s,true);
+        });
+        
         if(!displayedSubjects.size){emptyState(document.getElementById('homeSubjectsList'),'subjects');emptyState(document.getElementById('subjectsPageList'),'subjects');}
         document.getElementById('statsSubjects').textContent=allSubjects.length;
 
@@ -1314,7 +1324,16 @@ function renderCustomButtons(){
 }
 
 function startListeners(){
-    subjectsL=db.collection("subjects").onSnapshot(snap=>{snap.docChanges().forEach(c=>{if(c.type==='added'&&!displayedSubjects.has(c.doc.id)){allSubjects.push({id:c.doc.id,...c.doc.data()});addSubjectToGrids(c.doc.id,c.doc.data());}});});
+    if(subjectsL) subjectsL();
+    subjectsL=db.collection("subjects").onSnapshot(snap=>{
+        snap.docChanges().forEach(c=>{
+            if(c.type==='added' && !displayedSubjects.has(c.doc.id)){
+                const newSubj = {id:c.doc.id,...c.doc.data()};
+                allSubjects.push(newSubj);
+                addSubjectToGrids(c.doc.id, newSubj, false);
+            }
+        });
+    });
     datesL=db.collection("importantDates").onSnapshot(snap=>{const isAdmin=currentUser?.role==='admin';const userStage=currentUser?.stage;allImportantDates=[];snap.forEach(d=>{const dat=d.data();if(!isAdmin&&userStage&&dat.stage&&dat.stage!=='الكل'&&dat.stage!==userStage)return;allImportantDates.push({id:d.id,...dat});});renderDates();updateCalBadge();});
     channelsL=db.collection("channels").onSnapshot(snap=>{snap.docChanges().forEach(c=>{if(c.type==='added')addChannel(c.doc.id,c.doc.data());});});
     galleryL=db.collection("gallery").onSnapshot(snap=>{snap.docChanges().forEach(c=>{if(c.type==='added')addGalleryItem(c.doc.id,c.doc.data());});});
