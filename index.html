@@ -656,6 +656,7 @@
             color:var(--text2);
             margin-bottom:20px;
             line-height:1.6;
+            white-space:pre-line;
         }
         .message-modal-btn{
             background:linear-gradient(135deg,var(--red),var(--red-dark));
@@ -1158,7 +1159,7 @@ function san(t){if(!t)return'';return String(t).replace(/&/g,'&amp;').replace(/<
 let currentUser=null,allSubjects=[],allImportantDates=[],allAnnouncements=[],allCustomButtons=[];
 let displayedSubjects=new Map(),displayedChannels=new Map(),displayedGallery=new Map(),displayedVideos=new Map();
 let readAnnouncements=new Set();
-let subjectsL=null,datesL=null,channelsL=null,galleryL=null,videosL=null,announcementsL=null,buttonsL=null;
+let subjectsL=null,datesL=null,channelsL=null,galleryL=null,videosL=null,announcementsL=null,buttonsL=null,personalAnnouncementsL=null;
 let checkBlockedTimer=null;
 let currentSection='home';
 let popupAdData={isActive:false,imageUrl:'',link:''};
@@ -1531,7 +1532,6 @@ async function loadLectures(code){
     }catch(e){emptyState(list,'lectures');}
 }
 
-// Setup real-time listener for gems updates
 function setupGemsListener(){
     if(!currentUser) return;
     const unsubscribe = db.collection("students").doc(currentUser.id).onSnapshot((doc) => {
@@ -1615,6 +1615,56 @@ document.getElementById('gemsToCharge')?.addEventListener('input', function(){
 
 document.getElementById('requestChargeBtn')?.addEventListener('click', requestGemsCharge);
 
+// Load personal announcements (for specific user)
+async function loadPersonalAnnouncements(){
+    if(!currentUser) return;
+    try{
+        const snap = await db.collection("personalAnnouncements")
+            .where("targetUserId", "==", currentUser.id)
+            .orderBy("createdAt", "desc")
+            .get();
+        
+        const newAnnouncements = [];
+        snap.forEach(doc => {
+            const data = doc.data();
+            if(!readAnnouncements.has(doc.id)){
+                newAnnouncements.push(data);
+            }
+            allAnnouncements.push({id: doc.id, ...data});
+        });
+        
+        if(newAnnouncements.length > 0){
+            newAnnouncements.forEach(ann => {
+                showModalMessage('📢 إعلان جديد', ann.message, 'info');
+            });
+            renderAnnouncements();
+            updateAnnBadge();
+        }
+    } catch(e){console.error("Error loading personal announcements:",e);}
+}
+
+// Real-time listener for personal announcements
+function setupPersonalAnnouncementsListener(){
+    if(!currentUser) return;
+    if(personalAnnouncementsL) personalAnnouncementsL();
+    personalAnnouncementsL = db.collection("personalAnnouncements")
+        .where("targetUserId", "==", currentUser.id)
+        .onSnapshot((snap) => {
+            snap.docChanges().forEach(change => {
+                if(change.type === 'added'){
+                    const data = change.doc.data();
+                    const exists = allAnnouncements.some(a => a.id === change.doc.id);
+                    if(!exists){
+                        allAnnouncements.unshift({id: change.doc.id, ...data});
+                        renderAnnouncements();
+                        updateAnnBadge();
+                        showModalMessage('📢 إعلان جديد', data.message, 'info');
+                    }
+                }
+            });
+        });
+}
+
 async function loadInitialData(){
     try{
         const userStage=currentUser?.stage;
@@ -1660,16 +1710,23 @@ async function loadInitialData(){
 
         allCustomButtons=[];btnSnap.forEach(d=>allCustomButtons.push({id:d.id,...d.data()}));renderCustomButtons();
 
+        // Load general announcements
         const saved=localStorage.getItem('readAnnouncements');
         if(saved){try{readAnnouncements=new Set(JSON.parse(saved));}catch(e){}}
         allAnnouncements=[];
         annSnap.forEach(d=>allAnnouncements.push({id:d.id,...d.data()}));
+        
+        // Load personal announcements
+        await loadPersonalAnnouncements();
+        
         renderAnnouncements();updateAnnBadge();
         
         await loadUserGems();
         
         if(gemsUnsubscribe) gemsUnsubscribe();
         gemsUnsubscribe = setupGemsListener();
+        
+        setupPersonalAnnouncementsListener();
         
     }catch(e){console.error(e);}
 }
@@ -1703,11 +1760,11 @@ function startListeners(){
     channelsL=db.collection("channels").onSnapshot(snap=>{snap.docChanges().forEach(c=>{if(c.type==='added')addChannel(c.doc.id,c.doc.data());});});
     galleryL=db.collection("gallery").onSnapshot(snap=>{snap.docChanges().forEach(c=>{if(c.type==='added')addGalleryItem(c.doc.id,c.doc.data());});});
     videosL=db.collection("videos").onSnapshot(snap=>{const isAdmin=currentUser?.role==='admin';const userStage=currentUser?.stage;clearEl(document.getElementById('videosContainer'));displayedVideos.clear();const arr=[];snap.forEach(d=>{const dat=d.data();if(!isAdmin&&userStage&&dat.stage&&dat.stage!=='الكل'&&dat.stage!==userStage)return;arr.push({id:d.id,...dat});});arr.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0));arr.forEach(v=>addVideoItem(v.id,v));document.getElementById('statsVideos').textContent=displayedVideos.size;if(!displayedVideos.size)emptyState(document.getElementById('videosContainer'),'videos');});
-    announcementsL=db.collection("announcements").where("isActive","==",true).onSnapshot(snap=>{const isAdmin=currentUser?.role==='admin';const userStage=currentUser?.stage;allAnnouncements=[];snap.forEach(d=>{const dat=d.data();if(!isAdmin&&userStage&&dat.stage&&dat.stage!=='الكل'&&dat.stage!==userStage)return;allAnnouncements.push({id:d.id,...dat});});renderAnnouncements();updateAnnBadge();const latest=allAnnouncements.find(a=>!readAnnouncements.has(a.id));if(latest)showMessage('📢 '+san(latest.title||'إعلان جديد'));});
+    announcementsL=db.collection("announcements").where("isActive","==",true).onSnapshot(snap=>{const isAdmin=currentUser?.role==='admin';const userStage=currentUser?.stage;allAnnouncements=allAnnouncements.filter(a=>!a.isPersonal);snap.forEach(d=>{const dat=d.data();if(!isAdmin&&userStage&&dat.stage&&dat.stage!=='الكل'&&dat.stage!==userStage)return;allAnnouncements.push({id:d.id,...dat});});renderAnnouncements();updateAnnBadge();const latest=allAnnouncements.find(a=>!readAnnouncements.has(a.id));if(latest)showMessage('📢 '+san(latest.title||'إعلان جديد'));});
     buttonsL=db.collection("customButtons").onSnapshot(snap=>{allCustomButtons=[];snap.forEach(d=>allCustomButtons.push({id:d.id,...d.data()}));renderCustomButtons();});
 }
 
-function stopListeners(){[subjectsL,datesL,channelsL,galleryL,videosL,announcementsL,buttonsL].forEach(l=>{try{if(l)l();}catch(e){}});if(checkBlockedTimer)clearInterval(checkBlockedTimer);if(gemsUnsubscribe){gemsUnsubscribe();gemsUnsubscribe=null;}}
+function stopListeners(){[subjectsL,datesL,channelsL,galleryL,videosL,announcementsL,buttonsL,personalAnnouncementsL].forEach(l=>{try{if(l)l();}catch(e){}});if(checkBlockedTimer)clearInterval(checkBlockedTimer);if(gemsUnsubscribe){gemsUnsubscribe();gemsUnsubscribe=null;}}
 
 async function checkIfBlocked(){
     if(!currentUser||currentUser.role==='admin')return false;
