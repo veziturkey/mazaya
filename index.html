@@ -427,9 +427,21 @@
             border-radius:18px;display:flex;align-items:center;justify-content:center;
             font-size:1.5rem;color:#fff;margin-bottom:10px;overflow:hidden;cursor:pointer;
             box-shadow:0 6px 20px rgba(200,16,46,0.35);
+            position:relative;
         }
         .sidebar-avatar img{width:100%;height:100%;object-fit:cover;}
         .sidebar-name{font-size:0.95rem;font-weight:800;color:var(--text);}
+        .sidebar-gems{
+            display:flex;align-items:center;justify-content:center;gap:6px;
+            background:rgba(255,215,0,0.15);
+            border-radius:20px;
+            padding:4px 12px;
+            margin-top:6px;
+            font-size:0.7rem;
+            font-weight:600;
+            color:var(--gold);
+        }
+        .sidebar-gems i{color:var(--gold);font-size:0.7rem;}
         .sidebar-stage{font-size:0.65rem;color:var(--text3);margin-top:2px;}
         .sidebar-menu{flex:1;overflow-y:auto;padding:10px 0;}
         .sidebar-item{
@@ -493,6 +505,114 @@
             background:var(--card);border:1px solid var(--border);color:var(--text2);
             padding:7px 14px;border-radius:10px;font-size:0.7rem;font-weight:600;cursor:pointer;font-family:'Cairo',sans-serif;
         }
+        
+        /* Gems Section Styles */
+        .gems-section{
+            background:linear-gradient(135deg,#2a1a3a,#1a0a2a);
+            border:1px solid rgba(255,215,0,0.3);
+            border-radius:20px;
+            padding:20px;
+            margin-bottom:24px;
+            text-align:center;
+        }
+        .gems-display{
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:12px;
+            margin-bottom:8px;
+        }
+        .gems-icon{
+            font-size:2rem;
+            filter:drop-shadow(0 0 8px rgba(255,215,0,0.5));
+        }
+        .gems-count{
+            font-size:2rem;
+            font-weight:800;
+            background:linear-gradient(135deg,#FFD700,#FFA500);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+        .gems-label{
+            color:var(--text2);
+            font-size:0.7rem;
+        }
+        
+        /* Charging Section */
+        .charging-section{
+            background:var(--card);
+            border:1px solid var(--border);
+            border-radius:20px;
+            padding:20px;
+            margin-bottom:24px;
+        }
+        .charging-title{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            margin-bottom:16px;
+            font-size:1rem;
+            font-weight:800;
+            color:var(--text);
+        }
+        .charging-title i{color:var(--gold);}
+        .charging-input-group{
+            display:flex;
+            gap:10px;
+            margin-bottom:16px;
+            flex-wrap:wrap;
+        }
+        .charging-input-group .form-control{
+            flex:2;
+            min-width:120px;
+        }
+        .charging-price-info{
+            background:rgba(245,166,35,0.1);
+            border-radius:12px;
+            padding:12px;
+            margin-bottom:16px;
+            font-size:0.75rem;
+            color:var(--text2);
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            flex-wrap:wrap;
+            gap:8px;
+        }
+        .charging-price-info span:first-child i{color:var(--gold);}
+        .charging-price-info span:last-child{color:var(--gold);font-weight:800;font-size:1rem;}
+        .charging-btn{
+            width:100%;
+            padding:14px;
+            background:linear-gradient(135deg,var(--gold),#e67e22);
+            color:#1a1a2e;
+            border:none;
+            border-radius:14px;
+            font-weight:800;
+            font-size:1rem;
+            cursor:pointer;
+            font-family:'Cairo',sans-serif;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:8px;
+            transition:transform 0.15s;
+        }
+        .charging-btn:active{transform:scale(0.97);}
+        .charging-info{
+            margin-top:16px;
+            padding:12px;
+            background:rgba(52,152,219,0.1);
+            border-radius:12px;
+            font-size:0.7rem;
+            color:var(--text2);
+            display:flex;
+            align-items:flex-start;
+            gap:8px;
+        }
+        .charging-info i{color:#3498db;margin-top:2px;}
+        .charging-info a{color:var(--gold);text-decoration:none;}
+        
         .settings-section{background:var(--card);border-radius:18px;padding:16px;margin-bottom:14px;border:1px solid var(--border);}
         .settings-section-label{font-size:0.7rem;color:var(--text3);font-weight:700;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.5px;}
         .save-btn{
@@ -691,6 +811,7 @@
     <div class="sidebar-top">
         <div class="sidebar-avatar" id="userAvatar"><i class="fas fa-user"></i></div>
         <div class="sidebar-name" id="sidebarUsername">اسم المستخدم</div>
+        <div class="sidebar-gems" id="sidebarGems"><i class="fas fa-gem"></i> <span id="sidebarGemsCount">0</span> جوهرة</div>
         <div class="sidebar-stage" id="sidebarInfo"></div>
     </div>
     <div class="sidebar-menu" id="sidebarMenu">
@@ -846,6 +967,47 @@
                 <button class="avatar-btn-sm" id="removeAvatarBtn"><i class="fas fa-trash"></i> إزالة</button>
             </div>
         </div>
+        
+        <!-- Gems Display Section -->
+        <div class="gems-section">
+            <div class="gems-display">
+                <i class="fas fa-gem gems-icon" style="color:#FFD700;"></i>
+                <span class="gems-count" id="userGemsCount">0</span>
+            </div>
+            <div class="gems-label">الرصيد الحالي من الجواهر</div>
+            <div class="gems-label" style="font-size:0.6rem; margin-top:4px;">💎 كل جوهرة = 1 دينار عراقي</div>
+        </div>
+        
+        <!-- Charging Section -->
+        <div class="charging-section">
+            <div class="charging-title">
+                <i class="fas fa-gem"></i>
+                <span>شحن الجواهر</span>
+            </div>
+            <div class="charging-input-group">
+                <input type="number" id="gemsToCharge" class="form-control" placeholder="عدد الجواهر" min="1" value="10">
+            </div>
+            <div class="charging-price-info">
+                <span><i class="fas fa-calculator"></i> إجمالي المبلغ:</span>
+                <span id="totalPrice">10 دينار عراقي</span>
+            </div>
+            <button class="charging-btn" id="requestChargeBtn">
+                <i class="fas fa-paper-plane"></i> طلب شحن الجواهر
+            </button>
+            <div class="charging-info">
+                <i class="fas fa-info-circle"></i>
+                <div>
+                    <strong>طريقة الشحن:</strong><br>
+                    1️⃣ أدخل عدد الجواهر المطلوبة (كل جوهرة = 1 دينار عراقي)<br>
+                    2️⃣ اضغط على "طلب شحن الجواهر"<br>
+                    3️⃣ سيتم إرسال طلبك إلى شركة الشحن للمراجعة<br>
+                    4️⃣ بعد تأكيد الدفع، سيتم إضافة الجواهر إلى رصيدك<br>
+                    <br>
+                    📞 للاستفسار: <a href="tel:07821531234">07821531234</a>
+                </div>
+            </div>
+        </div>
+        
         <form id="settingsForm">
             <div class="settings-section">
                 <div class="settings-section-label">المعلومات الشخصية</div>
@@ -1292,6 +1454,75 @@ async function loadLectures(code){
     }catch(e){emptyState(list,'lectures');}
 }
 
+// Load user gems from Firestore
+async function loadUserGems(){
+    if(!currentUser) return 0;
+    try{
+        const docRef = db.collection("students").doc(currentUser.id);
+        const docSnap = await docRef.get();
+        if(docSnap.exists){
+            const gems = docSnap.data().gems || 0;
+            document.getElementById('userGemsCount').textContent = gems;
+            document.getElementById('sidebarGemsCount').textContent = gems;
+            return gems;
+        }
+    }catch(e){console.error("Error loading gems:",e);}
+    return 0;
+}
+
+// Update gems display in settings and sidebar
+async function updateGemsDisplay(){
+    if(!currentUser) return;
+    try{
+        const docRef = db.collection("students").doc(currentUser.id);
+        const docSnap = await docRef.get();
+        if(docSnap.exists){
+            const gems = docSnap.data().gems || 0;
+            document.getElementById('userGemsCount').textContent = gems;
+            document.getElementById('sidebarGemsCount').textContent = gems;
+        }
+    }catch(e){console.error("Error updating gems display:",e);}
+}
+
+// Request gems charge
+async function requestGemsCharge(){
+    const amount = parseInt(document.getElementById('gemsToCharge').value);
+    if(!amount || amount < 1){
+        showMessage('الرجاء إدخال عدد صحيح من الجواهر (1 على الأقل)');
+        return;
+    }
+    
+    const totalPrice = amount;
+    
+    try{
+        await db.collection("chargeRequests").add({
+            userId: currentUser.id,
+            userName: currentUser.name,
+            userUsername: currentUser.username,
+            gemsAmount: amount,
+            totalPrice: totalPrice,
+            status: 'pending',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        showMessage(`✅ تم إرسال طلب شحن ${amount} جوهرة (${totalPrice} دينار عراقي)\nسيتم مراجعة الطلب من قبل الإدارة`);
+        
+        document.getElementById('gemsToCharge').value = 10;
+        document.getElementById('totalPrice').textContent = '10 دينار عراقي';
+        
+    } catch(error){
+        showMessage('خطأ في إرسال الطلب: ' + error.message);
+    }
+}
+
+// Update total price display
+document.getElementById('gemsToCharge')?.addEventListener('input', function(){
+    const amount = parseInt(this.value) || 0;
+    document.getElementById('totalPrice').textContent = amount + ' دينار عراقي';
+});
+
+document.getElementById('requestChargeBtn')?.addEventListener('click', requestGemsCharge);
+
 async function loadInitialData(){
     try{
         const userStage=currentUser?.stage;
@@ -1342,6 +1573,10 @@ async function loadInitialData(){
         allAnnouncements=[];
         annSnap.forEach(d=>allAnnouncements.push({id:d.id,...d.data()}));
         renderAnnouncements();updateAnnBadge();
+        
+        // Load user gems
+        await loadUserGems();
+        
     }catch(e){console.error(e);}
 }
 
@@ -1410,7 +1645,7 @@ async function handleRegister(fullName,username,stage,shift,password){
     const u=san(username),n=san(fullName);
     const ex=await db.collection("students").where("username","==",u).get();
     if(!ex.empty)throw new Error("اسم المستخدم موجود بالفعل");
-    await db.collection("students").add({name:n,username:u,password,stage:san(stage),shift:san(shift),role:'student',isBlocked:false,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    await db.collection("students").add({name:n,username:u,password,stage:san(stage),shift:san(shift),role:'student',isBlocked:false,gems:0,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
     db.collection("loginLogs").add({username:u,action:"register",timestamp:firebase.firestore.FieldValue.serverTimestamp()}).catch(()=>{});
     return true;
 }
@@ -1458,6 +1693,7 @@ function showMainContent(){
         showMessage('مرحباً '+san(currentUser.name||currentUser.username));
         await loadPopupAd();
         setTimeout(showPopupAd,3000);
+        await updateGemsDisplay();
     });
 }
 
