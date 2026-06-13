@@ -12,7 +12,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="CET Mazaya">
+   meta name="apple-mobile-web-app-title" content="CET Mazaya">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -207,25 +207,59 @@
         .dot{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,0.35);transition:all 0.3s;cursor:pointer;}
         .dot.active{width:18px;background:var(--red);}
 
-        .stats-strip{
-            display:flex;gap:10px;padding:14px 16px;overflow-x:auto;scrollbar-width:none;
+        /* Dynamic Buttons Strip */
+        .buttons-strip{
+            display:flex;
+            gap:12px;
+            padding:16px;
+            overflow-x:auto;
+            scrollbar-width:none;
+            -webkit-overflow-scrolling:touch;
+            background:linear-gradient(180deg,transparent,var(--bg));
         }
-        .stats-strip::-webkit-scrollbar{display:none;}
-        .stat-chip{
-            flex-shrink:0;background:var(--card);border:1px solid var(--border);
-            border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:10px;
-            min-width:130px;
+        .buttons-strip::-webkit-scrollbar{display:none;}
+        .dynamic-btn{
+            flex-shrink:0;
+            min-width:90px;
+            background:var(--card);
+            border:1px solid var(--border);
+            border-radius:16px;
+            padding:12px 8px;
+            text-align:center;
+            cursor:pointer;
+            transition:all 0.2s ease;
+            text-decoration:none;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            gap:6px;
         }
-        .stat-chip-icon{
-            width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;
-            font-size:1rem;
+        .dynamic-btn:active{transform:scale(0.96);background:var(--card2);}
+        .dynamic-btn-img{
+            width:50px;
+            height:50px;
+            border-radius:12px;
+            object-fit:cover;
+            background:linear-gradient(135deg,var(--bg3),var(--card));
         }
-        .stat-chip-icon.red{background:rgba(200,16,46,0.15);color:var(--red);}
-        .stat-chip-icon.gold{background:rgba(245,166,35,0.15);color:var(--gold);}
-        .stat-chip-icon.green{background:rgba(0,200,150,0.15);color:var(--success);}
-        .stat-chip-icon.blue{background:rgba(99,102,241,0.15);color:#6366f1;}
-        .stat-chip-label{font-size:0.6rem;color:var(--text3);}
-        .stat-chip-val{font-size:0.95rem;font-weight:800;color:var(--text);}
+        .dynamic-btn-icon{
+            width:50px;
+            height:50px;
+            border-radius:12px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:1.5rem;
+            background:linear-gradient(135deg,rgba(200,16,46,0.15),rgba(200,16,46,0.05));
+            color:var(--red);
+        }
+        .dynamic-btn-title{
+            font-size:0.7rem;
+            font-weight:700;
+            color:var(--text);
+            text-align:center;
+            line-height:1.3;
+        }
 
         .section-header{
             display:flex;align-items:center;justify-content:space-between;
@@ -776,6 +810,7 @@
         @media(min-width:480px){
             .subjects-grid{grid-template-columns:repeat(4,1fr);}
             .videos-grid{grid-template-columns:repeat(3,1fr);}
+            .buttons-strip{justify-content:center;}
         }
         @media(min-width:768px){
             .subjects-grid{grid-template-columns:repeat(5,1fr);}
@@ -920,24 +955,8 @@
             <div class="slider-dots" id="sliderDots"></div>
         </div>
 
-        <div class="stats-strip">
-            <div class="stat-chip">
-                <div class="stat-chip-icon red"><i class="fas fa-book"></i></div>
-                <div><div class="stat-chip-label">المواد</div><div class="stat-chip-val" id="statsSubjects">0</div></div>
-            </div>
-            <div class="stat-chip">
-                <div class="stat-chip-icon gold"><i class="fas fa-file-pdf"></i></div>
-                <div><div class="stat-chip-label">المحاضرات</div><div class="stat-chip-val">متاحة</div></div>
-            </div>
-            <div class="stat-chip">
-                <div class="stat-chip-icon green"><i class="fas fa-video"></i></div>
-                <div><div class="stat-chip-label">الفيديوهات</div><div class="stat-chip-val" id="statsVideos">0</div></div>
-            </div>
-            <div class="stat-chip">
-                <div class="stat-chip-icon blue"><i class="fas fa-bell"></i></div>
-                <div><div class="stat-chip-label">الإعلانات</div><div class="stat-chip-val" id="statsAnn">0</div></div>
-            </div>
-        </div>
+        <!-- Dynamic Buttons Strip (replaces old stats-strip) -->
+        <div class="buttons-strip" id="homeButtonsStrip"></div>
 
         <div class="section-header">
             <div class="section-header-left">
@@ -1156,10 +1175,10 @@ const db=firebase.firestore();
 
 function san(t){if(!t)return'';return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 
-let currentUser=null,allSubjects=[],allImportantDates=[],allAnnouncements=[],allCustomButtons=[];
-let displayedSubjects=new Map(),displayedChannels=new Map(),displayedGallery=new Map(),displayedVideos=new Map();
+let currentUser=null,allSubjects=[],allImportantDates=[],allAnnouncements=[],allCustomButtons=[],allHomeButtons=[];
+let displayedSubjects=new Map(),displayedChannels=new Map(),displayedGallery=new Map(),displayedVideos=new Map(),displayedHomeButtons=new Map();
 let readAnnouncements=new Set();
-let subjectsL=null,datesL=null,channelsL=null,galleryL=null,videosL=null,announcementsL=null,buttonsL=null,personalAnnouncementsL=null;
+let subjectsL=null,datesL=null,channelsL=null,galleryL=null,videosL=null,announcementsL=null,buttonsL=null,homeButtonsL=null;
 let checkBlockedTimer=null;
 let currentSection='home';
 let popupAdData={isActive:false,imageUrl:'',link:''};
@@ -1171,11 +1190,11 @@ const loadingPct=document.getElementById('loadingPct');
 function setProgress(p){p=Math.min(p,100);loadingBar.style.width=p+'%';loadingPct.textContent=p+'%';}
 function hideLoading(){setProgress(100);setTimeout(()=>{const s=document.getElementById('loadingScreen');s.classList.add('hidden');setTimeout(()=>s.style.display='none',600);},300);}
 
-function showMessage(msg,type){
-    const toast=document.createElement('div');toast.className='toast';toast.textContent=msg;
-    document.body.appendChild(toast);
-    setTimeout(()=>toast.classList.add('show'),10);
-    setTimeout(()=>{toast.classList.remove('show');setTimeout(()=>toast.remove(),300);},3000);
+function showMessage(msg){
+    const t=document.createElement('div');t.className='toast';t.textContent=msg;
+    document.body.appendChild(t);
+    setTimeout(()=>t.classList.add('show'),10);
+    setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300);},3000);
 }
 
 function showModalMessage(title,text,type){
@@ -1398,9 +1417,178 @@ function removeAvatar(){saveAvatar(null);updateAvatarUI();showMessage('تم إز
 function clearEl(el){if(el)while(el.firstChild)el.removeChild(el.firstChild);}
 function emptyState(container,type){
     if(!container)return;
-    const msgs={subjects:{icon:'fa-book',title:'لا توجد مواد'},lectures:{icon:'fa-file-pdf',title:'لا توجد محاضرات'},dates:{icon:'fa-calendar-alt',title:'لا توجد مواعيد'},channels:{icon:'fa-satellite-dish',title:'لا توجد قنوات'},gallery:{icon:'fa-images',title:'لا توجد صور'},videos:{icon:'fa-video',title:'لا توجد فيديوهات'},announcements:{icon:'fa-bell',title:'لا توجد إعلانات'}};
+    const msgs={subjects:{icon:'fa-book',title:'لا توجد مواد'},lectures:{icon:'fa-file-pdf',title:'لا توجد محاضرات'},dates:{icon:'fa-calendar-alt',title:'لا توجد مواعيد'},channels:{icon:'fa-satellite-dish',title:'لا توجد قنوات'},gallery:{icon:'fa-images',title:'لا توجد صور'},videos:{icon:'fa-video',title:'لا توجد فيديوهات'},announcements:{icon:'fa-bell',title:'لا توجد إعلانات'},homeButtons:{icon:'fa-bars',title:'لا توجد أزرار'}};
     const m=msgs[type]||msgs.subjects;
     container.innerHTML=`<div class="empty-state"><i class="fas ${san(m.icon)}"></i><h4>${san(m.title)}</h4><p>سيتم الإضافة قريباً</p></div>`;
+}
+
+// Render home button
+function renderHomeButton(data){
+    const btnDiv=document.createElement('a');
+    btnDiv.className='dynamic-btn';
+    btnDiv.href='javascript:void(0)';
+    btnDiv.onclick=()=>{
+        if(data.url && data.url.trim()){
+            window.open(data.url, '_blank');
+        }
+    };
+    
+    if(data.imageUrl && data.imageUrl.trim()){
+        btnDiv.innerHTML=`
+            <img class="dynamic-btn-img" src="${san(data.imageUrl)}" alt="${san(data.title)}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1998/1998672.png'">
+            <span class="dynamic-btn-title">${san(data.title)}</span>
+        `;
+    } else {
+        btnDiv.innerHTML=`
+            <div class="dynamic-btn-icon"><i class="fas ${san(data.icon||'fa-link')}"></i></div>
+            <span class="dynamic-btn-title">${san(data.title)}</span>
+        `;
+    }
+    return btnDiv;
+}
+
+function addHomeButton(id,data){
+    if(!data||data.isActive===false||displayedHomeButtons.has(id))return;
+    if(!data.title)return;
+    const container=document.getElementById('homeButtonsStrip');
+    if(container){
+        const btn=renderHomeButton(data);
+        container.appendChild(btn);
+        displayedHomeButtons.set(id,true);
+    }
+}
+
+// Load home buttons from Firestore
+async function loadHomeButtons(){
+    try{
+        const snap=await db.collection("homeButtons").orderBy("order","asc").get();
+        const container=document.getElementById('homeButtonsStrip');
+        if(container){
+            clearEl(container);
+            displayedHomeButtons.clear();
+            allHomeButtons=[];
+            console.log("جاري تحميل الأزرار الرئيسية...");
+            
+            if(snap.empty){
+                console.log("لا توجد أزرار في قاعدة البيانات");
+                // Add default demo buttons
+                container.innerHTML=`
+                    <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page1','_blank')">
+                        <div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div>
+                        <span class="dynamic-btn-title">جوهرة VIP</span>
+                    </a>
+                    <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page2','_blank')">
+                        <div class="dynamic-btn-icon"><i class="fas fa-download"></i></div>
+                        <span class="dynamic-btn-title">تحميل التطبيق</span>
+                    </a>
+                    <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('tel:07821531234')">
+                        <div class="dynamic-btn-icon"><i class="fas fa-phone"></i></div>
+                        <span class="dynamic-btn-title">اتصل بنا</span>
+                    </a>
+                `;
+                return;
+            }
+            
+            const buttonsArray=[];
+            snap.forEach(doc=>{
+                buttonsArray.push({id:doc.id,...doc.data()});
+            });
+            buttonsArray.sort((a,b)=>(a.order||0)-(b.order||0));
+            buttonsArray.forEach(btn=>{
+                if(btn.isActive!==false){
+                    allHomeButtons.push(btn);
+                    addHomeButton(btn.id,btn);
+                }
+            });
+            console.log("تم تحميل "+displayedHomeButtons.size+" زر");
+            
+            if(displayedHomeButtons.size===0){
+                container.innerHTML=`
+                    <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page1','_blank')">
+                        <div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div>
+                        <span class="dynamic-btn-title">جوهرة VIP</span>
+                    </a>
+                    <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page2','_blank')">
+                        <div class="dynamic-btn-icon"><i class="fas fa-download"></i></div>
+                        <span class="dynamic-btn-title">تحميل التطبيق</span>
+                    </a>
+                `;
+            }
+        }
+    }catch(e){
+        console.error("Error loading home buttons:",e);
+        const container=document.getElementById('homeButtonsStrip');
+        if(container){
+            container.innerHTML=`
+                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page1','_blank')">
+                    <div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div>
+                    <span class="dynamic-btn-title">جوهرة VIP</span>
+                </a>
+                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page2','_blank')">
+                    <div class="dynamic-btn-icon"><i class="fas fa-download"></i></div>
+                    <span class="dynamic-btn-title">تحميل التطبيق</span>
+                </a>
+            `;
+        }
+    }
+}
+
+// Real-time listener for home buttons
+function startHomeButtonsListener(){
+    if(homeButtonsL) homeButtonsL();
+    homeButtonsL=db.collection("homeButtons").onSnapshot(snap=>{
+        const container=document.getElementById('homeButtonsStrip');
+        if(!container)return;
+        clearEl(container);
+        displayedHomeButtons.clear();
+        allHomeButtons=[];
+        console.log("تحديث الأزرار الرئيسية...");
+        
+        if(snap.empty){
+            console.log("لا توجد أزرار، عرض الأزرار الافتراضية");
+            container.innerHTML=`
+                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page1','_blank')">
+                    <div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div>
+                    <span class="dynamic-btn-title">جوهرة VIP</span>
+                </a>
+                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page2','_blank')">
+                    <div class="dynamic-btn-icon"><i class="fas fa-download"></i></div>
+                    <span class="dynamic-btn-title">تحميل التطبيق</span>
+                </a>
+                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('tel:07821531234')">
+                    <div class="dynamic-btn-icon"><i class="fas fa-phone"></i></div>
+                    <span class="dynamic-btn-title">اتصل بنا</span>
+                </a>
+            `;
+            return;
+        }
+        
+        const buttonsArray=[];
+        snap.forEach(doc=>{
+            buttonsArray.push({id:doc.id,...doc.data()});
+        });
+        buttonsArray.sort((a,b)=>(a.order||0)-(b.order||0));
+        buttonsArray.forEach(btn=>{
+            if(btn.isActive!==false){
+                allHomeButtons.push(btn);
+                addHomeButton(btn.id,btn);
+            }
+        });
+        console.log("تم تحديث "+displayedHomeButtons.size+" زر");
+        
+        if(displayedHomeButtons.size===0){
+            container.innerHTML=`
+                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page1','_blank')">
+                    <div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div>
+                    <span class="dynamic-btn-title">جوهرة VIP</span>
+                </a>
+                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page2','_blank')">
+                    <div class="dynamic-btn-icon"><i class="fas fa-download"></i></div>
+                    <span class="dynamic-btn-title">تحميل التطبيق</span>
+                </a>
+            `;
+        }
+    });
 }
 
 function renderSubjectCard(data,idx,container){
@@ -1416,7 +1604,6 @@ function updateAnnBadge(){
     const ub=document.getElementById('announcementBadge');
     const cnt=allAnnouncements.filter(a=>!readAnnouncements.has(a.id)).length;
     if(cnt>0){ub.style.display='flex';ub.textContent=cnt>99?'99+':cnt;}else{ub.style.display='none';}
-    if(document.getElementById('statsAnn'))document.getElementById('statsAnn').textContent=allAnnouncements.length;
 }
 function updateCalBadge(){
     const btn=document.getElementById('calendarBtn');
@@ -1665,6 +1852,8 @@ function setupPersonalAnnouncementsListener(){
         });
 }
 
+let personalAnnouncementsL=null;
+
 async function loadInitialData(){
     try{
         const userStage=currentUser?.stage;
@@ -1687,7 +1876,6 @@ async function loadInitialData(){
         });
         
         if(!displayedSubjects.size){emptyState(document.getElementById('homeSubjectsList'),'subjects');emptyState(document.getElementById('subjectsPageList'),'subjects');}
-        document.getElementById('statsSubjects').textContent=allSubjects.length;
 
         allImportantDates=[];dSnap.forEach(d=>allImportantDates.push({id:d.id,...d.data()}));renderDates();updateCalBadge();
 
@@ -1705,12 +1893,10 @@ async function loadInitialData(){
         const vArr=[];vSnap.forEach(d=>vArr.push({id:d.id,...d.data()}));
         vArr.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0));
         vArr.forEach(v=>addVideoItem(v.id,v));
-        document.getElementById('statsVideos').textContent=displayedVideos.size;
         if(!displayedVideos.size)emptyState(document.getElementById('videosContainer'),'videos');
 
         allCustomButtons=[];btnSnap.forEach(d=>allCustomButtons.push({id:d.id,...d.data()}));renderCustomButtons();
 
-        // Load general announcements
         const saved=localStorage.getItem('readAnnouncements');
         if(saved){try{readAnnouncements=new Set(JSON.parse(saved));}catch(e){}}
         allAnnouncements=[];
@@ -1722,6 +1908,9 @@ async function loadInitialData(){
         renderAnnouncements();updateAnnBadge();
         
         await loadUserGems();
+        
+        // Load home buttons
+        await loadHomeButtons();
         
         if(gemsUnsubscribe) gemsUnsubscribe();
         gemsUnsubscribe = setupGemsListener();
@@ -1759,12 +1948,13 @@ function startListeners(){
     datesL=db.collection("importantDates").onSnapshot(snap=>{const isAdmin=currentUser?.role==='admin';const userStage=currentUser?.stage;allImportantDates=[];snap.forEach(d=>{const dat=d.data();if(!isAdmin&&userStage&&dat.stage&&dat.stage!=='الكل'&&dat.stage!==userStage)return;allImportantDates.push({id:d.id,...dat});});renderDates();updateCalBadge();});
     channelsL=db.collection("channels").onSnapshot(snap=>{snap.docChanges().forEach(c=>{if(c.type==='added')addChannel(c.doc.id,c.doc.data());});});
     galleryL=db.collection("gallery").onSnapshot(snap=>{snap.docChanges().forEach(c=>{if(c.type==='added')addGalleryItem(c.doc.id,c.doc.data());});});
-    videosL=db.collection("videos").onSnapshot(snap=>{const isAdmin=currentUser?.role==='admin';const userStage=currentUser?.stage;clearEl(document.getElementById('videosContainer'));displayedVideos.clear();const arr=[];snap.forEach(d=>{const dat=d.data();if(!isAdmin&&userStage&&dat.stage&&dat.stage!=='الكل'&&dat.stage!==userStage)return;arr.push({id:d.id,...dat});});arr.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0));arr.forEach(v=>addVideoItem(v.id,v));document.getElementById('statsVideos').textContent=displayedVideos.size;if(!displayedVideos.size)emptyState(document.getElementById('videosContainer'),'videos');});
+    videosL=db.collection("videos").onSnapshot(snap=>{const isAdmin=currentUser?.role==='admin';const userStage=currentUser?.stage;clearEl(document.getElementById('videosContainer'));displayedVideos.clear();const arr=[];snap.forEach(d=>{const dat=d.data();if(!isAdmin&&userStage&&dat.stage&&dat.stage!=='الكل'&&dat.stage!==userStage)return;arr.push({id:d.id,...dat});});arr.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0));arr.forEach(v=>addVideoItem(v.id,v));if(!displayedVideos.size)emptyState(document.getElementById('videosContainer'),'videos');});
     announcementsL=db.collection("announcements").where("isActive","==",true).onSnapshot(snap=>{const isAdmin=currentUser?.role==='admin';const userStage=currentUser?.stage;allAnnouncements=allAnnouncements.filter(a=>!a.isPersonal);snap.forEach(d=>{const dat=d.data();if(!isAdmin&&userStage&&dat.stage&&dat.stage!=='الكل'&&dat.stage!==userStage)return;allAnnouncements.push({id:d.id,...dat});});renderAnnouncements();updateAnnBadge();const latest=allAnnouncements.find(a=>!readAnnouncements.has(a.id));if(latest)showMessage('📢 '+san(latest.title||'إعلان جديد'));});
     buttonsL=db.collection("customButtons").onSnapshot(snap=>{allCustomButtons=[];snap.forEach(d=>allCustomButtons.push({id:d.id,...d.data()}));renderCustomButtons();});
+    startHomeButtonsListener();
 }
 
-function stopListeners(){[subjectsL,datesL,channelsL,galleryL,videosL,announcementsL,buttonsL,personalAnnouncementsL].forEach(l=>{try{if(l)l();}catch(e){}});if(checkBlockedTimer)clearInterval(checkBlockedTimer);if(gemsUnsubscribe){gemsUnsubscribe();gemsUnsubscribe=null;}}
+function stopListeners(){[subjectsL,datesL,channelsL,galleryL,videosL,announcementsL,buttonsL,homeButtonsL,personalAnnouncementsL].forEach(l=>{try{if(l)l();}catch(e){}});if(checkBlockedTimer)clearInterval(checkBlockedTimer);if(gemsUnsubscribe){gemsUnsubscribe();gemsUnsubscribe=null;}}
 
 async function checkIfBlocked(){
     if(!currentUser||currentUser.role==='admin')return false;
