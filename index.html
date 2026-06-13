@@ -282,9 +282,9 @@
             cursor:pointer;
         }
         .back-btn{
-            width:38px;height:38px;background:var(--card);border:1px solid var(--border);
-            border-radius:12px;display:flex;align-items:center;justify-content:center;
-            color:var(--text2);font-size:0.9rem;
+            width:44px;height:44px;background:var(--card);border:1px solid var(--border);
+            border-radius:14px;display:flex;align-items:center;justify-content:center;
+            color:var(--text2);font-size:1rem;
         }
         .back-bar-title{font-size:0.95rem;font-weight:700;color:var(--text);}
         .lecture-card{
@@ -485,10 +485,13 @@
             position:sticky;top:0;z-index:10;
         }
         .settings-back{
-            width:38px;height:38px;background:var(--card);border:1px solid var(--border);
-            border-radius:12px;display:flex;align-items:center;justify-content:center;
-            color:var(--text2);cursor:pointer;font-size:0.9rem;
+            width:48px;height:48px;background:linear-gradient(135deg,var(--card),var(--card2));
+            border:1.5px solid var(--border);
+            border-radius:16px;display:flex;align-items:center;justify-content:center;
+            color:var(--text);cursor:pointer;font-size:1.2rem;
+            transition:all 0.2s;
         }
+        .settings-back:active{transform:scale(0.95);background:var(--card2);}
         .settings-nav-title{font-size:1rem;font-weight:800;}
         .settings-body{padding:20px 16px;}
         .avatar-section{text-align:center;margin-bottom:24px;}
@@ -506,7 +509,6 @@
             padding:7px 14px;border-radius:10px;font-size:0.7rem;font-weight:600;cursor:pointer;font-family:'Cairo',sans-serif;
         }
         
-        /* Gems Section Styles */
         .gems-section{
             background:linear-gradient(135deg,#2a1a3a,#1a0a2a);
             border:1px solid rgba(255,215,0,0.3);
@@ -538,7 +540,6 @@
             font-size:0.7rem;
         }
         
-        /* Charging Section */
         .charging-section{
             background:var(--card);
             border:1px solid var(--border);
@@ -612,6 +613,60 @@
         }
         .charging-info i{color:#3498db;margin-top:2px;}
         .charging-info a{color:var(--gold);text-decoration:none;}
+        
+        .message-modal{
+            display:none;
+            position:fixed;
+            top:0;
+            left:0;
+            right:0;
+            bottom:0;
+            background:rgba(0,0,0,0.8);
+            z-index:10000;
+            justify-content:center;
+            align-items:center;
+            animation:fadeIn 0.3s ease;
+        }
+        .message-modal.show{display:flex;}
+        .message-modal-content{
+            background:var(--card);
+            border-radius:24px;
+            padding:24px;
+            width:85%;
+            max-width:340px;
+            text-align:center;
+            border:1px solid var(--border);
+            animation:scaleIn 0.3s ease;
+        }
+        .message-modal-content i{
+            font-size:3rem;
+            margin-bottom:16px;
+            display:block;
+        }
+        .message-modal-content i.success{color:var(--success);}
+        .message-modal-content i.warning{color:var(--gold);}
+        .message-modal-content i.error{color:var(--red);}
+        .message-modal-content h4{
+            font-size:1.1rem;
+            font-weight:800;
+            margin-bottom:8px;
+        }
+        .message-modal-content p{
+            font-size:0.8rem;
+            color:var(--text2);
+            margin-bottom:20px;
+            line-height:1.6;
+        }
+        .message-modal-btn{
+            background:linear-gradient(135deg,var(--red),var(--red-dark));
+            color:#fff;
+            border:none;
+            padding:10px 24px;
+            border-radius:12px;
+            font-weight:700;
+            cursor:pointer;
+            font-family:'Cairo',sans-serif;
+        }
         
         .settings-section{background:var(--card);border-radius:18px;padding:16px;margin-bottom:14px;border:1px solid var(--border);}
         .settings-section-label{font-size:0.7rem;color:var(--text3);font-weight:700;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.5px;}
@@ -954,7 +1009,7 @@
 
 <div class="settings-full" id="settingsView">
     <div class="settings-nav">
-        <div class="settings-back" id="settingsBack"><i class="fas fa-chevron-right"></i></div>
+        <button class="settings-back" id="settingsBack"><i class="fas fa-chevron-right"></i></button>
         <div class="settings-nav-title">الإعدادات الشخصية</div>
     </div>
     <div class="settings-body">
@@ -968,7 +1023,6 @@
             </div>
         </div>
         
-        <!-- Gems Display Section -->
         <div class="gems-section">
             <div class="gems-display">
                 <i class="fas fa-gem gems-icon" style="color:#FFD700;"></i>
@@ -978,7 +1032,6 @@
             <div class="gems-label" style="font-size:0.6rem; margin-top:4px;">💎 كل جوهرة = 1 دينار عراقي</div>
         </div>
         
-        <!-- Charging Section -->
         <div class="charging-section">
             <div class="charging-title">
                 <i class="fas fa-gem"></i>
@@ -1063,6 +1116,15 @@
     </div>
 </div>
 
+<div class="message-modal" id="messageModal">
+    <div class="message-modal-content">
+        <i id="msgIcon" class="fas fa-check-circle success"></i>
+        <h4 id="msgTitle">تم الإرسال</h4>
+        <p id="msgText">تم إرسال طلب شحن الجواهر بنجاح</p>
+        <button class="message-modal-btn" id="closeMsgModal">حسناً</button>
+    </div>
+</div>
+
 <div class="install-bar" id="installBar">
     <i class="fas fa-download"></i>
     <span>تثبيت التطبيق على الجهاز</span>
@@ -1108,12 +1170,27 @@ const loadingPct=document.getElementById('loadingPct');
 function setProgress(p){p=Math.min(p,100);loadingBar.style.width=p+'%';loadingPct.textContent=p+'%';}
 function hideLoading(){setProgress(100);setTimeout(()=>{const s=document.getElementById('loadingScreen');s.classList.add('hidden');setTimeout(()=>s.style.display='none',600);},300);}
 
-function showMessage(msg){
-    const t=document.createElement('div');t.className='toast';t.textContent=msg;
-    document.body.appendChild(t);
-    setTimeout(()=>t.classList.add('show'),10);
-    setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300);},3000);
+function showMessage(msg,type){
+    const toast=document.createElement('div');toast.className='toast';toast.textContent=msg;
+    document.body.appendChild(toast);
+    setTimeout(()=>toast.classList.add('show'),10);
+    setTimeout(()=>{toast.classList.remove('show');setTimeout(()=>toast.remove(),300);},3000);
 }
+
+function showModalMessage(title,text,type){
+    const modal=document.getElementById('messageModal');
+    const icon=document.getElementById('msgIcon');
+    const titleEl=document.getElementById('msgTitle');
+    const textEl=document.getElementById('msgText');
+    
+    icon.className='fas '+(type==='success'?'fa-check-circle success':type==='error'?'fa-times-circle error':'fa-info-circle warning');
+    titleEl.textContent=title;
+    textEl.textContent=text;
+    modal.classList.add('show');
+}
+document.getElementById('closeMsgModal').addEventListener('click',()=>{
+    document.getElementById('messageModal').classList.remove('show');
+});
 
 let deferredPrompt=null;
 const installBtn=document.getElementById('installAppBtn');
@@ -1133,7 +1210,7 @@ async function triggerInstall(){
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     
     if(isIOS){
-        alert('📱 لتثبيت التطبيق على iPhone/iPad:\n\n1. اضغط على زر المشاركة 📤\n2. اختر "إضافة إلى الشاشة الرئيسية"\n3. اضغط على "إضافة"');
+        showModalMessage('تثبيت التطبيق','📱 لتثبيت التطبيق على iPhone/iPad:\n\n1. اضغط على زر المشاركة 📤\n2. اختر "إضافة إلى الشاشة الرئيسية"\n3. اضغط على "إضافة"','info');
         return;
     }
     
@@ -1147,7 +1224,7 @@ async function triggerInstall(){
         }
         deferredPrompt=null;
     } else {
-        alert('📱 لتثبيت التطبيق:\nاضغط على القائمة (النقاط الثلاث) ثم اختر "تثبيت التطبيق"');
+        showModalMessage('تثبيت التطبيق','📱 لتثبيت التطبيق:\nاضغط على القائمة (النقاط الثلاث) ثم اختر "تثبيت التطبيق"','info');
     }
 }
 
@@ -1454,7 +1531,21 @@ async function loadLectures(code){
     }catch(e){emptyState(list,'lectures');}
 }
 
-// Load user gems from Firestore
+// Setup real-time listener for gems updates
+function setupGemsListener(){
+    if(!currentUser) return;
+    const unsubscribe = db.collection("students").doc(currentUser.id).onSnapshot((doc) => {
+        if(doc.exists){
+            const gems = doc.data().gems || 0;
+            document.getElementById('userGemsCount').textContent = gems;
+            document.getElementById('sidebarGemsCount').textContent = gems;
+        }
+    });
+    return unsubscribe;
+}
+
+let gemsUnsubscribe = null;
+
 async function loadUserGems(){
     if(!currentUser) return 0;
     try{
@@ -1470,7 +1561,6 @@ async function loadUserGems(){
     return 0;
 }
 
-// Update gems display in settings and sidebar
 async function updateGemsDisplay(){
     if(!currentUser) return;
     try{
@@ -1484,11 +1574,10 @@ async function updateGemsDisplay(){
     }catch(e){console.error("Error updating gems display:",e);}
 }
 
-// Request gems charge
 async function requestGemsCharge(){
     const amount = parseInt(document.getElementById('gemsToCharge').value);
     if(!amount || amount < 1){
-        showMessage('الرجاء إدخال عدد صحيح من الجواهر (1 على الأقل)');
+        showModalMessage('خطأ', 'الرجاء إدخال عدد صحيح من الجواهر (1 على الأقل)', 'error');
         return;
     }
     
@@ -1505,17 +1594,20 @@ async function requestGemsCharge(){
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         
-        showMessage(`✅ تم إرسال طلب شحن ${amount} جوهرة (${totalPrice} دينار عراقي)\nسيتم مراجعة الطلب من قبل الإدارة`);
+        showModalMessage(
+            'تم إرسال طلب الشحن',
+            `✅ تم إرسال طلب شحن ${amount} جوهرة\n💰 المبلغ: ${totalPrice} دينار عراقي\n\n📋 سيتم مراجعة الطلب من قبل الإدارة\n📞 سيتم التواصل معك لتأكيد الدفع`,
+            'success'
+        );
         
         document.getElementById('gemsToCharge').value = 10;
         document.getElementById('totalPrice').textContent = '10 دينار عراقي';
         
     } catch(error){
-        showMessage('خطأ في إرسال الطلب: ' + error.message);
+        showModalMessage('خطأ', 'حدث خطأ أثناء إرسال الطلب: ' + error.message, 'error');
     }
 }
 
-// Update total price display
 document.getElementById('gemsToCharge')?.addEventListener('input', function(){
     const amount = parseInt(this.value) || 0;
     document.getElementById('totalPrice').textContent = amount + ' دينار عراقي';
@@ -1574,8 +1666,10 @@ async function loadInitialData(){
         annSnap.forEach(d=>allAnnouncements.push({id:d.id,...d.data()}));
         renderAnnouncements();updateAnnBadge();
         
-        // Load user gems
         await loadUserGems();
+        
+        if(gemsUnsubscribe) gemsUnsubscribe();
+        gemsUnsubscribe = setupGemsListener();
         
     }catch(e){console.error(e);}
 }
@@ -1613,7 +1707,7 @@ function startListeners(){
     buttonsL=db.collection("customButtons").onSnapshot(snap=>{allCustomButtons=[];snap.forEach(d=>allCustomButtons.push({id:d.id,...d.data()}));renderCustomButtons();});
 }
 
-function stopListeners(){[subjectsL,datesL,channelsL,galleryL,videosL,announcementsL,buttonsL].forEach(l=>{try{if(l)l();}catch(e){}});if(checkBlockedTimer)clearInterval(checkBlockedTimer);}
+function stopListeners(){[subjectsL,datesL,channelsL,galleryL,videosL,announcementsL,buttonsL].forEach(l=>{try{if(l)l();}catch(e){}});if(checkBlockedTimer)clearInterval(checkBlockedTimer);if(gemsUnsubscribe){gemsUnsubscribe();gemsUnsubscribe=null;}}
 
 async function checkIfBlocked(){
     if(!currentUser||currentUser.role==='admin')return false;
