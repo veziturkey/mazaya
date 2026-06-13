@@ -12,7 +12,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-   meta name="apple-mobile-web-app-title" content="CET Mazaya">
+    <meta name="apple-mobile-web-app-title" content="CET Mazaya">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -220,11 +220,11 @@
         .buttons-strip::-webkit-scrollbar{display:none;}
         .dynamic-btn{
             flex-shrink:0;
-            min-width:90px;
+            width:100px;
             background:var(--card);
             border:1px solid var(--border);
             border-radius:16px;
-            padding:12px 8px;
+            padding:14px 8px;
             text-align:center;
             cursor:pointer;
             transition:all 0.2s ease;
@@ -232,7 +232,7 @@
             display:flex;
             flex-direction:column;
             align-items:center;
-            gap:6px;
+            gap:8px;
         }
         .dynamic-btn:active{transform:scale(0.96);background:var(--card2);}
         .dynamic-btn-img{
@@ -249,7 +249,7 @@
             display:flex;
             align-items:center;
             justify-content:center;
-            font-size:1.5rem;
+            font-size:1.8rem;
             background:linear-gradient(135deg,rgba(200,16,46,0.15),rgba(200,16,46,0.05));
             color:var(--red);
         }
@@ -1422,7 +1422,7 @@ function emptyState(container,type){
     container.innerHTML=`<div class="empty-state"><i class="fas ${san(m.icon)}"></i><h4>${san(m.title)}</h4><p>سيتم الإضافة قريباً</p></div>`;
 }
 
-// Render home button
+// Render home buttons
 function renderHomeButton(data){
     const btnDiv=document.createElement('a');
     btnDiv.className='dynamic-btn';
@@ -1448,7 +1448,7 @@ function renderHomeButton(data){
 }
 
 function addHomeButton(id,data){
-    if(!data||data.isActive===false||displayedHomeButtons.has(id))return;
+    if(!data||!data.isActive===false||displayedHomeButtons.has(id))return;
     if(!data.title)return;
     const container=document.getElementById('homeButtonsStrip');
     if(container){
@@ -1467,69 +1467,25 @@ async function loadHomeButtons(){
             clearEl(container);
             displayedHomeButtons.clear();
             allHomeButtons=[];
-            console.log("جاري تحميل الأزرار الرئيسية...");
-            
             if(snap.empty){
-                console.log("لا توجد أزرار في قاعدة البيانات");
-                // Add default demo buttons
-                container.innerHTML=`
-                    <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page1','_blank')">
-                        <div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div>
-                        <span class="dynamic-btn-title">جوهرة VIP</span>
-                    </a>
-                    <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page2','_blank')">
-                        <div class="dynamic-btn-icon"><i class="fas fa-download"></i></div>
-                        <span class="dynamic-btn-title">تحميل التطبيق</span>
-                    </a>
-                    <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('tel:07821531234')">
-                        <div class="dynamic-btn-icon"><i class="fas fa-phone"></i></div>
-                        <span class="dynamic-btn-title">اتصل بنا</span>
-                    </a>
-                `;
+                emptyState(container,'homeButtons');
                 return;
             }
-            
-            const buttonsArray=[];
             snap.forEach(doc=>{
-                buttonsArray.push({id:doc.id,...doc.data()});
-            });
-            buttonsArray.sort((a,b)=>(a.order||0)-(b.order||0));
-            buttonsArray.forEach(btn=>{
-                if(btn.isActive!==false){
-                    allHomeButtons.push(btn);
-                    addHomeButton(btn.id,btn);
+                const data=doc.data();
+                if(data.isActive!==false){
+                    allHomeButtons.push({id:doc.id,...data});
+                    addHomeButton(doc.id,data);
                 }
             });
-            console.log("تم تحميل "+displayedHomeButtons.size+" زر");
-            
             if(displayedHomeButtons.size===0){
-                container.innerHTML=`
-                    <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page1','_blank')">
-                        <div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div>
-                        <span class="dynamic-btn-title">جوهرة VIP</span>
-                    </a>
-                    <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page2','_blank')">
-                        <div class="dynamic-btn-icon"><i class="fas fa-download"></i></div>
-                        <span class="dynamic-btn-title">تحميل التطبيق</span>
-                    </a>
-                `;
+                emptyState(container,'homeButtons');
             }
         }
     }catch(e){
         console.error("Error loading home buttons:",e);
         const container=document.getElementById('homeButtonsStrip');
-        if(container){
-            container.innerHTML=`
-                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page1','_blank')">
-                    <div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div>
-                    <span class="dynamic-btn-title">جوهرة VIP</span>
-                </a>
-                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page2','_blank')">
-                    <div class="dynamic-btn-icon"><i class="fas fa-download"></i></div>
-                    <span class="dynamic-btn-title">تحميل التطبيق</span>
-                </a>
-            `;
-        }
+        if(container) emptyState(container,'homeButtons');
     }
 }
 
@@ -1542,27 +1498,10 @@ function startHomeButtonsListener(){
         clearEl(container);
         displayedHomeButtons.clear();
         allHomeButtons=[];
-        console.log("تحديث الأزرار الرئيسية...");
-        
         if(snap.empty){
-            console.log("لا توجد أزرار، عرض الأزرار الافتراضية");
-            container.innerHTML=`
-                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page1','_blank')">
-                    <div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div>
-                    <span class="dynamic-btn-title">جوهرة VIP</span>
-                </a>
-                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page2','_blank')">
-                    <div class="dynamic-btn-icon"><i class="fas fa-download"></i></div>
-                    <span class="dynamic-btn-title">تحميل التطبيق</span>
-                </a>
-                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('tel:07821531234')">
-                    <div class="dynamic-btn-icon"><i class="fas fa-phone"></i></div>
-                    <span class="dynamic-btn-title">اتصل بنا</span>
-                </a>
-            `;
+            emptyState(container,'homeButtons');
             return;
         }
-        
         const buttonsArray=[];
         snap.forEach(doc=>{
             buttonsArray.push({id:doc.id,...doc.data()});
@@ -1574,19 +1513,8 @@ function startHomeButtonsListener(){
                 addHomeButton(btn.id,btn);
             }
         });
-        console.log("تم تحديث "+displayedHomeButtons.size+" زر");
-        
         if(displayedHomeButtons.size===0){
-            container.innerHTML=`
-                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page1','_blank')">
-                    <div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div>
-                    <span class="dynamic-btn-title">جوهرة VIP</span>
-                </a>
-                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page2','_blank')">
-                    <div class="dynamic-btn-icon"><i class="fas fa-download"></i></div>
-                    <span class="dynamic-btn-title">تحميل التطبيق</span>
-                </a>
-            `;
+            emptyState(container,'homeButtons');
         }
     });
 }
