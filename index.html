@@ -207,7 +207,6 @@
         .dot{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,0.35);transition:all 0.3s;cursor:pointer;}
         .dot.active{width:18px;background:var(--red);}
 
-        /* Dynamic Buttons Strip */
         .buttons-strip{
             display:flex;
             gap:12px;
@@ -220,11 +219,11 @@
         .buttons-strip::-webkit-scrollbar{display:none;}
         .dynamic-btn{
             flex-shrink:0;
-            width:100px;
+            min-width:90px;
             background:var(--card);
             border:1px solid var(--border);
             border-radius:16px;
-            padding:14px 8px;
+            padding:12px 8px;
             text-align:center;
             cursor:pointer;
             transition:all 0.2s ease;
@@ -232,7 +231,7 @@
             display:flex;
             flex-direction:column;
             align-items:center;
-            gap:8px;
+            gap:6px;
         }
         .dynamic-btn:active{transform:scale(0.96);background:var(--card2);}
         .dynamic-btn-img{
@@ -249,7 +248,7 @@
             display:flex;
             align-items:center;
             justify-content:center;
-            font-size:1.8rem;
+            font-size:1.5rem;
             background:linear-gradient(135deg,rgba(200,16,46,0.15),rgba(200,16,46,0.05));
             color:var(--red);
         }
@@ -955,7 +954,6 @@
             <div class="slider-dots" id="sliderDots"></div>
         </div>
 
-        <!-- Dynamic Buttons Strip (replaces old stats-strip) -->
         <div class="buttons-strip" id="homeButtonsStrip"></div>
 
         <div class="section-header">
@@ -1422,7 +1420,6 @@ function emptyState(container,type){
     container.innerHTML=`<div class="empty-state"><i class="fas ${san(m.icon)}"></i><h4>${san(m.title)}</h4><p>سيتم الإضافة قريباً</p></div>`;
 }
 
-// Render home buttons
 function renderHomeButton(data){
     const btnDiv=document.createElement('a');
     btnDiv.className='dynamic-btn';
@@ -1448,7 +1445,7 @@ function renderHomeButton(data){
 }
 
 function addHomeButton(id,data){
-    if(!data||!data.isActive===false||displayedHomeButtons.has(id))return;
+    if(!data||data.isActive===false||displayedHomeButtons.has(id))return;
     if(!data.title)return;
     const container=document.getElementById('homeButtonsStrip');
     if(container){
@@ -1458,7 +1455,6 @@ function addHomeButton(id,data){
     }
 }
 
-// Load home buttons from Firestore
 async function loadHomeButtons(){
     try{
         const snap=await db.collection("homeButtons").orderBy("order","asc").get();
@@ -1467,29 +1463,71 @@ async function loadHomeButtons(){
             clearEl(container);
             displayedHomeButtons.clear();
             allHomeButtons=[];
+            console.log("جاري تحميل الأزرار الرئيسية...");
+            
             if(snap.empty){
-                emptyState(container,'homeButtons');
+                console.log("لا توجد أزرار في قاعدة البيانات");
+                container.innerHTML=`
+                    <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page1','_blank')">
+                        <div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div>
+                        <span class="dynamic-btn-title">جوهرة VIP</span>
+                    </a>
+                    <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page2','_blank')">
+                        <div class="dynamic-btn-icon"><i class="fas fa-download"></i></div>
+                        <span class="dynamic-btn-title">تحميل التطبيق</span>
+                    </a>
+                    <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('tel:07821531234')">
+                        <div class="dynamic-btn-icon"><i class="fas fa-phone"></i></div>
+                        <span class="dynamic-btn-title">اتصل بنا</span>
+                    </a>
+                `;
                 return;
             }
+            
+            const buttonsArray=[];
             snap.forEach(doc=>{
-                const data=doc.data();
-                if(data.isActive!==false){
-                    allHomeButtons.push({id:doc.id,...data});
-                    addHomeButton(doc.id,data);
+                buttonsArray.push({id:doc.id,...doc.data()});
+            });
+            buttonsArray.sort((a,b)=>(a.order||0)-(b.order||0));
+            buttonsArray.forEach(btn=>{
+                if(btn.isActive!==false){
+                    allHomeButtons.push(btn);
+                    addHomeButton(btn.id,btn);
                 }
             });
+            console.log("تم تحميل "+displayedHomeButtons.size+" زر");
+            
             if(displayedHomeButtons.size===0){
-                emptyState(container,'homeButtons');
+                container.innerHTML=`
+                    <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page1','_blank')">
+                        <div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div>
+                        <span class="dynamic-btn-title">جوهرة VIP</span>
+                    </a>
+                    <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page2','_blank')">
+                        <div class="dynamic-btn-icon"><i class="fas fa-download"></i></div>
+                        <span class="dynamic-btn-title">تحميل التطبيق</span>
+                    </a>
+                `;
             }
         }
     }catch(e){
         console.error("Error loading home buttons:",e);
         const container=document.getElementById('homeButtonsStrip');
-        if(container) emptyState(container,'homeButtons');
+        if(container){
+            container.innerHTML=`
+                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page1','_blank')">
+                    <div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div>
+                    <span class="dynamic-btn-title">جوهرة VIP</span>
+                </a>
+                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page2','_blank')">
+                    <div class="dynamic-btn-icon"><i class="fas fa-download"></i></div>
+                    <span class="dynamic-btn-title">تحميل التطبيق</span>
+                </a>
+            `;
+        }
     }
 }
 
-// Real-time listener for home buttons
 function startHomeButtonsListener(){
     if(homeButtonsL) homeButtonsL();
     homeButtonsL=db.collection("homeButtons").onSnapshot(snap=>{
@@ -1498,10 +1536,27 @@ function startHomeButtonsListener(){
         clearEl(container);
         displayedHomeButtons.clear();
         allHomeButtons=[];
+        console.log("تحديث الأزرار الرئيسية...");
+        
         if(snap.empty){
-            emptyState(container,'homeButtons');
+            console.log("لا توجد أزرار، عرض الأزرار الافتراضية");
+            container.innerHTML=`
+                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page1','_blank')">
+                    <div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div>
+                    <span class="dynamic-btn-title">جوهرة VIP</span>
+                </a>
+                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page2','_blank')">
+                    <div class="dynamic-btn-icon"><i class="fas fa-download"></i></div>
+                    <span class="dynamic-btn-title">تحميل التطبيق</span>
+                </a>
+                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('tel:07821531234')">
+                    <div class="dynamic-btn-icon"><i class="fas fa-phone"></i></div>
+                    <span class="dynamic-btn-title">اتصل بنا</span>
+                </a>
+            `;
             return;
         }
+        
         const buttonsArray=[];
         snap.forEach(doc=>{
             buttonsArray.push({id:doc.id,...doc.data()});
@@ -1513,8 +1568,19 @@ function startHomeButtonsListener(){
                 addHomeButton(btn.id,btn);
             }
         });
+        console.log("تم تحديث "+displayedHomeButtons.size+" زر");
+        
         if(displayedHomeButtons.size===0){
-            emptyState(container,'homeButtons');
+            container.innerHTML=`
+                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page1','_blank')">
+                    <div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div>
+                    <span class="dynamic-btn-title">جوهرة VIP</span>
+                </a>
+                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page2','_blank')">
+                    <div class="dynamic-btn-icon"><i class="fas fa-download"></i></div>
+                    <span class="dynamic-btn-title">تحميل التطبيق</span>
+                </a>
+            `;
         }
     });
 }
@@ -1730,7 +1796,6 @@ document.getElementById('gemsToCharge')?.addEventListener('input', function(){
 
 document.getElementById('requestChargeBtn')?.addEventListener('click', requestGemsCharge);
 
-// Load personal announcements (for specific user)
 async function loadPersonalAnnouncements(){
     if(!currentUser) return;
     try{
@@ -1758,7 +1823,6 @@ async function loadPersonalAnnouncements(){
     } catch(e){console.error("Error loading personal announcements:",e);}
 }
 
-// Real-time listener for personal announcements
 function setupPersonalAnnouncementsListener(){
     if(!currentUser) return;
     if(personalAnnouncementsL) personalAnnouncementsL();
@@ -1830,14 +1894,12 @@ async function loadInitialData(){
         allAnnouncements=[];
         annSnap.forEach(d=>allAnnouncements.push({id:d.id,...d.data()}));
         
-        // Load personal announcements
         await loadPersonalAnnouncements();
         
         renderAnnouncements();updateAnnBadge();
         
         await loadUserGems();
         
-        // Load home buttons
         await loadHomeButtons();
         
         if(gemsUnsubscribe) gemsUnsubscribe();
