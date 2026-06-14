@@ -33,6 +33,8 @@
             --text2:#B8B8D0;
             --text3:#6B6B8A;
             --success:#00C896;
+            --info:#3498db;
+            --warning:#f39c12;
             --safe-top:env(safe-area-inset-top,0px);
             --safe-bottom:env(safe-area-inset-bottom,0px);
             --nav-h:64px;
@@ -48,7 +50,75 @@
             min-height:100vh;
             overflow-x:hidden;
         }
-
+        /* تنسيق أيقونة الاشتراك على الزر */
+        .subscription-badge{
+            position:absolute;
+            top:-5px;
+            left:-5px;
+            background:linear-gradient(135deg,var(--success),#00a07a);
+            color:#fff;
+            font-size:0.5rem;
+            font-weight:800;
+            padding:2px 5px;
+            border-radius:10px;
+            display:flex;
+            align-items:center;
+            gap:2px;
+            z-index:10;
+            box-shadow:0 2px 5px rgba(0,0,0,0.2);
+        }
+        .subject-card, .dynamic-btn, .video-card, .channel-card, .gallery-card{
+            position:relative;
+            overflow:visible;
+        }
+        .subscription-tooltip{
+            position:fixed;
+            bottom:80px;
+            left:50%;
+            transform:translateX(-50%);
+            background:var(--card2);
+            border:1px solid var(--gold);
+            border-radius:16px;
+            padding:15px;
+            width:90%;
+            max-width:320px;
+            z-index:2000;
+            box-shadow:0 10px 30px rgba(0,0,0,0.5);
+            animation:slideUp 0.3s ease;
+        }
+        .subscription-tooltip .tooltip-title{
+            font-weight:800;
+            margin-bottom:8px;
+            color:var(--gold);
+        }
+        .subscription-tooltip .tooltip-detail{
+            font-size:0.7rem;
+            color:var(--text2);
+            margin-bottom:5px;
+        }
+        .subscription-tooltip .tooltip-progress{
+            height:4px;
+            background:rgba(255,255,255,0.1);
+            border-radius:2px;
+            margin:10px 0;
+            overflow:hidden;
+        }
+        .subscription-tooltip .tooltip-progress-fill{
+            height:100%;
+            background:var(--success);
+            width:0%;
+            border-radius:2px;
+        }
+        .subscription-tooltip-close{
+            position:absolute;
+            top:10px;
+            left:10px;
+            background:none;
+            border:none;
+            color:var(--text3);
+            cursor:pointer;
+            font-size:1rem;
+        }
         .loading-screen{
             position:fixed;inset:0;
             background:#0A0A0F;
@@ -78,7 +148,7 @@
         .loading-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:4px;transition:width 0.3s ease;}
         .loading-pct{color:var(--gold);font-weight:700;font-size:1.1rem;margin-top:12px;}
         @keyframes spin{to{transform:rotate(360deg);}}
-
+        @keyframes slideUp{from{transform:translateX(-50%) translateY(20px);opacity:0;}to{transform:translateX(-50%) translateY(0);opacity:1;}}
         .auth-modal{
             display:flex;position:fixed;inset:0;
             background:linear-gradient(160deg,#1a0008 0%,#0a0a0f 60%);
@@ -129,7 +199,6 @@
         .auth-error.show{display:block;}
         .stay-logged-label{display:flex;align-items:center;gap:8px;font-size:0.78rem;color:var(--text2);cursor:pointer;}
         .stay-logged-label input{accent-color:var(--red);}
-
         .navbar{
             position:fixed;
             top:0;
@@ -177,7 +246,6 @@
             width:9px;height:9px;background:var(--red);border-radius:50%;
             border:2px solid var(--bg2);
         }
-
         .hero-slider{
             position:relative;height:220px;overflow:hidden;
             margin-bottom:0;
@@ -206,7 +274,6 @@
         }
         .dot{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,0.35);transition:all 0.3s;cursor:pointer;}
         .dot.active{width:18px;background:var(--red);}
-
         .buttons-strip{
             display:flex;
             gap:12px;
@@ -232,6 +299,7 @@
             flex-direction:column;
             align-items:center;
             gap:6px;
+            position:relative;
         }
         .dynamic-btn:active{transform:scale(0.96);background:var(--card2);}
         .dynamic-btn-img{
@@ -259,7 +327,6 @@
             text-align:center;
             line-height:1.3;
         }
-
         .section-header{
             display:flex;align-items:center;justify-content:space-between;
             padding:16px 16px 10px;
@@ -268,16 +335,20 @@
         .section-header-line{width:3px;height:18px;background:var(--red);border-radius:2px;margin-left:8px;flex-shrink:0;}
         .section-header-left{display:flex;align-items:center;gap:0;}
         .see-all{font-size:0.72rem;color:var(--red);font-weight:700;border:none;background:none;cursor:pointer;font-family:'Cairo',sans-serif;}
-
         .subjects-section{padding:0 16px 16px;}
         .subjects-grid{
             display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
         }
         .subject-card{
-            background:var(--card);border:1px solid var(--border);border-radius:16px;
-            padding:14px 10px;text-align:center;cursor:pointer;
+            background:var(--card);
+            border:1px solid var(--border);
+            border-radius:16px;
+            padding:14px 10px;
+            text-align:center;
+            cursor:pointer;
             transition:transform 0.2s,box-shadow 0.2s;
-            position:relative;overflow:hidden;
+            position:relative;
+            overflow:hidden;
         }
         .subject-card::before{
             content:'';position:absolute;top:-20px;right:-20px;
@@ -307,7 +378,6 @@
             display:inline-block;background:rgba(200,16,46,0.12);color:var(--red);
             font-size:0.55rem;font-weight:700;padding:2px 7px;border-radius:6px;margin-top:5px;
         }
-
         .lectures-container{display:none;padding:0 16px 16px;}
         .lectures-container.show{display:block;}
         .back-bar{
@@ -323,6 +393,7 @@
         .lecture-card{
             background:var(--card);border:1px solid var(--border);border-radius:16px;
             margin-bottom:12px;overflow:hidden;
+            position:relative;
         }
         .lecture-card-top{
             padding:14px;background:linear-gradient(135deg,rgba(200,16,46,0.08),transparent);
@@ -343,28 +414,27 @@
             color:#fff;text-decoration:none;font-weight:800;font-size:0.8rem;border:none;cursor:pointer;
             width:100%;font-family:'Cairo',sans-serif;
         }
-
         .videos-section{padding:0 16px 16px;display:none;}
         .videos-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:4px;}
-        .video-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+        .video-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;position:relative;}
         .video-wrapper{position:relative;padding-bottom:56.25%;}
-        .video-wrapper iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+        .video-wrapper iframe{position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none;}
         .video-info{padding:10px;}
         .video-title{font-size:0.72rem;font-weight:700;color:var(--text);margin-bottom:3px;}
         .video-date{font-size:0.58rem;color:var(--text3);}
-
         .gallery-section{padding:0 16px 16px;display:none;}
         .gallery-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:4px;}
-        .gallery-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+        .gallery-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;position:relative;}
         .gallery-img{width:100%;height:130px;object-fit:cover;cursor:pointer;}
         .gallery-info{padding:10px;}
         .gallery-title{font-size:0.72rem;font-weight:700;color:var(--text);margin-bottom:3px;}
         .gallery-date{font-size:0.58rem;color:var(--text3);}
-
         .channels-section{padding:0 16px 16px;display:none;}
         .channel-card{
             background:var(--card);border:1px solid var(--border);border-radius:16px;
             padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:12px;
+            cursor:pointer;
+            position:relative;
         }
         .channel-icon-box{
             width:52px;height:52px;background:linear-gradient(135deg,rgba(200,16,46,0.15),rgba(200,16,46,0.05));
@@ -378,7 +448,6 @@
             padding:7px 14px;background:var(--red);color:#fff;border-radius:10px;
             font-size:0.68rem;font-weight:700;text-decoration:none;border:none;cursor:pointer;flex-shrink:0;
         }
-
         .developer-section{padding:0 16px 16px;display:none;}
         .dev-card{
             background:var(--card);border:1px solid var(--border);border-radius:20px;
@@ -397,7 +466,6 @@
             color:var(--red);padding:10px 20px;border-radius:12px;
             font-size:0.82rem;font-weight:700;margin-top:14px;
         }
-
         .modal-overlay{
             display:none;position:fixed;inset:0;
             background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);
@@ -438,7 +506,6 @@
         .dates-item-title{font-size:0.85rem;font-weight:700;}
         .dates-item-desc{font-size:0.68rem;color:var(--text3);margin-top:2px;}
         .dates-badge{background:rgba(200,16,46,0.12);color:var(--red);padding:5px 12px;border-radius:10px;font-size:0.65rem;font-weight:700;white-space:nowrap;}
-
         .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1800;backdrop-filter:blur(4px);}
         .sidebar-overlay.show{display:block;}
         .sidebar{
@@ -505,7 +572,6 @@
             font-family:'Cairo',sans-serif;font-weight:700;font-size:0.82rem;cursor:pointer;
             display:flex;align-items:center;justify-content:center;gap:8px;
         }
-
         .settings-full{
             display:none;position:fixed;inset:0;z-index:2500;
             background:var(--bg);overflow-y:auto;padding-bottom:calc(var(--bottom-h) + var(--safe-bottom) + 20px);
@@ -541,7 +607,6 @@
             background:var(--card);border:1px solid var(--border);color:var(--text2);
             padding:7px 14px;border-radius:10px;font-size:0.7rem;font-weight:600;cursor:pointer;font-family:'Cairo',sans-serif;
         }
-        
         .gems-section{
             background:linear-gradient(135deg,#2a1a3a,#1a0a2a);
             border:1px solid rgba(255,215,0,0.3);
@@ -572,7 +637,76 @@
             color:var(--text2);
             font-size:0.7rem;
         }
-        
+        .my-subscriptions-section{
+            background:linear-gradient(135deg,#1a2a3a,#0a1a2a);
+            border:1px solid rgba(0,200,150,0.3);
+            border-radius:20px;
+            padding:20px;
+            margin-bottom:24px;
+        }
+        .my-subscriptions-title{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            margin-bottom:16px;
+            font-size:1rem;
+            font-weight:800;
+            color:var(--text);
+            cursor:pointer;
+            padding:10px;
+            background:rgba(0,200,150,0.1);
+            border-radius:12px;
+            transition:all 0.2s;
+        }
+        .my-subscriptions-title:hover{
+            background:rgba(0,200,150,0.2);
+        }
+        .my-subscriptions-title i{
+            color:var(--success);
+            font-size:1.2rem;
+        }
+        .subscriptions-list-container{
+            display:none;
+            margin-top:10px;
+        }
+        .subscriptions-list-container.show{
+            display:block;
+        }
+        .subscription-item{
+            background:rgba(0,200,150,0.1);
+            border-radius:12px;
+            padding:12px;
+            margin-bottom:10px;
+            cursor:pointer;
+            transition:all 0.2s;
+        }
+        .subscription-item:hover{
+            background:rgba(0,200,150,0.2);
+        }
+        .subscription-item-name{
+            font-weight:700;
+            font-size:0.85rem;
+            display:flex;
+            justify-content:space-between;
+            margin-bottom:8px;
+        }
+        .subscription-item-progress{
+            height:6px;
+            background:rgba(255,255,255,0.1);
+            border-radius:3px;
+            overflow:hidden;
+        }
+        .subscription-item-progress-fill{
+            height:100%;
+            background:var(--success);
+            width:0%;
+            border-radius:3px;
+        }
+        .subscription-item-days{
+            font-size:0.65rem;
+            color:var(--text3);
+            margin-top:5px;
+        }
         .charging-section{
             background:var(--card);
             border:1px solid var(--border);
@@ -646,7 +780,6 @@
         }
         .charging-info i{color:#3498db;margin-top:2px;}
         .charging-info a{color:var(--gold);text-decoration:none;}
-        
         .message-modal{
             display:none;
             position:fixed;
@@ -701,7 +834,102 @@
             cursor:pointer;
             font-family:'Cairo',sans-serif;
         }
-        
+        .subscription-detail-modal{
+            display:none;
+            position:fixed;
+            top:0;
+            left:0;
+            right:0;
+            bottom:0;
+            background:rgba(0,0,0,0.9);
+            z-index:10002;
+            justify-content:center;
+            align-items:center;
+        }
+        .subscription-detail-modal.show{
+            display:flex;
+        }
+        .subscription-detail-content{
+            background:var(--card);
+            border-radius:24px;
+            padding:24px;
+            width:85%;
+            max-width:360px;
+            border:2px solid var(--gold);
+            max-height:80vh;
+            overflow-y:auto;
+        }
+        .subscription-detail-content h4{
+            font-size:1.1rem;
+            font-weight:800;
+            margin-bottom:15px;
+            color:var(--gold);
+            text-align:center;
+        }
+        .subscription-detail-item{
+            background:rgba(0,200,150,0.1);
+            border-radius:12px;
+            padding:12px;
+            margin-bottom:10px;
+        }
+        .confirmation-modal{
+            display:none;
+            position:fixed;
+            top:0;
+            left:0;
+            right:0;
+            bottom:0;
+            background:rgba(0,0,0,0.9);
+            z-index:10001;
+            justify-content:center;
+            align-items:center;
+        }
+        .confirmation-modal.show{display:flex;}
+        .confirmation-content{
+            background:var(--card);
+            border-radius:24px;
+            padding:28px;
+            width:85%;
+            max-width:350px;
+            text-align:center;
+            border:2px solid var(--gold);
+        }
+        .confirmation-content i{
+            font-size:3rem;
+            color:var(--gold);
+            margin-bottom:16px;
+        }
+        .confirmation-content h4{
+            font-size:1.2rem;
+            font-weight:800;
+            margin-bottom:10px;
+        }
+        .confirmation-content p{
+            font-size:0.85rem;
+            color:var(--text2);
+            margin-bottom:20px;
+        }
+        .confirmation-buttons{
+            display:flex;
+            gap:12px;
+        }
+        .confirmation-buttons button{
+            flex:1;
+            padding:12px;
+            border-radius:12px;
+            font-weight:700;
+            cursor:pointer;
+            font-family:'Cairo',sans-serif;
+            border:none;
+        }
+        .confirmation-confirm{
+            background:linear-gradient(135deg,var(--red),var(--red-dark));
+            color:#fff;
+        }
+        .confirmation-cancel{
+            background:var(--bg3);
+            color:var(--text2);
+        }
         .settings-section{background:var(--card);border-radius:18px;padding:16px;margin-bottom:14px;border:1px solid var(--border);}
         .settings-section-label{font-size:0.7rem;color:var(--text3);font-weight:700;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.5px;}
         .save-btn{
@@ -709,7 +937,6 @@
             color:#fff;border:none;border-radius:14px;font-size:0.95rem;font-weight:800;
             cursor:pointer;font-family:'Cairo',sans-serif;box-shadow:0 6px 20px rgba(200,16,46,0.4);
         }
-
         .popup-ad-modal{
             display:none;position:fixed;inset:0;z-index:10001;
             justify-content:center;align-items:center;
@@ -731,7 +958,6 @@
             transition:all 0.2s;z-index:2;
         }
         .popup-close-btn:hover{background:#fff;color:var(--red);transform:rotate(90deg);}
-
         .bottom-nav{
             position:fixed;bottom:var(--safe-bottom);left:0;right:0;
             background:var(--bg2);border-top:1px solid var(--border);
@@ -757,7 +983,6 @@
             margin-bottom:8px;
         }
         .bn-center:active{transform:scale(0.93);}
-
         .install-bar{
             position:fixed;bottom:calc(var(--bottom-h) + var(--safe-bottom) + 12px);left:50%;
             transform:translateX(-50%) translateY(20px);
@@ -771,7 +996,6 @@
         }
         .install-bar.show{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:all;}
         .install-x{background:rgba(255,255,255,0.2);border:none;color:#fff;width:22px;height:22px;border-radius:50%;font-size:0.65rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-
         .blocked-screen{
             position:fixed;inset:0;background:radial-gradient(ellipse at center,#1a0008,var(--bg));
             z-index:10000;display:flex;justify-content:center;align-items:center;padding:20px;
@@ -784,7 +1008,6 @@
         .blocked-card h2{font-size:1.2rem;font-weight:800;margin-bottom:10px;}
         .blocked-card p{font-size:0.78rem;color:var(--text2);line-height:1.7;margin-bottom:20px;}
         .blocked-card button{background:var(--red);color:#fff;border:none;padding:12px 28px;border-radius:12px;font-family:'Cairo',sans-serif;font-weight:700;cursor:pointer;}
-
         .toast{
             position:fixed;top:calc(var(--nav-h) + 12px);left:50%;
             transform:translateX(-50%) translateY(-12px);
@@ -795,17 +1018,12 @@
             transition:transform 0.3s,opacity 0.3s;opacity:0;white-space:nowrap;max-width:85vw;
         }
         .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
-
         .empty-state{text-align:center;padding:40px 20px;color:var(--text3);}
         .empty-state i{font-size:2.5rem;margin-bottom:12px;opacity:0.4;display:block;}
         .empty-state h4{font-size:0.9rem;color:var(--text2);margin-bottom:4px;}
         .empty-state p{font-size:0.72rem;}
-
         .main-content{padding-bottom:calc(var(--bottom-h) + var(--safe-bottom) + 16px);margin-top:var(--nav-h);}
-
-        @keyframes slideUp{from{transform:translateY(30px);opacity:0;}to{transform:translateY(0);opacity:1;}}
         @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-
         @media(min-width:480px){
             .subjects-grid{grid-template-columns:repeat(4,1fr);}
             .videos-grid{grid-template-columns:repeat(3,1fr);}
@@ -814,29 +1032,16 @@
         @media(min-width:768px){
             .subjects-grid{grid-template-columns:repeat(5,1fr);}
         }
-        
         @supports (padding-top: env(safe-area-inset-top)) {
-            body {
-                padding-top: env(safe-area-inset-top);
-            }
-            .navbar {
-                top: env(safe-area-inset-top);
-            }
-            .sidebar {
-                top: env(safe-area-inset-top);
-                height: calc(100vh - env(safe-area-inset-top));
-            }
-            .main-content {
-                margin-top: calc(var(--nav-h) + env(safe-area-inset-top));
-            }
-            .toast {
-                top: calc(var(--nav-h) + env(safe-area-inset-top) + 12px);
-            }
+            body { padding-top: env(safe-area-inset-top); }
+            .navbar { top: env(safe-area-inset-top); }
+            .sidebar { top: env(safe-area-inset-top); height: calc(100vh - env(safe-area-inset-top)); }
+            .main-content { margin-top: calc(var(--nav-h) + env(safe-area-inset-top)); }
+            .toast { top: calc(var(--nav-h) + env(safe-area-inset-top) + 12px); }
         }
     </style>
 </head>
 <body>
-
 <div class="loading-screen" id="loadingScreen">
     <div class="loading-logo-wrap">
         <div class="loading-logo-ring"></div>
@@ -849,7 +1054,6 @@
     <div class="loading-bar-track"><div class="loading-bar-fill" id="loadingBar"></div></div>
     <div class="loading-pct" id="loadingPct">0%</div>
 </div>
-
 <div class="auth-modal" id="authModal">
     <div class="auth-sheet">
         <div class="auth-logo-top">
@@ -894,9 +1098,7 @@
         </div>
     </div>
 </div>
-
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
 <div class="sidebar" id="sidebar">
     <div class="sidebar-top">
         <div class="sidebar-avatar" id="userAvatar"><i class="fas fa-user"></i></div>
@@ -922,7 +1124,6 @@
         <button class="logout-btn" id="logoutSidebar"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
     </div>
 </div>
-
 <nav class="navbar" id="navbar">
     <div class="nav-inner">
         <div class="nav-brand">
@@ -936,9 +1137,7 @@
         </div>
     </div>
 </nav>
-
 <div class="main-content" id="mainContent">
-
     <div id="homeView">
         <div class="hero-slider" id="heroSlider">
             <div class="slide" style="background-image:url('https://d26e3f10zvrezp.cloudfront.net/Gallery/509c7d24-345e-4bd3-b2a6-67e91d1f865a-1024x1024.webp')"></div>
@@ -953,9 +1152,7 @@
             </div>
             <div class="slider-dots" id="sliderDots"></div>
         </div>
-
         <div class="buttons-strip" id="homeButtonsStrip"></div>
-
         <div class="section-header">
             <div class="section-header-left">
                 <div class="section-header-line"></div>
@@ -967,7 +1164,6 @@
             <div class="subjects-grid" id="homeSubjectsList"></div>
         </div>
     </div>
-
     <div id="subjectsView" style="display:none;padding:0 16px 16px;">
         <div class="section-header" style="padding:16px 0 10px;">
             <div class="section-header-left">
@@ -977,7 +1173,6 @@
         </div>
         <div class="subjects-grid" id="subjectsPageList"></div>
     </div>
-
     <div class="lectures-container" id="lecturesContainer">
         <div class="back-bar" id="lecturesBackBar">
             <div class="back-btn"><i class="fas fa-chevron-right"></i></div>
@@ -985,7 +1180,6 @@
         </div>
         <div id="lecturesList"></div>
     </div>
-
     <div class="videos-section" id="videosView">
         <div class="back-bar" id="videosBackBar">
             <div class="back-btn"><i class="fas fa-chevron-right"></i></div>
@@ -993,7 +1187,6 @@
         </div>
         <div class="videos-grid" id="videosContainer"></div>
     </div>
-
     <div class="gallery-section" id="galleryView">
         <div class="back-bar" id="galleryBackBar">
             <div class="back-btn"><i class="fas fa-chevron-right"></i></div>
@@ -1001,7 +1194,6 @@
         </div>
         <div class="gallery-grid" id="galleryContainer"></div>
     </div>
-
     <div class="channels-section" id="channelsView">
         <div class="back-bar" id="channelsBackBar">
             <div class="back-btn"><i class="fas fa-chevron-right"></i></div>
@@ -1009,7 +1201,6 @@
         </div>
         <div id="channelsContainer"></div>
     </div>
-
     <div class="developer-section" id="developerView">
         <div class="back-bar" id="developerBackBar">
             <div class="back-btn"><i class="fas fa-chevron-right"></i></div>
@@ -1022,9 +1213,7 @@
             <div class="dev-phone"><i class="fas fa-phone"></i> 07821531234</div>
         </div>
     </div>
-
 </div>
-
 <div class="settings-full" id="settingsView">
     <div class="settings-nav">
         <button class="settings-back" id="settingsBack"><i class="fas fa-chevron-right"></i></button>
@@ -1040,7 +1229,6 @@
                 <button class="avatar-btn-sm" id="removeAvatarBtn"><i class="fas fa-trash"></i> إزالة</button>
             </div>
         </div>
-        
         <div class="gems-section">
             <div class="gems-display">
                 <i class="fas fa-gem gems-icon" style="color:#FFD700;"></i>
@@ -1049,7 +1237,16 @@
             <div class="gems-label">الرصيد الحالي من الجواهر</div>
             <div class="gems-label" style="font-size:0.6rem; margin-top:4px;">💎 كل جوهرة = 1 دينار عراقي</div>
         </div>
-        
+        <div class="my-subscriptions-section">
+            <div class="my-subscriptions-title" id="toggleSubscriptionsBtn">
+                <i class="fas fa-clock"></i>
+                <span>📋 اشتراكاتي النشطة</span>
+                <i class="fas fa-chevron-down" style="margin-right:auto;"></i>
+            </div>
+            <div class="subscriptions-list-container" id="subscriptionsListContainer">
+                <div id="subscriptionsList">جاري التحميل...</div>
+            </div>
+        </div>
         <div class="charging-section">
             <div class="charging-title">
                 <i class="fas fa-gem"></i>
@@ -1073,12 +1270,10 @@
                     2️⃣ اضغط على "طلب شحن الجواهر"<br>
                     3️⃣ سيتم إرسال طلبك إلى شركة الشحن للمراجعة<br>
                     4️⃣ بعد تأكيد الدفع، سيتم إضافة الجواهر إلى رصيدك<br>
-                    <br>
                     📞 للاستفسار: <a href="tel:07821531234">07821531234</a>
                 </div>
             </div>
         </div>
-        
         <form id="settingsForm">
             <div class="settings-section">
                 <div class="settings-section-label">المعلومات الشخصية</div>
@@ -1103,7 +1298,6 @@
         </form>
     </div>
 </div>
-
 <div class="modal-overlay" id="announcementModal">
     <div class="modal-sheet">
         <div class="modal-handle"></div>
@@ -1114,7 +1308,6 @@
         <div class="modal-body" id="announcementList"></div>
     </div>
 </div>
-
 <div class="modal-overlay" id="datesModal">
     <div class="modal-sheet">
         <div class="modal-handle"></div>
@@ -1125,7 +1318,6 @@
         <div class="modal-body" id="datesList"></div>
     </div>
 </div>
-
 <div id="popupAdModal" class="popup-ad-modal">
     <div class="popup-ad-bg"></div>
     <div class="popup-ad-box">
@@ -1133,7 +1325,6 @@
         <a href="#" id="popupAdLink" target="_blank"><img id="popupAdImage" src="" alt="إعلان"></a>
     </div>
 </div>
-
 <div class="message-modal" id="messageModal">
     <div class="message-modal-content">
         <i id="msgIcon" class="fas fa-check-circle success"></i>
@@ -1142,13 +1333,30 @@
         <button class="message-modal-btn" id="closeMsgModal">حسناً</button>
     </div>
 </div>
-
+<div class="confirmation-modal" id="confirmationModal">
+    <div class="confirmation-content">
+        <i class="fas fa-gem"></i>
+        <h4 id="confirmTitle">تنبيه</h4>
+        <p id="confirmMessage">سيتم استقطاع 100 جوهرة للوصول إلى هذا المحتوى</p>
+        <div class="confirmation-buttons">
+            <button class="confirmation-cancel" id="confirmCancel">إلغاء</button>
+            <button class="confirmation-confirm" id="confirmOk">موافق</button>
+        </div>
+    </div>
+</div>
+<div class="subscription-detail-modal" id="subscriptionDetailModal">
+    <div class="subscription-detail-content">
+        <div style="text-align:left; margin-bottom:10px;">
+            <button onclick="document.getElementById('subscriptionDetailModal').classList.remove('show')" style="background:none; border:none; color:var(--text3); font-size:1.2rem; cursor:pointer;"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="subscriptionDetailContent"></div>
+    </div>
+</div>
 <div class="install-bar" id="installBar">
     <i class="fas fa-download"></i>
     <span>تثبيت التطبيق على الجهاز</span>
     <button class="install-x" id="closeInstallBar"><i class="fas fa-times"></i></button>
 </div>
-
 <nav class="bottom-nav" id="bottomNav">
     <button class="bn-item active" data-nav="home"><i class="fas fa-home"></i><span>الرئيسية</span></button>
     <button class="bn-item" data-nav="subjects"><i class="fas fa-book-open"></i><span>المواد</span></button>
@@ -1156,7 +1364,6 @@
     <button class="bn-item" data-nav="videos"><i class="fas fa-play-circle"></i><span>فيديو</span></button>
     <button class="bn-item" data-nav="channels"><i class="fas fa-satellite-dish"></i><span>قنوات</span></button>
 </nav>
-
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script>
@@ -1166,13 +1373,10 @@
     var blob=new Blob([JSON.stringify(m)],{type:'application/manifest+json'});
     var link=document.createElement('link');link.rel='manifest';link.href=URL.createObjectURL(blob);document.head.appendChild(link);
 })();
-
 const firebaseConfig={apiKey:"AIzaSyBFdxj6p-DAGrr-To_WZBxIk_FDX67Ygm0",authDomain:"mazaya-c7569.firebaseapp.com",projectId:"mazaya-c7569",storageBucket:"mazaya-c7569.appspot.com",messagingSenderId:"989358281766",appId:"1:989358281766:web:9d5d28ce94a2d5599c02e7"};
 firebase.initializeApp(firebaseConfig);
 const db=firebase.firestore();
-
 function san(t){if(!t)return'';return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
-
 let currentUser=null,allSubjects=[],allImportantDates=[],allAnnouncements=[],allCustomButtons=[],allHomeButtons=[];
 let displayedSubjects=new Map(),displayedChannels=new Map(),displayedGallery=new Map(),displayedVideos=new Map(),displayedHomeButtons=new Map();
 let readAnnouncements=new Set();
@@ -1182,56 +1386,382 @@ let currentSection='home';
 let popupAdData={isActive:false,imageUrl:'',link:''};
 let popupShown=false;
 const colorsC=['c0','c1','c2','c3','c4','c5'];
-
+let pendingAction = null;
+let subscriptionTooltip = null;
 const loadingBar=document.getElementById('loadingBar');
 const loadingPct=document.getElementById('loadingPct');
 function setProgress(p){p=Math.min(p,100);loadingBar.style.width=p+'%';loadingPct.textContent=p+'%';}
 function hideLoading(){setProgress(100);setTimeout(()=>{const s=document.getElementById('loadingScreen');s.classList.add('hidden');setTimeout(()=>s.style.display='none',600);},300);}
-
 function showMessage(msg){
     const t=document.createElement('div');t.className='toast';t.textContent=msg;
     document.body.appendChild(t);
     setTimeout(()=>t.classList.add('show'),10);
     setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300);},3000);
 }
-
 function showModalMessage(title,text,type){
     const modal=document.getElementById('messageModal');
     const icon=document.getElementById('msgIcon');
     const titleEl=document.getElementById('msgTitle');
     const textEl=document.getElementById('msgText');
-    
     icon.className='fas '+(type==='success'?'fa-check-circle success':type==='error'?'fa-times-circle error':'fa-info-circle warning');
     titleEl.textContent=title;
     textEl.textContent=text;
     modal.classList.add('show');
 }
-document.getElementById('closeMsgModal').addEventListener('click',()=>{
-    document.getElementById('messageModal').classList.remove('show');
+document.getElementById('closeMsgModal').addEventListener('click',()=>{document.getElementById('messageModal').classList.remove('show');});
+function showConfirmation(title, message, onConfirm){
+    pendingAction = onConfirm;
+    document.getElementById('confirmTitle').textContent = title;
+    document.getElementById('confirmMessage').textContent = message;
+    document.getElementById('confirmationModal').classList.add('show');
+}
+document.getElementById('confirmOk').addEventListener('click',()=>{
+    document.getElementById('confirmationModal').classList.remove('show');
+    if(pendingAction){ pendingAction(); pendingAction = null; }
 });
-
+document.getElementById('confirmCancel').addEventListener('click',()=>{
+    document.getElementById('confirmationModal').classList.remove('show');
+    pendingAction = null;
+});
+// تحديث الأيام المتبقية للاشتراكات
+async function updateSubscriptionDays(){
+    if(!currentUser) return;
+    try{
+        const snapshot = await db.collection("userSubscriptions").where("userId","==",currentUser.id).get();
+        const now = new Date();
+        snapshot.forEach(async (doc) => {
+            const sub = doc.data();
+            const endDate = new Date(sub.endDate);
+            const startDate = new Date(sub.startDate);
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            if(endDate < today){
+                await db.collection("userSubscriptions").doc(doc.id).delete();
+                console.log("Subscription expired and removed:", sub.itemName);
+            } else {
+                const remainingDays = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
+                if(remainingDays !== sub.remainingDays){
+                    await db.collection("userSubscriptions").doc(doc.id).update({ remainingDays: remainingDays });
+                }
+            }
+        });
+        if(currentSection === 'settings') await loadSubscriptions();
+    } catch(e){ console.error("Error updating subscription days:", e); }
+}
+// تشغيل تحديث الاشتراكات كل ساعة
+setInterval(updateSubscriptionDays, 60 * 60 * 1000);
+setTimeout(updateSubscriptionDays, 5000);
+// دالة عرض المحاضرات
+window.showLectures = async function(subjectCode){
+    const subj = allSubjects.find(s => s.code === subjectCode);
+    document.getElementById('lecturesTitle').innerHTML = 'محاضرات ' + (subj?.name || subjectCode);
+    document.getElementById('homeView').style.display = 'none';
+    document.getElementById('subjectsView').style.display = 'none';
+    document.getElementById('lecturesContainer').style.display = 'block';
+    document.getElementById('lecturesContainer').classList.add('show');
+    document.getElementById('lecturesList').innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><h4>جاري التحميل</h4></div>';
+    try{
+        let q = db.collection("lectures").where("subjectCode","==",subjectCode);
+        if(currentUser?.role !== 'admin') q = q.where("stage","==",currentUser.stage);
+        const snap = await q.get();
+        const list = document.getElementById('lecturesList');
+        list.innerHTML = '';
+        if(snap.empty){
+            list.innerHTML = '<div class="empty-state"><i class="fas fa-file-pdf"></i><h4>لا توجد محاضرات</h4><p>سيتم الإضافة قريباً</p></div>';
+            return;
+        }
+        const lecs = [];
+        snap.forEach(d => { lecs.push({id:d.id, ...d.data()}); });
+        lecs.sort((a,b) => (b.createdAt?.toDate()||0) - (a.createdAt?.toDate()||0));
+        for(const lec of lecs){
+            const hasSub = await checkUserSubscription(lec.id, 'lecture');
+            const card = document.createElement('div');
+            card.className = 'lecture-card';
+            if(hasSub){
+                const subBadge = document.createElement('div');
+                subBadge.className = 'subscription-badge';
+                subBadge.innerHTML = '<i class="fas fa-check-circle"></i> مفعل';
+                card.appendChild(subBadge);
+            }
+            card.innerHTML += `
+                <div class="lecture-card-top">
+                    <div class="lecture-card-top-row">
+                        <div class="lecture-title">${san(lec.title||'محاضرة')}</div>
+                        <span class="lec-badge">${san(lec.subjectCode||'')}</span>
+                    </div>
+                    <div class="lecture-meta">
+                        <span><i class="far fa-calendar-alt"></i> ${san(lec.uploadDate||'-')}</span>
+                        <span><i class="far fa-file-pdf"></i> ${san(lec.fileSize||'-')}</span>
+                    </div>
+                </div>
+                ${lec.description ? `<div class="lecture-desc">${san(lec.description)}</div>` : ''}
+                <div class="download-btn" data-id="${lec.id}" data-title="${san(lec.title)}" data-gems="${lec.gemsRequired||0}" data-days="${lec.subscriptionDays||30}" data-url="${san(lec.fileUrl||'')}">
+                    <i class="fas fa-download"></i> تحميل المحاضرة
+                </div>
+            `;
+            const btn = card.querySelector('.download-btn');
+            btn.onclick = function(e){
+                e.stopPropagation();
+                window.checkAndSubscribe(lec.id, lec.title, 'lecture', lec.gemsRequired || 0, lec.subscriptionDays || 30, function() {
+                    if(lec.fileUrl) window.open(lec.fileUrl, '_blank');
+                });
+            };
+            list.appendChild(card);
+        }
+        window.scrollTo({top:0, behavior:'smooth'});
+    } catch(e){
+        console.error("Error loading lectures:", e);
+        document.getElementById('lecturesList').innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h4>خطأ في التحميل</h4><p>حدث خطأ، يرجى المحاولة مرة أخرى</p></div>';
+    }
+};
+// التحقق من وجود اشتراك نشط
+async function checkUserSubscription(itemId, itemType){
+    if(!currentUser) return false;
+    try{
+        const snapshot = await db.collection("userSubscriptions")
+            .where("userId","==",currentUser.id)
+            .where("itemId","==",itemId)
+            .where("itemType","==",itemType)
+            .get();
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        for(const doc of snapshot.docs){
+            const sub = doc.data();
+            const endDate = new Date(sub.endDate);
+            if(endDate >= today) return true;
+        }
+        return false;
+    } catch(e){ return false; }
+}
+// عرض تفاصيل الاشتراك عند الضغط على الشارة
+async function showSubscriptionDetails(itemId, itemName, itemType){
+    if(!currentUser) return;
+    try{
+        const snapshot = await db.collection("userSubscriptions")
+            .where("userId","==",currentUser.id)
+            .where("itemId","==",itemId)
+            .where("itemType","==",itemType)
+            .get();
+        if(snapshot.empty){
+            showModalMessage('تنبيه', 'لا يوجد اشتراك نشط لهذا المحتوى', 'warning');
+            return;
+        }
+        const sub = snapshot.docs[0].data();
+        const endDate = new Date(sub.endDate);
+        const startDate = new Date(sub.startDate);
+        const today = new Date();
+        const remainingDays = Math.max(0, Math.ceil((endDate - today) / (1000 * 60 * 60 * 24)));
+        const totalDays = sub.durationDays || 30;
+        const usedDays = totalDays - remainingDays;
+        const container = document.getElementById('subscriptionDetailContent');
+        container.innerHTML = `
+            <div style="text-align:center;">
+                <i class="fas fa-gem" style="font-size:2rem; color:var(--gold); margin-bottom:10px;"></i>
+                <h4>${san(itemName)}</h4>
+                <div style="background:rgba(0,200,150,0.1); padding:10px; border-radius:12px; margin:10px 0;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                        <span>تاريخ بدء الاشتراك:</span>
+                        <span>${startDate.toLocaleDateString('ar-IQ')}</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                        <span>تاريخ انتهاء الاشتراك:</span>
+                        <span>${endDate.toLocaleDateString('ar-IQ')}</span>
+                    </div>
+                    <div style="margin-top:10px;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                            <span>الأيام المتبقية:</span>
+                            <span style="color:var(--gold); font-weight:700;">${remainingDays} يوم</span>
+                        </div>
+                        <div class="subscription-item-progress" style="margin-top:5px;">
+                            <div class="subscription-item-progress-fill" style="width:${(usedDays/totalDays)*100}%;"></div>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="document.getElementById('subscriptionDetailModal').classList.remove('show')" class="save-btn" style="margin-top:10px; padding:10px;">إغلاق</button>
+            </div>
+        `;
+        document.getElementById('subscriptionDetailModal').classList.add('show');
+    } catch(e){ console.error(e); }
+}
+// دالة التحقق من الاشتراك
+window.checkAndSubscribe = async function(itemId, itemName, itemType, gemsRequired, subscriptionDays, callback) {
+    if(!currentUser){
+        showModalMessage('تنبيه', 'الرجاء تسجيل الدخول أولاً', 'warning');
+        return;
+    }
+    if(gemsRequired <= 0){
+        if(callback) callback();
+        return;
+    }
+    if(currentUser.role === 'admin'){
+        if(callback) callback();
+        return;
+    }
+    try{
+        const userSubscriptions = await db.collection("userSubscriptions")
+            .where("userId","==",currentUser.id)
+            .where("itemId","==",itemId)
+            .where("itemType","==",itemType)
+            .get();
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        let hasActiveSubscription = false;
+        let subscriptionDoc = null;
+        for(const doc of userSubscriptions.docs){
+            const sub = doc.data();
+            const endDate = new Date(sub.endDate);
+            if(endDate >= today){
+                hasActiveSubscription = true;
+                subscriptionDoc = doc;
+                break;
+            }
+        }
+        if(hasActiveSubscription){
+            const sub = subscriptionDoc.data();
+            const remainingDays = Math.ceil((new Date(sub.endDate) - today) / (1000 * 60 * 60 * 24));
+            showModalMessage('اشتراك نشط', `✅ لديك اشتراك نشط لهذا المحتوى\n📅 متبقي: ${remainingDays} يوم`, 'success');
+            if(callback) callback();
+            return;
+        }
+        const userRef = db.collection("students").doc(currentUser.id);
+        const userDoc = await userRef.get();
+        const userGems = userDoc.data().gems || 0;
+        if(userGems >= gemsRequired){
+            showConfirmation(
+                'شراء اشتراك',
+                `📌 المحتوى: ${itemName}\n💰 السعر: ${gemsRequired} جوهرة\n📅 المدة: ${subscriptionDays} يوم\n\nرصيدك الحالي: ${userGems} جوهرة\nهل تريد المتابعة؟`,
+                async () => {
+                    try{
+                        await userRef.update({ gems: userGems - gemsRequired });
+                        const startDate = new Date();
+                        const endDate = new Date();
+                        endDate.setDate(endDate.getDate() + subscriptionDays);
+                        await db.collection("userSubscriptions").add({
+                            userId: currentUser.id,
+                            itemId: itemId,
+                            itemName: itemName,
+                            itemType: itemType,
+                            gemsPaid: gemsRequired,
+                            durationDays: subscriptionDays,
+                            remainingDays: subscriptionDays,
+                            startDate: startDate.toISOString(),
+                            endDate: endDate.toISOString(),
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        await updateGemsDisplay();
+                        await loadSubscriptions();
+                        showMessage(`✅ تم تفعيل الاشتراك لمدة ${subscriptionDays} يوم`);
+                        if(callback) callback();
+                    } catch(err){ 
+                        showMessage('حدث خطأ: '+err.message, 'error'); 
+                    }
+                }
+            );
+        } else {
+            showModalMessage('رصيد غير كافٍ', `⚠️ رصيدك الحالي: ${userGems} جوهرة\n💰 المطلوب: ${gemsRequired} جوهرة\n\nيمكنك شحن الرصيد من خلال الإعدادات`, 'error');
+        }
+    } catch(err){ 
+        console.error(err); 
+        showMessage('حدث خطأ في النظام: '+err.message, 'error'); 
+    }
+};
+// تحميل الاشتراكات
+async function loadSubscriptions(){
+    if(!currentUser) {
+        const container = document.getElementById('subscriptionsList');
+        if(container) container.innerHTML = '<div class="subscription-item"><div class="subscription-item-name">الرجاء تسجيل الدخول</div></div>';
+        return;
+    }
+    const container = document.getElementById('subscriptionsList');
+    if(!container) return;
+    try{
+        container.innerHTML = '<div class="subscription-item"><div class="subscription-item-name">جاري التحميل...</div></div>';
+        const snapshot = await db.collection("userSubscriptions").where("userId","==",currentUser.id).get();
+        if(snapshot.empty){
+            container.innerHTML = '<div class="subscription-item"><div class="subscription-item-name">لا توجد اشتراكات نشطة</div></div>';
+            return;
+        }
+        const currentDate = new Date();
+        let html = '';
+        let hasActive = false;
+        for(const doc of snapshot.docs){
+            const sub = doc.data();
+            const endDate = new Date(sub.endDate);
+            if(endDate >= currentDate){
+                hasActive = true;
+                const remainingDays = Math.max(0, Math.ceil((endDate - currentDate) / (1000 * 60 * 60 * 24)));
+                const totalDays = sub.durationDays || 30;
+                const usedDays = totalDays - remainingDays;
+                const progressPercent = (usedDays / totalDays) * 100;
+                let itemTypeText = '';
+                switch(sub.itemType){
+                    case 'homeButton': itemTypeText = 'زر رئيسي'; break;
+                    case 'subject': itemTypeText = 'مادة دراسية'; break;
+                    case 'lecture': itemTypeText = 'محاضرة'; break;
+                    case 'video': itemTypeText = 'فيديو'; break;
+                    case 'gallery': itemTypeText = 'صورة'; break;
+                    case 'channel': itemTypeText = 'قناة'; break;
+                    case 'customButton': itemTypeText = 'رابط مخصص'; break;
+                    default: itemTypeText = sub.itemType;
+                }
+                html += `
+                    <div class="subscription-item" onclick="window.showSubscriptionDetails('${sub.itemId}','${san(sub.itemName)}','${sub.itemType}')">
+                        <div class="subscription-item-name">
+                            <span>${san(sub.itemName)}</span>
+                            <span style="color:var(--gold);">${remainingDays} يوم متبقي</span>
+                        </div>
+                        <div class="subscription-item-progress">
+                            <div class="subscription-item-progress-fill" style="width:${progressPercent}%;"></div>
+                        </div>
+                        <div class="subscription-item-days">
+                            نوع الاشتراك: ${itemTypeText}<br>
+                            الاشتراك حتى: ${endDate.toLocaleDateString('ar-IQ')}
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        if(!hasActive){
+            container.innerHTML = '<div class="subscription-item"><div class="subscription-item-name">لا توجد اشتراكات نشطة</div></div>';
+        } else {
+            container.innerHTML = html;
+        }
+    } catch(e){ 
+        console.error("Error loading subscriptions:", e); 
+        container.innerHTML = '<div class="subscription-item"><div class="subscription-item-name">لا توجد اشتراكات</div></div>'; 
+    }
+}
+document.getElementById('toggleSubscriptionsBtn')?.addEventListener('click', function(){
+    const container = document.getElementById('subscriptionsListContainer');
+    if(container){
+        container.classList.toggle('show');
+        const icon = this.querySelector('.fa-chevron-down');
+        if(icon){
+            if(container.classList.contains('show')){
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+    }
+});
+window.showSubscriptionDetails = showSubscriptionDetails;
 let deferredPrompt=null;
 const installBtn=document.getElementById('installAppBtn');
 const installBar=document.getElementById('installBar');
 function isInstalled(){return window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;}
-
 window.addEventListener('beforeinstallprompt',e=>{
     e.preventDefault();
     deferredPrompt=e;
     if(installBtn)installBtn.style.display='flex';
-    if(!isInstalled() && !localStorage.getItem('installDismissed')){
-        setTimeout(()=>installBar.classList.add('show'),2000);
-    }
+    if(!isInstalled() && !localStorage.getItem('installDismissed')){ setTimeout(()=>installBar.classList.add('show'),2000); }
 });
-
 async function triggerInstall(){
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    
     if(isIOS){
         showModalMessage('تثبيت التطبيق','📱 لتثبيت التطبيق على iPhone/iPad:\n\n1. اضغط على زر المشاركة 📤\n2. اختر "إضافة إلى الشاشة الرئيسية"\n3. اضغط على "إضافة"','info');
         return;
     }
-    
     if(deferredPrompt){
         deferredPrompt.prompt();
         const {outcome} = await deferredPrompt.userChoice;
@@ -1245,15 +1775,10 @@ async function triggerInstall(){
         showModalMessage('تثبيت التطبيق','📱 لتثبيت التطبيق:\nاضغط على القائمة (النقاط الثلاث) ثم اختر "تثبيت التطبيق"','info');
     }
 }
-
 if(installBtn) installBtn.addEventListener('click', triggerInstall);
 if(installBar) installBar.addEventListener('click', (e) => { if(!e.target.closest('.install-x')) triggerInstall(); });
 document.getElementById('closeInstallBar')?.addEventListener('click', (e) => { e.stopPropagation(); installBar.classList.remove('show'); localStorage.setItem('installDismissed','true'); });
-
-if(!isInstalled() && !localStorage.getItem('installDismissed')){
-    setTimeout(() => { if(installBtn) installBtn.style.display='flex'; }, 2000);
-}
-
+if(!isInstalled() && !localStorage.getItem('installDismissed')){ setTimeout(() => { if(installBtn) installBtn.style.display='flex'; }, 2000); }
 const slides=document.querySelectorAll('.slide');
 const dotsC=document.getElementById('sliderDots');
 let cur=0,slideTimer;
@@ -1266,46 +1791,29 @@ function initSlider(){
 }
 function goTo(i){slides.forEach(s=>s.classList.remove('active'));slides[i].classList.add('active');cur=i;document.querySelectorAll('.dot').forEach((d,j)=>d.classList.toggle('active',j===i));}
 initSlider();
-
 function showSection(section){
     currentSection=section;
     const views=['homeView','subjectsView','lecturesContainer','videosView','galleryView','channelsView','developerView'];
     views.forEach(id=>{const el=document.getElementById(id);if(el){el.style.display='none';el.classList&&el.classList.remove('show');}});
     document.getElementById('settingsView')?.classList.remove('show');
-
     if(section==='home'){document.getElementById('homeView').style.display='block';}
     else if(section==='subjects'){document.getElementById('subjectsView').style.display='block';}
     else if(section==='videos'){document.getElementById('videosView').style.display='block';}
     else if(section==='gallery'){document.getElementById('galleryView').style.display='block';}
     else if(section==='channels'){document.getElementById('channelsView').style.display='block';}
     else if(section==='developer'){document.getElementById('developerView').style.display='block';}
-    else if(section==='settings'){document.getElementById('settingsView').classList.add('show');return;}
-
+    else if(section==='settings'){document.getElementById('settingsView').classList.add('show');loadSubscriptions();return;}
     updateBottomNav(section);
     document.getElementById('sidebar')?.classList.remove('active');
     document.getElementById('sidebarOverlay')?.classList.remove('active');
     window.scrollTo({top:0,behavior:'smooth'});
 }
-
-function showLectures(subjectCode){
-    const subj=allSubjects.find(s=>s.code===subjectCode);
-    document.getElementById('lecturesTitle').textContent='محاضرات '+(subj?.name||subjectCode);
-    document.getElementById('homeView').style.display='none';
-    document.getElementById('subjectsView').style.display='none';
-    document.getElementById('lecturesContainer').style.display='block';
-    document.getElementById('lecturesList').innerHTML='<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><h4>جاري التحميل</h4></div>';
-    loadLectures(subjectCode);
-    window.scrollTo({top:0,behavior:'smooth'});
-}
-
 function updateBottomNav(section){
     document.querySelectorAll('.bn-item').forEach(b=>b.classList.toggle('active',b.dataset.nav===section));
     document.querySelectorAll('.sidebar-item[data-nav]').forEach(b=>b.classList.toggle('active',b.dataset.nav===section));
 }
-
 document.getElementById('menuToggle').addEventListener('click',()=>{document.getElementById('sidebar').classList.add('active');document.getElementById('sidebarOverlay').classList.add('active');});
 document.getElementById('sidebarOverlay').addEventListener('click',()=>{document.getElementById('sidebar').classList.remove('active');document.getElementById('sidebarOverlay').classList.remove('active');});
-
 document.addEventListener('click', (e) => {
     const sidebar = document.getElementById('sidebar');
     const menuToggle = document.getElementById('menuToggle');
@@ -1314,11 +1822,8 @@ document.addEventListener('click', (e) => {
         document.getElementById('sidebarOverlay').classList.remove('active');
     }
 });
-
 let touchStartX = 0;
-document.addEventListener('touchstart', (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-}, false);
+document.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, false);
 document.addEventListener('touchend', (e) => {
     const sidebar = document.getElementById('sidebar');
     if (sidebar && sidebar.classList.contains('active')) {
@@ -1330,19 +1835,16 @@ document.addEventListener('touchend', (e) => {
         }
     }
 }, false);
-
 document.querySelectorAll('.sidebar-item[data-nav]').forEach(item=>item.addEventListener('click',()=>showSection(item.dataset.nav)));
 document.querySelectorAll('.bn-item[data-nav]').forEach(item=>item.addEventListener('click',()=>showSection(item.dataset.nav)));
 document.querySelectorAll('[data-nav]').forEach(el=>{if(el.classList.contains('see-all'))el.addEventListener('click',()=>showSection(el.dataset.nav));});
 document.getElementById('centerBtn').addEventListener('click',()=>showSection('subjects'));
-
-document.getElementById('lecturesBackBar').addEventListener('click',()=>{document.getElementById('lecturesContainer').style.display='none';showSection(allSubjects.length?'subjects':'home');});
+document.getElementById('lecturesBackBar').addEventListener('click',()=>{document.getElementById('lecturesContainer').style.display='none';document.getElementById('lecturesContainer').classList.remove('show');showSection(allSubjects.length?'subjects':'home');});
 document.getElementById('videosBackBar').addEventListener('click',()=>showSection('home'));
 document.getElementById('galleryBackBar').addEventListener('click',()=>showSection('home'));
 document.getElementById('channelsBackBar').addEventListener('click',()=>showSection('home'));
 document.getElementById('developerBackBar').addEventListener('click',()=>showSection('home'));
 document.getElementById('settingsBack').addEventListener('click',()=>{document.getElementById('settingsView').classList.remove('show');});
-
 const themeSwitch=document.getElementById('themeSwitch');
 const root=document.documentElement;
 function applyTheme(light){
@@ -1370,16 +1872,13 @@ function applyTheme(light){
 }
 themeSwitch.addEventListener('change',function(){applyTheme(this.checked);localStorage.setItem('theme',this.checked?'light':'dark');});
 if(localStorage.getItem('theme')==='light'){themeSwitch.checked=true;applyTheme(true);}
-
 document.getElementById('bellBtn').addEventListener('click',()=>document.getElementById('announcementModal').classList.add('show'));
 document.getElementById('closeAnnModal').addEventListener('click',()=>document.getElementById('announcementModal').classList.remove('show'));
 document.getElementById('announcementModal').addEventListener('click',e=>{if(e.target===document.getElementById('announcementModal'))document.getElementById('announcementModal').classList.remove('show');});
 document.getElementById('calendarBtn').addEventListener('click',()=>document.getElementById('datesModal').classList.add('show'));
 document.getElementById('closeDatesModal').addEventListener('click',()=>document.getElementById('datesModal').classList.remove('show'));
 document.getElementById('datesModal').addEventListener('click',e=>{if(e.target===document.getElementById('datesModal'))document.getElementById('datesModal').classList.remove('show');});
-
 document.getElementById('logoutSidebar').addEventListener('click',logout);
-
 document.querySelectorAll('.auth-tab').forEach(tab=>{
     tab.addEventListener('click',()=>{
         document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));
@@ -1390,13 +1889,11 @@ document.querySelectorAll('.auth-tab').forEach(tab=>{
         document.getElementById('registerError').classList.remove('show');
     });
 });
-
 document.getElementById('userAvatar').addEventListener('click',()=>{document.getElementById('sidebar').classList.remove('active');document.getElementById('sidebarOverlay').classList.remove('active');showSection('settings');});
 document.getElementById('avatarBtnChoose').addEventListener('click',chooseFromGallery);
 document.getElementById('avatarBtnCamera').addEventListener('click',takePhoto);
 document.getElementById('removeAvatarBtn').addEventListener('click',removeAvatar);
 document.getElementById('avatarPreview').addEventListener('click',chooseFromGallery);
-
 function compressImage(dataUrl,maxW=300,q=0.7){return new Promise(res=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');let w=img.width,h=img.height;if(w>maxW){h=h*maxW/w;w=maxW;}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',q));};img.src=dataUrl;});}
 function saveAvatar(data){if(!currentUser)return;const k='avatar_'+san(currentUser.username);if(data&&data.length<2*1024*1024)localStorage.setItem(k,data);else localStorage.removeItem(k);}
 function loadAvatar(){if(!currentUser)return null;return localStorage.getItem('avatar_'+san(currentUser.username));}
@@ -1411,7 +1908,6 @@ async function handleAvatarFile(file){if(!file||!file.type.match('image.*'))retu
 function chooseFromGallery(){const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=e=>handleAvatarFile(e.target.files[0]);i.click();}
 function takePhoto(){const i=document.createElement('input');i.type='file';i.accept='image/*';i.capture='environment';i.onchange=e=>handleAvatarFile(e.target.files[0]);i.click();}
 function removeAvatar(){saveAvatar(null);updateAvatarUI();showMessage('تم إزالة الصورة');}
-
 function clearEl(el){if(el)while(el.firstChild)el.removeChild(el.firstChild);}
 function emptyState(container,type){
     if(!container)return;
@@ -1419,31 +1915,23 @@ function emptyState(container,type){
     const m=msgs[type]||msgs.subjects;
     container.innerHTML=`<div class="empty-state"><i class="fas ${san(m.icon)}"></i><h4>${san(m.title)}</h4><p>سيتم الإضافة قريباً</p></div>`;
 }
-
 function renderHomeButton(data){
-    const btnDiv=document.createElement('a');
+    const btnDiv=document.createElement('div');
     btnDiv.className='dynamic-btn';
-    btnDiv.href='javascript:void(0)';
-    btnDiv.onclick=()=>{
-        if(data.url && data.url.trim()){
-            window.open(data.url, '_blank');
-        }
+    btnDiv.onclick=function(){
+        window.checkAndSubscribe(data.id, data.title, 'homeButton', data.gemsRequired || 0, data.subscriptionDays || 30, function() {
+            if(data.url && data.url.trim()){
+                window.open(data.url, '_blank');
+            }
+        });
     };
-    
     if(data.imageUrl && data.imageUrl.trim()){
-        btnDiv.innerHTML=`
-            <img class="dynamic-btn-img" src="${san(data.imageUrl)}" alt="${san(data.title)}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1998/1998672.png'">
-            <span class="dynamic-btn-title">${san(data.title)}</span>
-        `;
+        btnDiv.innerHTML=`<img class="dynamic-btn-img" src="${san(data.imageUrl)}" alt="${san(data.title)}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1998/1998672.png'"><span class="dynamic-btn-title">${san(data.title)}</span>`;
     } else {
-        btnDiv.innerHTML=`
-            <div class="dynamic-btn-icon"><i class="fas ${san(data.icon||'fa-link')}"></i></div>
-            <span class="dynamic-btn-title">${san(data.title)}</span>
-        `;
+        btnDiv.innerHTML=`<div class="dynamic-btn-icon"><i class="fas ${san(data.icon||'fa-link')}"></i></div><span class="dynamic-btn-title">${san(data.title)}</span>`;
     }
     return btnDiv;
 }
-
 function addHomeButton(id,data){
     if(!data||data.isActive===false||displayedHomeButtons.has(id))return;
     if(!data.title)return;
@@ -1454,7 +1942,6 @@ function addHomeButton(id,data){
         displayedHomeButtons.set(id,true);
     }
 }
-
 async function loadHomeButtons(){
     try{
         const snap=await db.collection("homeButtons").orderBy("order","asc").get();
@@ -1463,71 +1950,26 @@ async function loadHomeButtons(){
             clearEl(container);
             displayedHomeButtons.clear();
             allHomeButtons=[];
-            console.log("جاري تحميل الأزرار الرئيسية...");
-            
             if(snap.empty){
-                console.log("لا توجد أزرار في قاعدة البيانات");
-                container.innerHTML=`
-                    <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page1','_blank')">
-                        <div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div>
-                        <span class="dynamic-btn-title">جوهرة VIP</span>
-                    </a>
-                    <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page2','_blank')">
-                        <div class="dynamic-btn-icon"><i class="fas fa-download"></i></div>
-                        <span class="dynamic-btn-title">تحميل التطبيق</span>
-                    </a>
-                    <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('tel:07821531234')">
-                        <div class="dynamic-btn-icon"><i class="fas fa-phone"></i></div>
-                        <span class="dynamic-btn-title">اتصل بنا</span>
-                    </a>
-                `;
+                container.innerHTML=`<div class="dynamic-btn" onclick="return false;"><div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div><span class="dynamic-btn-title">جوهرة VIP</span></div><div class="dynamic-btn" onclick="return false;"><div class="dynamic-btn-icon"><i class="fas fa-download"></i></div><span class="dynamic-btn-title">تحميل التطبيق</span></div>`;
                 return;
             }
-            
             const buttonsArray=[];
-            snap.forEach(doc=>{
-                buttonsArray.push({id:doc.id,...doc.data()});
-            });
+            snap.forEach(doc=>{ buttonsArray.push({id:doc.id,...doc.data()}); });
             buttonsArray.sort((a,b)=>(a.order||0)-(b.order||0));
-            buttonsArray.forEach(btn=>{
-                if(btn.isActive!==false){
-                    allHomeButtons.push(btn);
-                    addHomeButton(btn.id,btn);
-                }
-            });
-            console.log("تم تحميل "+displayedHomeButtons.size+" زر");
-            
+            buttonsArray.forEach(btn=>{ if(btn.isActive!==false){ allHomeButtons.push(btn); addHomeButton(btn.id,btn); } });
             if(displayedHomeButtons.size===0){
-                container.innerHTML=`
-                    <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page1','_blank')">
-                        <div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div>
-                        <span class="dynamic-btn-title">جوهرة VIP</span>
-                    </a>
-                    <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page2','_blank')">
-                        <div class="dynamic-btn-icon"><i class="fas fa-download"></i></div>
-                        <span class="dynamic-btn-title">تحميل التطبيق</span>
-                    </a>
-                `;
+                container.innerHTML=`<div class="dynamic-btn" onclick="return false;"><div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div><span class="dynamic-btn-title">جوهرة VIP</span></div><div class="dynamic-btn" onclick="return false;"><div class="dynamic-btn-icon"><i class="fas fa-download"></i></div><span class="dynamic-btn-title">تحميل التطبيق</span></div>`;
             }
         }
     }catch(e){
         console.error("Error loading home buttons:",e);
         const container=document.getElementById('homeButtonsStrip');
         if(container){
-            container.innerHTML=`
-                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page1','_blank')">
-                    <div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div>
-                    <span class="dynamic-btn-title">جوهرة VIP</span>
-                </a>
-                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page2','_blank')">
-                    <div class="dynamic-btn-icon"><i class="fas fa-download"></i></div>
-                    <span class="dynamic-btn-title">تحميل التطبيق</span>
-                </a>
-            `;
+            container.innerHTML=`<div class="dynamic-btn" onclick="return false;"><div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div><span class="dynamic-btn-title">جوهرة VIP</span></div><div class="dynamic-btn" onclick="return false;"><div class="dynamic-btn-icon"><i class="fas fa-download"></i></div><span class="dynamic-btn-title">تحميل التطبيق</span></div>`;
         }
     }
 }
-
 function startHomeButtonsListener(){
     if(homeButtonsL) homeButtonsL();
     homeButtonsL=db.collection("homeButtons").onSnapshot(snap=>{
@@ -1536,64 +1978,31 @@ function startHomeButtonsListener(){
         clearEl(container);
         displayedHomeButtons.clear();
         allHomeButtons=[];
-        console.log("تحديث الأزرار الرئيسية...");
-        
         if(snap.empty){
-            console.log("لا توجد أزرار، عرض الأزرار الافتراضية");
-            container.innerHTML=`
-                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page1','_blank')">
-                    <div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div>
-                    <span class="dynamic-btn-title">جوهرة VIP</span>
-                </a>
-                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page2','_blank')">
-                    <div class="dynamic-btn-icon"><i class="fas fa-download"></i></div>
-                    <span class="dynamic-btn-title">تحميل التطبيق</span>
-                </a>
-                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('tel:07821531234')">
-                    <div class="dynamic-btn-icon"><i class="fas fa-phone"></i></div>
-                    <span class="dynamic-btn-title">اتصل بنا</span>
-                </a>
-            `;
+            container.innerHTML=`<div class="dynamic-btn" onclick="return false;"><div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div><span class="dynamic-btn-title">جوهرة VIP</span></div><div class="dynamic-btn" onclick="return false;"><div class="dynamic-btn-icon"><i class="fas fa-download"></i></div><span class="dynamic-btn-title">تحميل التطبيق</span></div>`;
             return;
         }
-        
         const buttonsArray=[];
-        snap.forEach(doc=>{
-            buttonsArray.push({id:doc.id,...doc.data()});
-        });
+        snap.forEach(doc=>{ buttonsArray.push({id:doc.id,...doc.data()}); });
         buttonsArray.sort((a,b)=>(a.order||0)-(b.order||0));
-        buttonsArray.forEach(btn=>{
-            if(btn.isActive!==false){
-                allHomeButtons.push(btn);
-                addHomeButton(btn.id,btn);
-            }
-        });
-        console.log("تم تحديث "+displayedHomeButtons.size+" زر");
-        
+        buttonsArray.forEach(btn=>{ if(btn.isActive!==false){ allHomeButtons.push(btn); addHomeButton(btn.id,btn); } });
         if(displayedHomeButtons.size===0){
-            container.innerHTML=`
-                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page1','_blank')">
-                    <div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div>
-                    <span class="dynamic-btn-title">جوهرة VIP</span>
-                </a>
-                <a class="dynamic-btn" href="javascript:void(0)" onclick="window.open('https://example.com/page2','_blank')">
-                    <div class="dynamic-btn-icon"><i class="fas fa-download"></i></div>
-                    <span class="dynamic-btn-title">تحميل التطبيق</span>
-                </a>
-            `;
+            container.innerHTML=`<div class="dynamic-btn" onclick="return false;"><div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div><span class="dynamic-btn-title">جوهرة VIP</span></div><div class="dynamic-btn" onclick="return false;"><div class="dynamic-btn-icon"><i class="fas fa-download"></i></div><span class="dynamic-btn-title">تحميل التطبيق</span></div>`;
         }
     });
 }
-
 function renderSubjectCard(data,idx,container){
     const c=colorsC[idx%6];
     const card=document.createElement('div');
     card.className=`subject-card ${c}`;
     card.innerHTML=`<div class="subject-icon ${c}"><i class="${san(data.icon||'fas fa-book')}"></i></div><div class="subject-name">${san(data.name||'مادة')}</div><div class="subject-code">${san(data.description||'')}</div><span class="subject-lectures">${san(data.code||'')}</span>`;
-    card.onclick=()=>showLectures(san(data.code));
+    card.onclick=function(){
+        window.checkAndSubscribe(data.id, data.name, 'subject', data.gemsRequired || 0, data.subscriptionDays || 30, function() {
+            window.showLectures(san(data.code));
+        });
+    };
     container.appendChild(card);
 }
-
 function updateAnnBadge(){
     const ub=document.getElementById('announcementBadge');
     const cnt=allAnnouncements.filter(a=>!readAnnouncements.has(a.id)).length;
@@ -1605,7 +2014,6 @@ function updateCalBadge(){
     const has=allImportantDates.some(d=>d.date>=today);
     btn.classList.toggle('nav-dot',has);
 }
-
 function renderAnnouncements(){
     const list=document.getElementById('announcementList');
     if(!list)return;clearEl(list);
@@ -1623,7 +2031,6 @@ function renderAnnouncements(){
         list.appendChild(item);
     });
 }
-
 function renderDates(){
     const list=document.getElementById('datesList');
     if(!list)return;clearEl(list);
@@ -1637,7 +2044,6 @@ function renderDates(){
         list.appendChild(item);
     });
 }
-
 function addSubjectToGrids(id,data,forceAdd){
     if(displayedSubjects.has(id)&&!forceAdd)return;
     const userStage=currentUser?.stage;
@@ -1648,33 +2054,37 @@ function addSubjectToGrids(id,data,forceAdd){
     const subjGrid=document.getElementById('subjectsPageList');
     if(homeGrid){
         const existing=homeGrid.querySelectorAll('.subject-card');
-        if(existing.length<6){
-            renderSubjectCard(data,colorIdx,homeGrid);
-        }
+        if(existing.length<6){ renderSubjectCard(data,colorIdx,homeGrid); }
     }
     if(subjGrid)renderSubjectCard(data,colorIdx,subjGrid);
     displayedSubjects.set(id,true);
 }
-
 function addChannel(id,data){
     if(!data||displayedChannels.has(id))return;
     const c=document.createElement('div');c.className='channel-card';
-    c.innerHTML=`<div class="channel-icon-box"><i class="${san(data.icon||'fab fa-telegram')}"></i></div><div class="channel-info"><div class="channel-name">${san(data.name||'قناة')}</div><div class="channel-desc">${san(data.description||'')}</div></div><a href="${san(data.url||'#')}" target="_blank" class="channel-btn">زيارة</a>`;
+    c.innerHTML=`<div class="channel-icon-box"><i class="${san(data.icon||'fab fa-telegram')}"></i></div><div class="channel-info"><div class="channel-name">${san(data.name||'قناة')}</div><div class="channel-desc">${san(data.description||'')}</div></div><div class="channel-btn">زيارة</div>`;
+    c.onclick=function(){
+        window.checkAndSubscribe(id, data.name, 'channel', data.gemsRequired || 0, data.subscriptionDays || 30, function() {
+            if(data.url) window.open(data.url, '_blank');
+        });
+    };
     document.getElementById('channelsContainer')?.appendChild(c);
     displayedChannels.set(id,true);
 }
-
 function addGalleryItem(id,data){
     if(!data||displayedGallery.has(id))return;
     const date=data.createdAt?.toDate()?.toLocaleDateString('ar-IQ')||'-';
     const c=document.createElement('div');c.className='gallery-card';
-    c.innerHTML=`<img class="gallery-img" src="${san(data.imageUrl||'')}" onclick="window.open('${san(data.imageUrl||'')}','_blank')" loading="lazy"><div class="gallery-info"><div class="gallery-title">${san(data.title||'صورة')}</div><div class="gallery-date"><i class="far fa-calendar-alt"></i> ${san(date)}</div></div>`;
+    c.innerHTML=`<img class="gallery-img" src="${san(data.imageUrl||'')}" loading="lazy"><div class="gallery-info"><div class="gallery-title">${san(data.title||'صورة')}</div><div class="gallery-date"><i class="far fa-calendar-alt"></i> ${san(date)}</div></div>`;
+    c.querySelector('.gallery-img').onclick=function(){
+        window.checkAndSubscribe(id, data.title, 'gallery', data.gemsRequired || 0, data.subscriptionDays || 30, function() {
+            window.open(data.imageUrl, '_blank');
+        });
+    };
     document.getElementById('galleryContainer')?.appendChild(c);
     displayedGallery.set(id,true);
 }
-
 function extractYTId(url){if(!url)return'';const m=url.match(/(?:youtu\.be\/|watch\?v=|embed\/)([^#&?]{11})/);return m?m[1]:'';}
-
 function addVideoItem(id,data){
     if(!data||displayedVideos.has(id))return;
     const userStage=currentUser?.stage;
@@ -1683,36 +2093,14 @@ function addVideoItem(id,data){
     const date=data.createdAt?.toDate()?.toLocaleDateString('ar-IQ')||'-';
     const c=document.createElement('div');c.className='video-card';
     c.innerHTML=`<div class="video-wrapper">${vid?`<iframe src="https://www.youtube.com/embed/${san(vid)}" allowfullscreen loading="lazy"></iframe>`:'<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text3);font-size:0.7rem;padding:20px;">رابط غير صالح</div>'}</div><div class="video-info"><div class="video-title">${san(data.title||'فيديو')}</div><div class="video-date"><i class="far fa-calendar-alt"></i> ${san(date)}</div></div>`;
+    c.onclick = function() {
+        window.checkAndSubscribe(id, data.title, 'video', data.gemsRequired || 0, data.subscriptionDays || 30, function() {
+            if(vid) window.open(`https://www.youtube.com/watch?v=${vid}`, '_blank');
+        });
+    };
     document.getElementById('videosContainer')?.appendChild(c);
     displayedVideos.set(id,true);
 }
-
-async function loadLectures(code){
-    const list=document.getElementById('lecturesList');
-    if(!list)return;
-    const processedIds = new Set();
-    try{
-        let q=db.collection("lectures").where("subjectCode","==",code);
-        if(currentUser?.role!=='admin')q=q.where("stage","==",currentUser.stage);
-        const snap=await q.get();
-        clearEl(list);
-        if(snap.empty){emptyState(list,'lectures');return;}
-        const lecs=[];
-        snap.forEach(d=>{
-            if(!processedIds.has(d.id)){
-                processedIds.add(d.id);
-                lecs.push({id:d.id,...d.data()});
-            }
-        });
-        lecs.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0));
-        lecs.forEach(lec=>{
-            const c=document.createElement('div');c.className='lecture-card';
-            c.innerHTML=`<div class="lecture-card-top"><div class="lecture-card-top-row"><div class="lecture-title">${san(lec.title||'محاضرة')}</div><span class="lec-badge">${san(lec.subjectCode||'')}</span></div><div class="lecture-meta"><span><i class="far fa-calendar-alt"></i> ${san(lec.uploadDate||'-')}</span><span><i class="far fa-file-pdf"></i> ${san(lec.fileSize||'-')}</span></div></div>${lec.description?`<div class="lecture-desc">${san(lec.description)}</div>`:''}<a href="${san(lec.fileUrl||'#')}" class="download-btn" target="_blank"><i class="fas fa-download"></i> تحميل المحاضرة</a>`;
-            list.appendChild(c);
-        });
-    }catch(e){emptyState(list,'lectures');}
-}
-
 function setupGemsListener(){
     if(!currentUser) return;
     const unsubscribe = db.collection("students").doc(currentUser.id).onSnapshot((doc) => {
@@ -1724,9 +2112,7 @@ function setupGemsListener(){
     });
     return unsubscribe;
 }
-
 let gemsUnsubscribe = null;
-
 async function loadUserGems(){
     if(!currentUser) return 0;
     try{
@@ -1741,7 +2127,6 @@ async function loadUserGems(){
     }catch(e){console.error("Error loading gems:",e);}
     return 0;
 }
-
 async function updateGemsDisplay(){
     if(!currentUser) return;
     try{
@@ -1754,98 +2139,57 @@ async function updateGemsDisplay(){
         }
     }catch(e){console.error("Error updating gems display:",e);}
 }
-
 async function requestGemsCharge(){
     const amount = parseInt(document.getElementById('gemsToCharge').value);
-    if(!amount || amount < 1){
-        showModalMessage('خطأ', 'الرجاء إدخال عدد صحيح من الجواهر (1 على الأقل)', 'error');
-        return;
-    }
-    
+    if(!amount || amount < 1){ showModalMessage('خطأ', 'الرجاء إدخال عدد صحيح من الجواهر (1 على الأقل)', 'error'); return; }
     const totalPrice = amount;
-    
     try{
         await db.collection("chargeRequests").add({
-            userId: currentUser.id,
-            userName: currentUser.name,
-            userUsername: currentUser.username,
-            gemsAmount: amount,
-            totalPrice: totalPrice,
-            status: 'pending',
+            userId: currentUser.id, userName: currentUser.name, userUsername: currentUser.username,
+            gemsAmount: amount, totalPrice: totalPrice, status: 'pending',
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
-        
-        showModalMessage(
-            'تم إرسال طلب الشحن',
-            `✅ تم إرسال طلب شحن ${amount} جوهرة\n💰 المبلغ: ${totalPrice} دينار عراقي\n\n📋 سيتم مراجعة الطلب من قبل الإدارة\n📞 سيتم التواصل معك لتأكيد الدفع`,
-            'success'
-        );
-        
+        showModalMessage('تم إرسال طلب الشحن', `✅ تم إرسال طلب شحن ${amount} جوهرة\n💰 المبلغ: ${totalPrice} دينار عراقي\n\n📋 سيتم مراجعة الطلب من قبل الإدارة\n📞 سيتم التواصل معك لتأكيد الدفع`, 'success');
         document.getElementById('gemsToCharge').value = 10;
         document.getElementById('totalPrice').textContent = '10 دينار عراقي';
-        
-    } catch(error){
-        showModalMessage('خطأ', 'حدث خطأ أثناء إرسال الطلب: ' + error.message, 'error');
-    }
+    } catch(error){ showModalMessage('خطأ', 'حدث خطأ أثناء إرسال الطلب: ' + error.message, 'error'); }
 }
-
-document.getElementById('gemsToCharge')?.addEventListener('input', function(){
-    const amount = parseInt(this.value) || 0;
-    document.getElementById('totalPrice').textContent = amount + ' دينار عراقي';
-});
-
+document.getElementById('gemsToCharge')?.addEventListener('input', function(){ const amount = parseInt(this.value) || 0; document.getElementById('totalPrice').textContent = amount + ' دينار عراقي'; });
 document.getElementById('requestChargeBtn')?.addEventListener('click', requestGemsCharge);
-
 async function loadPersonalAnnouncements(){
     if(!currentUser) return;
     try{
-        const snap = await db.collection("personalAnnouncements")
-            .where("targetUserId", "==", currentUser.id)
-            .orderBy("createdAt", "desc")
-            .get();
-        
+        const snap = await db.collection("personalAnnouncements").where("targetUserId","==",currentUser.id).orderBy("createdAt","desc").get();
         const newAnnouncements = [];
         snap.forEach(doc => {
             const data = doc.data();
-            if(!readAnnouncements.has(doc.id)){
-                newAnnouncements.push(data);
-            }
+            if(!readAnnouncements.has(doc.id)){ newAnnouncements.push(data); }
             allAnnouncements.push({id: doc.id, ...data});
         });
-        
         if(newAnnouncements.length > 0){
-            newAnnouncements.forEach(ann => {
-                showModalMessage('📢 إعلان جديد', ann.message, 'info');
-            });
-            renderAnnouncements();
-            updateAnnBadge();
+            newAnnouncements.forEach(ann => { showModalMessage('📢 إعلان جديد', ann.message, 'info'); });
+            renderAnnouncements(); updateAnnBadge();
         }
     } catch(e){console.error("Error loading personal announcements:",e);}
 }
-
 function setupPersonalAnnouncementsListener(){
     if(!currentUser) return;
     if(personalAnnouncementsL) personalAnnouncementsL();
-    personalAnnouncementsL = db.collection("personalAnnouncements")
-        .where("targetUserId", "==", currentUser.id)
-        .onSnapshot((snap) => {
-            snap.docChanges().forEach(change => {
-                if(change.type === 'added'){
-                    const data = change.doc.data();
-                    const exists = allAnnouncements.some(a => a.id === change.doc.id);
-                    if(!exists){
-                        allAnnouncements.unshift({id: change.doc.id, ...data});
-                        renderAnnouncements();
-                        updateAnnBadge();
-                        showModalMessage('📢 إعلان جديد', data.message, 'info');
-                    }
+    personalAnnouncementsL = db.collection("personalAnnouncements").where("targetUserId","==",currentUser.id).onSnapshot((snap) => {
+        snap.docChanges().forEach(change => {
+            if(change.type === 'added'){
+                const data = change.doc.data();
+                const exists = allAnnouncements.some(a => a.id === change.doc.id);
+                if(!exists){
+                    allAnnouncements.unshift({id: change.doc.id, ...data});
+                    renderAnnouncements(); updateAnnBadge();
+                    showModalMessage('📢 إعلان جديد', data.message, 'info');
                 }
-            });
+            }
         });
+    });
 }
-
 let personalAnnouncementsL=null;
-
 async function loadInitialData(){
     try{
         const userStage=currentUser?.stage;
@@ -1853,63 +2197,43 @@ async function loadInitialData(){
         let sQ=db.collection("subjects"),vQ=db.collection("videos"),annQ=db.collection("announcements").where("isActive","==",true),dQ=db.collection("importantDates");
         if(!isAdmin&&userStage){sQ=sQ.where("stage","==",userStage);vQ=vQ.where("stage","in",[userStage,"الكل"]);annQ=annQ.where("stage","in",[userStage,"الكل"]);dQ=dQ.where("stage","in",[userStage,"الكل"]);}
         const[sSnap,dSnap,cSnap,gSnap,vSnap,annSnap,btnSnap]=await Promise.all([sQ.get(),dQ.get(),db.collection("channels").get(),db.collection("gallery").get(),vQ.get(),annQ.get(),db.collection("customButtons").get()]);
-
         clearEl(document.getElementById('homeSubjectsList'));
         clearEl(document.getElementById('subjectsPageList'));
         displayedSubjects.clear();
         allSubjects=[];
-        
         const sArr=[];
         sSnap.forEach(d=>sArr.push({id:d.id,...d.data()}));
         sArr.sort((a,b)=>(a.name||'').localeCompare(b.name||'','ar'));
-        sArr.forEach((s,i)=>{
-            allSubjects.push(s);
-            addSubjectToGrids(s.id,s,true);
-        });
-        
+        sArr.forEach((s,i)=>{ allSubjects.push(s); addSubjectToGrids(s.id,s,true); });
         if(!displayedSubjects.size){emptyState(document.getElementById('homeSubjectsList'),'subjects');emptyState(document.getElementById('subjectsPageList'),'subjects');}
-
         allImportantDates=[];dSnap.forEach(d=>allImportantDates.push({id:d.id,...d.data()}));renderDates();updateCalBadge();
-
         clearEl(document.getElementById('channelsContainer'));displayedChannels.clear();
-        cSnap.forEach(d=>addChannel(d.id,d.data()));
+        const cArr=[];cSnap.forEach(d=>cArr.push({id:d.id,...d.data()}));cArr.forEach(c=>addChannel(c.id,c));
         if(!displayedChannels.size)emptyState(document.getElementById('channelsContainer'),'channels');
-
         clearEl(document.getElementById('galleryContainer'));displayedGallery.clear();
         const gArr=[];gSnap.forEach(d=>gArr.push({id:d.id,...d.data()}));
         gArr.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0));
         gArr.forEach(g=>addGalleryItem(g.id,g));
         if(!displayedGallery.size)emptyState(document.getElementById('galleryContainer'),'gallery');
-
         clearEl(document.getElementById('videosContainer'));displayedVideos.clear();
         const vArr=[];vSnap.forEach(d=>vArr.push({id:d.id,...d.data()}));
         vArr.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0));
         vArr.forEach(v=>addVideoItem(v.id,v));
         if(!displayedVideos.size)emptyState(document.getElementById('videosContainer'),'videos');
-
         allCustomButtons=[];btnSnap.forEach(d=>allCustomButtons.push({id:d.id,...d.data()}));renderCustomButtons();
-
         const saved=localStorage.getItem('readAnnouncements');
         if(saved){try{readAnnouncements=new Set(JSON.parse(saved));}catch(e){}}
         allAnnouncements=[];
         annSnap.forEach(d=>allAnnouncements.push({id:d.id,...d.data()}));
-        
         await loadPersonalAnnouncements();
-        
         renderAnnouncements();updateAnnBadge();
-        
         await loadUserGems();
-        
         await loadHomeButtons();
-        
         if(gemsUnsubscribe) gemsUnsubscribe();
         gemsUnsubscribe = setupGemsListener();
-        
         setupPersonalAnnouncementsListener();
-        
     }catch(e){console.error(e);}
 }
-
 function renderCustomButtons(){
     const menu=document.getElementById('sidebarMenu');
     if(!menu)return;
@@ -1918,12 +2242,17 @@ function renderCustomButtons(){
         if(!btn.name||!btn.url)return;
         const item=document.createElement('div');item.className='sidebar-item green-item custom-btn-item';
         item.innerHTML=`<i class="${san(btn.icon||'fas fa-link')}"></i><span>${san(btn.name)}</span>`;
-        item.onclick=()=>{if(btn.url.startsWith('http'))window.open(btn.url,'_blank');document.getElementById('sidebar').classList.remove('active');document.getElementById('sidebarOverlay').classList.remove('active');};
+        item.onclick=function(){
+            window.checkAndSubscribe(btn.id, btn.name, 'customButton', btn.gemsRequired || 0, btn.subscriptionDays || 30, function() {
+                if(btn.url.startsWith('http'))window.open(btn.url,'_blank');
+                document.getElementById('sidebar').classList.remove('active');
+                document.getElementById('sidebarOverlay').classList.remove('active');
+            });
+        };
         const settingsItem=menu.querySelector('[data-nav="settings"]');
         if(settingsItem)menu.insertBefore(item,settingsItem);else menu.appendChild(item);
     });
 }
-
 function startListeners(){
     if(subjectsL) subjectsL();
     subjectsL=db.collection("subjects").onSnapshot(snap=>{
@@ -1943,9 +2272,7 @@ function startListeners(){
     buttonsL=db.collection("customButtons").onSnapshot(snap=>{allCustomButtons=[];snap.forEach(d=>allCustomButtons.push({id:d.id,...d.data()}));renderCustomButtons();});
     startHomeButtonsListener();
 }
-
 function stopListeners(){[subjectsL,datesL,channelsL,galleryL,videosL,announcementsL,buttonsL,homeButtonsL,personalAnnouncementsL].forEach(l=>{try{if(l)l();}catch(e){}});if(checkBlockedTimer)clearInterval(checkBlockedTimer);if(gemsUnsubscribe){gemsUnsubscribe();gemsUnsubscribe=null;}}
-
 async function checkIfBlocked(){
     if(!currentUser||currentUser.role==='admin')return false;
     try{
@@ -1957,7 +2284,6 @@ async function checkIfBlocked(){
         }
     }catch(e){}return false;
 }
-
 async function handleLogin(username,password,stay){
     const u=san(username);
     const snap=await db.collection("students").where("username","==",u).where("password","==",password).limit(1).get();
@@ -1971,7 +2297,6 @@ async function handleLogin(username,password,stay){
     checkBlockedTimer=setInterval(checkIfBlocked,10000);
     return true;
 }
-
 async function handleRegister(fullName,username,stage,shift,password){
     const u=san(username),n=san(fullName);
     const ex=await db.collection("students").where("username","==",u).get();
@@ -1980,7 +2305,6 @@ async function handleRegister(fullName,username,stage,shift,password){
     db.collection("loginLogs").add({username:u,action:"register",timestamp:firebase.firestore.FieldValue.serverTimestamp()}).catch(()=>{});
     return true;
 }
-
 async function updateUserProfile(fn,un,stage,shift,password){
     if(!currentUser)return;
     const updates={name:san(fn),username:san(un),stage:san(stage),shift:san(shift)};
@@ -1990,7 +2314,6 @@ async function updateUserProfile(fn,un,stage,shift,password){
     if(password&&password.trim())currentUser.password=password;
     localStorage.setItem('loggedInUser',JSON.stringify(currentUser));
 }
-
 async function loadPopupAd(){
     try{const d=await db.collection("settings").doc("popupAd").get();if(d.exists){const dat=d.data();popupAdData={isActive:dat.isActive||false,imageUrl:dat.imageUrl||'',link:dat.link||''}; }}catch(e){}
 }
@@ -2004,7 +2327,6 @@ function showPopupAd(){
 }
 document.getElementById('popupAdClose').addEventListener('click',()=>{document.getElementById('popupAdModal').style.display='none';});
 document.getElementById('popupAdModal').addEventListener('click',e=>{if(e.target===document.getElementById('popupAdModal')||e.target.classList.contains('popup-ad-bg'))document.getElementById('popupAdModal').style.display='none';});
-
 function showMainContent(){
     document.getElementById('sidebarUsername').textContent=currentUser.name||currentUser.username;
     document.getElementById('sidebarInfo').textContent=`${currentUser.stage||''} - ${currentUser.shift||''}`;
@@ -2025,9 +2347,9 @@ function showMainContent(){
         await loadPopupAd();
         setTimeout(showPopupAd,3000);
         await updateGemsDisplay();
+        await loadSubscriptions();
     });
 }
-
 function logout(){
     if(currentUser)db.collection("loginLogs").add({username:san(currentUser.username),action:"logout",timestamp:firebase.firestore.FieldValue.serverTimestamp()}).catch(()=>{});
     stopListeners();currentUser=null;
@@ -2038,7 +2360,6 @@ function logout(){
     showSection('home');
     showMessage('تم تسجيل الخروج');
 }
-
 document.getElementById('loginForm').addEventListener('submit',async e=>{
     e.preventDefault();
     const u=document.getElementById('loginUsername').value.trim();
@@ -2084,7 +2405,6 @@ document.getElementById('settingsForm').addEventListener('submit',async e=>{
         await loadInitialData();
     }catch(e2){showMessage('خطأ: '+e2.message);}
 });
-
 function checkAutoLogin(){
     const saved=localStorage.getItem('loggedInUser');
     const stay=localStorage.getItem('stayLoggedIn')==='true';
@@ -2093,7 +2413,6 @@ function checkAutoLogin(){
         catch(e){document.getElementById('authModal').style.display='flex';hideLoading();}
     }else{document.getElementById('authModal').style.display='flex';hideLoading();}
 }
-
 setProgress(10);
 setTimeout(()=>{setProgress(30);checkAutoLogin();},500);
 </script>
