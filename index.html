@@ -50,7 +50,6 @@
             min-height:100vh;
             overflow-x:hidden;
         }
-        /* تنسيق أيقونة الاشتراك على الزر */
         .subscription-badge{
             position:absolute;
             top:-5px;
@@ -70,54 +69,6 @@
         .subject-card, .dynamic-btn, .video-card, .channel-card, .gallery-card{
             position:relative;
             overflow:visible;
-        }
-        .subscription-tooltip{
-            position:fixed;
-            bottom:80px;
-            left:50%;
-            transform:translateX(-50%);
-            background:var(--card2);
-            border:1px solid var(--gold);
-            border-radius:16px;
-            padding:15px;
-            width:90%;
-            max-width:320px;
-            z-index:2000;
-            box-shadow:0 10px 30px rgba(0,0,0,0.5);
-            animation:slideUp 0.3s ease;
-        }
-        .subscription-tooltip .tooltip-title{
-            font-weight:800;
-            margin-bottom:8px;
-            color:var(--gold);
-        }
-        .subscription-tooltip .tooltip-detail{
-            font-size:0.7rem;
-            color:var(--text2);
-            margin-bottom:5px;
-        }
-        .subscription-tooltip .tooltip-progress{
-            height:4px;
-            background:rgba(255,255,255,0.1);
-            border-radius:2px;
-            margin:10px 0;
-            overflow:hidden;
-        }
-        .subscription-tooltip .tooltip-progress-fill{
-            height:100%;
-            background:var(--success);
-            width:0%;
-            border-radius:2px;
-        }
-        .subscription-tooltip-close{
-            position:absolute;
-            top:10px;
-            left:10px;
-            background:none;
-            border:none;
-            color:var(--text3);
-            cursor:pointer;
-            font-size:1rem;
         }
         .loading-screen{
             position:fixed;inset:0;
@@ -602,10 +553,30 @@
             box-shadow:0 8px 24px rgba(200,16,46,0.35);
         }
         .avatar-preview img{width:100%;height:100%;object-fit:cover;}
-        .avatar-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+        .avatar-btns{
+            display:flex;
+            gap:8px;
+            justify-content:center;
+            flex-wrap:wrap;
+            align-items:center;
+        }
         .avatar-btn-sm{
             background:var(--card);border:1px solid var(--border);color:var(--text2);
             padding:7px 14px;border-radius:10px;font-size:0.7rem;font-weight:600;cursor:pointer;font-family:'Cairo',sans-serif;
+        }
+        .avatar-back-btn{
+            background:linear-gradient(135deg,var(--red),var(--red-dark));
+            border:none;
+            color:#fff;
+            padding:7px 14px;
+            border-radius:10px;
+            font-size:0.7rem;
+            font-weight:600;
+            cursor:pointer;
+            font-family:'Cairo',sans-serif;
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
         }
         .gems-section{
             background:linear-gradient(135deg,#2a1a3a,#1a0a2a);
@@ -1224,6 +1195,7 @@
             <div class="avatar-preview" id="avatarPreview"><i class="fas fa-camera"></i></div>
             <input type="file" id="avatarInput" accept="image/*" style="display:none;">
             <div class="avatar-btns">
+                <button class="avatar-back-btn" id="avatarBackBtn"><i class="fas fa-arrow-right"></i> رجوع</button>
                 <button class="avatar-btn-sm" id="avatarBtnChoose"><i class="fas fa-image"></i> معرض</button>
                 <button class="avatar-btn-sm" id="avatarBtnCamera"><i class="fas fa-camera"></i> كاميرا</button>
                 <button class="avatar-btn-sm" id="removeAvatarBtn"><i class="fas fa-trash"></i> إزالة</button>
@@ -1366,6 +1338,7 @@
 </nav>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.8.2/dist/quagga.min.js"></script>
 <script>
 (function(){
     var icon='https://cdn-icons-png.flaticon.com/512/1998/1998672.png';
@@ -1423,7 +1396,6 @@ document.getElementById('confirmCancel').addEventListener('click',()=>{
     document.getElementById('confirmationModal').classList.remove('show');
     pendingAction = null;
 });
-// تحديث الأيام المتبقية للاشتراكات
 async function updateSubscriptionDays(){
     if(!currentUser) return;
     try{
@@ -1432,7 +1404,6 @@ async function updateSubscriptionDays(){
         snapshot.forEach(async (doc) => {
             const sub = doc.data();
             const endDate = new Date(sub.endDate);
-            const startDate = new Date(sub.startDate);
             const today = new Date();
             today.setHours(0,0,0,0);
             if(endDate < today){
@@ -1448,10 +1419,9 @@ async function updateSubscriptionDays(){
         if(currentSection === 'settings') await loadSubscriptions();
     } catch(e){ console.error("Error updating subscription days:", e); }
 }
-// تشغيل تحديث الاشتراكات كل ساعة
 setInterval(updateSubscriptionDays, 60 * 60 * 1000);
 setTimeout(updateSubscriptionDays, 5000);
-// دالة عرض المحاضرات
+let lastSubscriptionAlert = new Map();
 window.showLectures = async function(subjectCode){
     const subj = allSubjects.find(s => s.code === subjectCode);
     document.getElementById('lecturesTitle').innerHTML = 'محاضرات ' + (subj?.name || subjectCode);
@@ -1514,7 +1484,6 @@ window.showLectures = async function(subjectCode){
         document.getElementById('lecturesList').innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h4>خطأ في التحميل</h4><p>حدث خطأ، يرجى المحاولة مرة أخرى</p></div>';
     }
 };
-// التحقق من وجود اشتراك نشط
 async function checkUserSubscription(itemId, itemType){
     if(!currentUser) return false;
     try{
@@ -1533,7 +1502,6 @@ async function checkUserSubscription(itemId, itemType){
         return false;
     } catch(e){ return false; }
 }
-// عرض تفاصيل الاشتراك عند الضغط على الشارة
 async function showSubscriptionDetails(itemId, itemName, itemType){
     if(!currentUser) return;
     try{
@@ -1583,7 +1551,6 @@ async function showSubscriptionDetails(itemId, itemName, itemType){
         document.getElementById('subscriptionDetailModal').classList.add('show');
     } catch(e){ console.error(e); }
 }
-// دالة التحقق من الاشتراك
 window.checkAndSubscribe = async function(itemId, itemName, itemType, gemsRequired, subscriptionDays, callback) {
     if(!currentUser){
         showModalMessage('تنبيه', 'الرجاء تسجيل الدخول أولاً', 'warning');
@@ -1617,9 +1584,13 @@ window.checkAndSubscribe = async function(itemId, itemName, itemType, gemsRequir
             }
         }
         if(hasActiveSubscription){
-            const sub = subscriptionDoc.data();
-            const remainingDays = Math.ceil((new Date(sub.endDate) - today) / (1000 * 60 * 60 * 24));
-            showModalMessage('اشتراك نشط', `✅ لديك اشتراك نشط لهذا المحتوى\n📅 متبقي: ${remainingDays} يوم`, 'success');
+            const alertKey = `${itemId}_${itemType}`;
+            if(!lastSubscriptionAlert.has(alertKey)) {
+                const sub = subscriptionDoc.data();
+                const remainingDays = Math.ceil((new Date(sub.endDate) - today) / (1000 * 60 * 60 * 24));
+                showModalMessage('اشتراك نشط', `✅ لديك اشتراك نشط لهذا المحتوى\n📅 متبقي: ${remainingDays} يوم`, 'success');
+                lastSubscriptionAlert.set(alertKey, true);
+            }
             if(callback) callback();
             return;
         }
@@ -1665,7 +1636,6 @@ window.checkAndSubscribe = async function(itemId, itemName, itemType, gemsRequir
         showMessage('حدث خطأ في النظام: '+err.message, 'error'); 
     }
 };
-// تحميل الاشتراكات
 async function loadSubscriptions(){
     if(!currentUser) {
         const container = document.getElementById('subscriptionsList');
@@ -1795,22 +1765,41 @@ function showSection(section){
     currentSection=section;
     const views=['homeView','subjectsView','lecturesContainer','videosView','galleryView','channelsView','developerView'];
     views.forEach(id=>{const el=document.getElementById(id);if(el){el.style.display='none';el.classList&&el.classList.remove('show');}});
-    document.getElementById('settingsView')?.classList.remove('show');
-    if(section==='home'){document.getElementById('homeView').style.display='block';}
-    else if(section==='subjects'){document.getElementById('subjectsView').style.display='block';}
-    else if(section==='videos'){document.getElementById('videosView').style.display='block';}
-    else if(section==='gallery'){document.getElementById('galleryView').style.display='block';}
-    else if(section==='channels'){document.getElementById('channelsView').style.display='block';}
-    else if(section==='developer'){document.getElementById('developerView').style.display='block';}
-    else if(section==='settings'){document.getElementById('settingsView').classList.add('show');loadSubscriptions();return;}
-    updateBottomNav(section);
-    document.getElementById('sidebar')?.classList.remove('active');
-    document.getElementById('sidebarOverlay')?.classList.remove('active');
+    document.getElementById('settingsView').classList.remove('show');
+    if(section==='home'){
+        document.getElementById('homeView').style.display='block';
+        updateBottomNav('home');
+    }else if(section==='subjects'){
+        document.getElementById('subjectsView').style.display='block';
+        updateBottomNav('subjects');
+    }else if(section==='videos'){
+        document.getElementById('videosView').style.display='block';
+        updateBottomNav('videos');
+    }else if(section==='gallery'){
+        document.getElementById('galleryView').style.display='block';
+        updateBottomNav('gallery');
+    }else if(section==='channels'){
+        document.getElementById('channelsView').style.display='block';
+        updateBottomNav('channels');
+    }else if(section==='developer'){
+        document.getElementById('developerView').style.display='block';
+        updateBottomNav('developer');
+    }else if(section==='settings'){
+        document.getElementById('settingsView').classList.add('show');
+        loadSubscriptions();
+        updateBottomNav('settings');
+        return;
+    }
+    document.getElementById('sidebar').classList.remove('active');
+    document.getElementById('sidebarOverlay').classList.remove('active');
     window.scrollTo({top:0,behavior:'smooth'});
 }
 function updateBottomNav(section){
     document.querySelectorAll('.bn-item').forEach(b=>b.classList.toggle('active',b.dataset.nav===section));
     document.querySelectorAll('.sidebar-item[data-nav]').forEach(b=>b.classList.toggle('active',b.dataset.nav===section));
+    if(section==='settings'){
+        document.querySelectorAll('.sidebar-item[data-nav="settings"]').forEach(b=>b.classList.add('active'));
+    }
 }
 document.getElementById('menuToggle').addEventListener('click',()=>{document.getElementById('sidebar').classList.add('active');document.getElementById('sidebarOverlay').classList.add('active');});
 document.getElementById('sidebarOverlay').addEventListener('click',()=>{document.getElementById('sidebar').classList.remove('active');document.getElementById('sidebarOverlay').classList.remove('active');});
@@ -1844,7 +1833,8 @@ document.getElementById('videosBackBar').addEventListener('click',()=>showSectio
 document.getElementById('galleryBackBar').addEventListener('click',()=>showSection('home'));
 document.getElementById('channelsBackBar').addEventListener('click',()=>showSection('home'));
 document.getElementById('developerBackBar').addEventListener('click',()=>showSection('home'));
-document.getElementById('settingsBack').addEventListener('click',()=>{document.getElementById('settingsView').classList.remove('show');});
+document.getElementById('settingsBack').addEventListener('click',()=>{showSection('home');});
+document.getElementById('avatarBackBtn').addEventListener('click',()=>{showSection('home');});
 const themeSwitch=document.getElementById('themeSwitch');
 const root=document.documentElement;
 function applyTheme(light){
@@ -2402,6 +2392,7 @@ document.getElementById('settingsForm').addEventListener('submit',async e=>{
         document.getElementById('sidebarInfo').textContent=`${stage} - ${shift}`;
         showMessage('تم حفظ التغييرات!');
         document.getElementById('settingsView').classList.remove('show');
+        showSection('home');
         await loadInitialData();
     }catch(e2){showMessage('خطأ: '+e2.message);}
 });
@@ -2415,6 +2406,98 @@ function checkAutoLogin(){
 }
 setProgress(10);
 setTimeout(()=>{setProgress(30);checkAutoLogin();},500);
+const qrFloatBtn = document.getElementById('centerBtn');
+let qrScannerActive = false;
+let currentStream = null;
+async function startQRScanner() {
+    const modalHtml = `
+        <div id="qrScanModal" class="modal-overlay" style="display:flex; z-index:10001;">
+            <div class="modal-sheet" style="max-width:500px; width:100%;">
+                <div class="modal-handle"></div>
+                <div class="modal-head">
+                    <h3><i class="fas fa-qrcode"></i> مسح رمز QR</h3>
+                    <button class="modal-close" id="closeQrScanModal"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="modal-body" style="padding:16px;">
+                    <video id="qrVideo" autoplay playsinline style="width:100%; border-radius:16px; background:#000;"></video>
+                    <div id="qrResult" style="margin-top:15px; padding:12px; background:rgba(0,200,150,0.1); border-radius:12px; display:none;">
+                        <i class="fas fa-check-circle" style="color:var(--success);"></i>
+                        <span id="qrResultText"></span>
+                    </div>
+                    <p style="margin-top:15px; font-size:0.7rem; color:var(--text3); text-align:center;">
+                        <i class="fas fa-info-circle"></i> قرب الكاميرا من رمز QR للمسح الضوئي
+                    </p>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    const video = document.getElementById('qrVideo');
+    const resultDiv = document.getElementById('qrResult');
+    const resultText = document.getElementById('qrResultText');
+    document.getElementById('closeQrScanModal').addEventListener('click', () => {
+        stopQRScanner();
+        document.getElementById('qrScanModal').remove();
+    });
+    document.getElementById('qrScanModal').addEventListener('click', (e) => {
+        if(e.target === document.getElementById('qrScanModal')) {
+            stopQRScanner();
+            document.getElementById('qrScanModal').remove();
+        }
+    });
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        currentStream = stream;
+        video.srcObject = stream;
+        video.play();
+        if(typeof Quagga !== 'undefined') {
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: video,
+                    constraints: { facingMode: "environment" }
+                },
+                decoder: { readers: ["qr_reader"] }
+            }, function(err) {
+                if(err) { console.error(err); return; }
+                Quagga.start();
+            });
+            Quagga.onDetected((result) => {
+                const code = result.codeResult.code;
+                resultDiv.style.display = 'flex';
+                resultDiv.style.alignItems = 'center';
+                resultDiv.style.gap = '8px';
+                resultText.innerHTML = `تم المسح: <strong style="color:var(--gold); word-break:break-all;">${code}</strong>`;
+                stopQRScanner();
+                setTimeout(() => {
+                    if(document.getElementById('qrScanModal')) {
+                        document.getElementById('qrScanModal').remove();
+                    }
+                    window.open(code, '_blank');
+                }, 2000);
+            });
+        } else {
+            alert("مكتبة المسح قيد التحميل، حاول مرة أخرى");
+        }
+    } catch(e) {
+        alert("لا يمكن الوصول إلى الكاميرا: " + e.message);
+        document.getElementById('qrScanModal').remove();
+    }
+}
+function stopQRScanner() {
+    if(currentStream) {
+        currentStream.getTracks().forEach(track => track.stop());
+        currentStream = null;
+    }
+    if(typeof Quagga !== 'undefined') Quagga.stop();
+}
+if(qrFloatBtn) {
+    qrFloatBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        startQRScanner();
+    });
+}
 </script>
 </body>
 </html>
