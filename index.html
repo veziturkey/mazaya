@@ -15,6 +15,7 @@
     <meta name="apple-mobile-web-app-title" content="CET Mazaya">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
         :root{
@@ -1010,6 +1011,52 @@
             .main-content { margin-top: calc(var(--nav-h) + env(safe-area-inset-top)); }
             .toast { top: calc(var(--nav-h) + env(safe-area-inset-top) + 12px); }
         }
+        /* تحسين ماسح QR */
+        #qr-reader {
+            width: 100%;
+            border: none !important;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        #qr-reader__scan_region {
+            border-radius: 16px;
+            background: #000;
+        }
+        #qr-reader video {
+            border-radius: 16px;
+            width: 100%;
+        }
+        #qr-reader__dashboard {
+            background: var(--card);
+            padding: 12px;
+            border-radius: 0 0 16px 16px;
+        }
+        .qr-result {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(0,200,150,0.1);
+            border-radius: 12px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            word-break: break-all;
+        }
+        .qr-result.show {
+            display: flex;
+        }
+        .qr-result i {
+            color: var(--success);
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .qr-result .result-text {
+            font-size: 0.75rem;
+            color: var(--text2);
+            line-height: 1.4;
+        }
+        .qr-result .result-text strong {
+            color: var(--gold);
+        }
     </style>
 </head>
 <body>
@@ -1332,13 +1379,12 @@
 <nav class="bottom-nav" id="bottomNav">
     <button class="bn-item active" data-nav="home"><i class="fas fa-home"></i><span>الرئيسية</span></button>
     <button class="bn-item" data-nav="subjects"><i class="fas fa-book-open"></i><span>المواد</span></button>
-    <button class="bn-center" data-nav="subjects" id="centerBtn"><i class="fas fa-graduation-cap"></i></button>
+    <button class="bn-center" id="qrCenterBtn"><i class="fas fa-qrcode"></i></button>
     <button class="bn-item" data-nav="videos"><i class="fas fa-play-circle"></i><span>فيديو</span></button>
     <button class="bn-item" data-nav="channels"><i class="fas fa-satellite-dish"></i><span>قنوات</span></button>
 </nav>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.8.2/dist/quagga.min.js"></script>
 <script>
 (function(){
     var icon='https://cdn-icons-png.flaticon.com/512/1998/1998672.png';
@@ -1360,7 +1406,8 @@ let popupAdData={isActive:false,imageUrl:'',link:''};
 let popupShown=false;
 const colorsC=['c0','c1','c2','c3','c4','c5'];
 let pendingAction = null;
-let subscriptionTooltip = null;
+let html5QrCode = null;
+let isScanning = false;
 const loadingBar=document.getElementById('loadingBar');
 const loadingPct=document.getElementById('loadingPct');
 function setProgress(p){p=Math.min(p,100);loadingBar.style.width=p+'%';loadingPct.textContent=p+'%';}
@@ -1827,7 +1874,6 @@ document.addEventListener('touchend', (e) => {
 document.querySelectorAll('.sidebar-item[data-nav]').forEach(item=>item.addEventListener('click',()=>showSection(item.dataset.nav)));
 document.querySelectorAll('.bn-item[data-nav]').forEach(item=>item.addEventListener('click',()=>showSection(item.dataset.nav)));
 document.querySelectorAll('[data-nav]').forEach(el=>{if(el.classList.contains('see-all'))el.addEventListener('click',()=>showSection(el.dataset.nav));});
-document.getElementById('centerBtn').addEventListener('click',()=>showSection('subjects'));
 document.getElementById('lecturesBackBar').addEventListener('click',()=>{document.getElementById('lecturesContainer').style.display='none';document.getElementById('lecturesContainer').classList.remove('show');showSection(allSubjects.length?'subjects':'home');});
 document.getElementById('videosBackBar').addEventListener('click',()=>showSection('home'));
 document.getElementById('galleryBackBar').addEventListener('click',()=>showSection('home'));
@@ -2350,6 +2396,91 @@ function logout(){
     showSection('home');
     showMessage('تم تسجيل الخروج');
 }
+// ========== QR SCANNER FUNCTIONALITY ==========
+async function startQRScanner() {
+    if (!currentUser) {
+        showModalMessage('تسجيل الدخول مطلوب', 'الرجاء تسجيل الدخول أولاً لاستخدام ماسح QR', 'warning');
+        return;
+    }
+    const modalHtml = `
+        <div id="qrScanModal" class="modal-overlay" style="display:flex; z-index:10001;">
+            <div class="modal-sheet" style="max-width:500px; width:100%;">
+                <div class="modal-handle"></div>
+                <div class="modal-head">
+                    <h3><i class="fas fa-qrcode"></i> مسح رمز QR</h3>
+                    <button class="modal-close" id="closeQrScanModal"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="modal-body" style="padding:16px;">
+                    <div id="qr-reader" style="width:100%;"></div>
+                    <div id="qr-result" class="qr-result">
+                        <i class="fas fa-check-circle"></i>
+                        <div class="result-text">تم المسح: <strong id="qrResultText"></strong></div>
+                    </div>
+                    <p style="margin-top:15px; font-size:0.7rem; color:var(--text3); text-align:center;">
+                        <i class="fas fa-info-circle"></i> قرب الكاميرا من رمز QR للمسح الضوئي
+                    </p>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    const modal = document.getElementById('qrScanModal');
+    const resultDiv = document.getElementById('qr-result');
+    const resultText = document.getElementById('qrResultText');
+    document.getElementById('closeQrScanModal').addEventListener('click', () => {
+        stopQRScanner();
+        modal.remove();
+    });
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            stopQRScanner();
+            modal.remove();
+        }
+    });
+    try {
+        html5QrCode = new Html5Qrcode("qr-reader");
+        const config = {
+            fps: 10,
+            qrbox: { width: 250, height: 250 },
+            aspectRatio: 1.0
+        };
+        await html5QrCode.start(
+            { facingMode: "environment" },
+            config,
+            (decodedText, decodedResult) => {
+                console.log("QR Code detected:", decodedText);
+                resultText.textContent = decodedText;
+                resultDiv.classList.add('show');
+                stopQRScanner();
+                setTimeout(() => {
+                    modal.remove();
+                    if (decodedText.startsWith('http://') || decodedText.startsWith('https://')) {
+                        window.open(decodedText, '_blank');
+                    } else if (decodedText.match(/^[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}/)) {
+                        window.open('https://' + decodedText, '_blank');
+                    } else {
+                        showMessage('تم مسح: ' + decodedText.substring(0, 50));
+                    }
+                    showMessage('✅ تم مسح الرمز بنجاح!');
+                }, 1000);
+            },
+            (errorMessage) => {}
+        );
+        isScanning = true;
+    } catch (err) {
+        console.error("Error starting QR scanner:", err);
+        showModalMessage('خطأ في الكاميرا', 'تعذر الوصول إلى الكاميرا. يرجى التأكد من منح الإذن.', 'error');
+        modal.remove();
+    }
+}
+function stopQRScanner() {
+    if (html5QrCode && html5QrCode.isScanning) {
+        html5QrCode.stop().catch(err => console.error("Error stopping scanner:", err));
+        html5QrCode = null;
+    }
+    isScanning = false;
+}
+// ========== END QR SCANNER ==========
 document.getElementById('loginForm').addEventListener('submit',async e=>{
     e.preventDefault();
     const u=document.getElementById('loginUsername').value.trim();
@@ -2406,94 +2537,9 @@ function checkAutoLogin(){
 }
 setProgress(10);
 setTimeout(()=>{setProgress(30);checkAutoLogin();},500);
-const qrFloatBtn = document.getElementById('centerBtn');
-let qrScannerActive = false;
-let currentStream = null;
-async function startQRScanner() {
-    const modalHtml = `
-        <div id="qrScanModal" class="modal-overlay" style="display:flex; z-index:10001;">
-            <div class="modal-sheet" style="max-width:500px; width:100%;">
-                <div class="modal-handle"></div>
-                <div class="modal-head">
-                    <h3><i class="fas fa-qrcode"></i> مسح رمز QR</h3>
-                    <button class="modal-close" id="closeQrScanModal"><i class="fas fa-times"></i></button>
-                </div>
-                <div class="modal-body" style="padding:16px;">
-                    <video id="qrVideo" autoplay playsinline style="width:100%; border-radius:16px; background:#000;"></video>
-                    <div id="qrResult" style="margin-top:15px; padding:12px; background:rgba(0,200,150,0.1); border-radius:12px; display:none;">
-                        <i class="fas fa-check-circle" style="color:var(--success);"></i>
-                        <span id="qrResultText"></span>
-                    </div>
-                    <p style="margin-top:15px; font-size:0.7rem; color:var(--text3); text-align:center;">
-                        <i class="fas fa-info-circle"></i> قرب الكاميرا من رمز QR للمسح الضوئي
-                    </p>
-                </div>
-            </div>
-        </div>
-    `;
-    document.body.insertAdjacentHTML('beforeend', modalHtml);
-    const video = document.getElementById('qrVideo');
-    const resultDiv = document.getElementById('qrResult');
-    const resultText = document.getElementById('qrResultText');
-    document.getElementById('closeQrScanModal').addEventListener('click', () => {
-        stopQRScanner();
-        document.getElementById('qrScanModal').remove();
-    });
-    document.getElementById('qrScanModal').addEventListener('click', (e) => {
-        if(e.target === document.getElementById('qrScanModal')) {
-            stopQRScanner();
-            document.getElementById('qrScanModal').remove();
-        }
-    });
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-        currentStream = stream;
-        video.srcObject = stream;
-        video.play();
-        if(typeof Quagga !== 'undefined') {
-            Quagga.init({
-                inputStream: {
-                    name: "Live",
-                    type: "LiveStream",
-                    target: video,
-                    constraints: { facingMode: "environment" }
-                },
-                decoder: { readers: ["qr_reader"] }
-            }, function(err) {
-                if(err) { console.error(err); return; }
-                Quagga.start();
-            });
-            Quagga.onDetected((result) => {
-                const code = result.codeResult.code;
-                resultDiv.style.display = 'flex';
-                resultDiv.style.alignItems = 'center';
-                resultDiv.style.gap = '8px';
-                resultText.innerHTML = `تم المسح: <strong style="color:var(--gold); word-break:break-all;">${code}</strong>`;
-                stopQRScanner();
-                setTimeout(() => {
-                    if(document.getElementById('qrScanModal')) {
-                        document.getElementById('qrScanModal').remove();
-                    }
-                    window.open(code, '_blank');
-                }, 2000);
-            });
-        } else {
-            alert("مكتبة المسح قيد التحميل، حاول مرة أخرى");
-        }
-    } catch(e) {
-        alert("لا يمكن الوصول إلى الكاميرا: " + e.message);
-        document.getElementById('qrScanModal').remove();
-    }
-}
-function stopQRScanner() {
-    if(currentStream) {
-        currentStream.getTracks().forEach(track => track.stop());
-        currentStream = null;
-    }
-    if(typeof Quagga !== 'undefined') Quagga.stop();
-}
-if(qrFloatBtn) {
-    qrFloatBtn.addEventListener('click', (e) => {
+const qrCenterBtn = document.getElementById('qrCenterBtn');
+if (qrCenterBtn) {
+    qrCenterBtn.addEventListener('click', (e) => {
         e.preventDefault();
         startQRScanner();
     });
