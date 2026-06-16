@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -45,7 +44,7 @@
         .loading-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:4px;transition:width 0.3s ease;}
         .loading-pct{color:var(--gold);font-weight:700;font-size:1.1rem;margin-top:12px;}
         @keyframes spin{to{transform:rotate(360deg);}}
-        @keyframes slideUp{from{transform:translateX(-50%) translateY(20px);opacity:0;}to{transform:translateX(-50%) translateY(0);opacity:1;}}
+        @keyframes slideUp{from{transform:translateY(30px);opacity:0;}to{transform:translateY(0);opacity:1;}}
         @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
         @keyframes scaleIn{from{transform:scale(0.7);opacity:0;}to{transform:scale(1);opacity:1;}}
         .auth-modal{display:flex;position:fixed;inset:0;background:linear-gradient(160deg,#1a0008 0%,#0a0a0f 60%);z-index:3000;justify-content:center;align-items:flex-end;padding-bottom:var(--safe-bottom);}
@@ -163,15 +162,15 @@
         .dev-name{font-size:1.1rem;font-weight:800;color:var(--text);}
         .dev-role{font-size:0.72rem;color:var(--text3);margin-top:3px;}
         .dev-phone{display:inline-flex;align-items:center;gap:8px;background:rgba(200,16,46,0.12);border:1px solid rgba(200,16,46,0.2);color:var(--red);padding:10px 20px;border-radius:12px;font-size:0.82rem;font-weight:700;margin-top:14px;}
-        .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:2000;justify-content:center;align-items:center;}
+        .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:2000;justify-content:center;align-items:flex-end;padding-bottom:var(--safe-bottom);}
         .modal-overlay.show{display:flex;}
-        .modal-sheet{background:var(--card);border-radius:28px;width:90%;max-width:480px;max-height:80vh;overflow:hidden;display:flex;flex-direction:column;animation:slideUp 0.3s ease;border:1px solid var(--border);}
+        .modal-sheet{background:var(--card);border-radius:28px 28px 0 0;width:100%;max-width:500px;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;animation:slideUp 0.35s ease;border-top:1px solid var(--border);}
         .modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:10px auto 0;}
         .modal-head{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
         .modal-head h3{font-size:0.95rem;font-weight:800;display:flex;align-items:center;gap:8px;}
         .modal-head h3 i{color:var(--red);}
         .modal-close{width:32px;height:32px;background:var(--bg3);border:none;border-radius:10px;cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;}
-        .modal-body{flex:1;overflow-y:auto;padding:8px;}
+        .modal-body{flex:1;overflow-y:auto;padding:8px 16px 20px;}
         .ann-item{padding:14px;border-radius:14px;cursor:pointer;margin-bottom:4px;transition:background 0.15s;}
         .ann-item:hover,.ann-item:active{background:var(--bg3);}
         .ann-item.unread{background:rgba(200,16,46,0.07);border-right:3px solid var(--red);}
@@ -315,7 +314,7 @@
         @media(min-width:480px){.subjects-grid{grid-template-columns:repeat(4,1fr);}.videos-grid{grid-template-columns:repeat(3,1fr);}.buttons-strip{justify-content:center;}}
         @media(min-width:768px){.subjects-grid{grid-template-columns:repeat(5,1fr);}}
         @supports (padding-top: env(safe-area-inset-top)){body{padding-top:env(safe-area-inset-top);}.navbar{top:env(safe-area-inset-top);}.sidebar{top:env(safe-area-inset-top);height:calc(100vh - env(safe-area-inset-top));}.main-content{margin-top:calc(var(--nav-h) + env(safe-area-inset-top));}.toast{top:calc(var(--nav-h) + env(safe-area-inset-top) + 12px);}}
-        /* === نظام تحويل الجواهر المحسّن === */
+        /* === نظام تحويل الجواهر المحسّن - بدون طلبات وسجل === */
         .leaderboard-section{display:none;min-height:100vh;padding:0 16px 16px;padding-bottom:calc(var(--bottom-h) + var(--safe-bottom) + 20px);}
         .leaderboard-section.show{display:block;}
         .leaderboard-title{text-align:center;padding:16px 0;font-size:1.1rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;}
@@ -339,7 +338,7 @@
         .user-rank-box .rank-points{text-align:left;}
         .user-rank-box .rank-points .label{font-size:0.6rem;color:var(--text3);}
         .user-rank-box .rank-points .value{font-weight:800;font-size:0.9rem;color:var(--gold);}
-        /* تحويل محسّن */
+        /* تحويل محسّن - بدون طلبات وسجل */
         .transfer-section{display:none;min-height:100vh;padding:0 16px 16px;padding-bottom:calc(var(--bottom-h) + var(--safe-bottom) + 20px);}
         .transfer-section.show{display:block;}
         .transfer-tabs{display:flex;gap:6px;margin-bottom:16px;background:var(--card);border-radius:14px;padding:4px;}
@@ -359,11 +358,17 @@
         .transfer-card .transfer-body .amount.sent{color:var(--red);}
         .transfer-card .transfer-body .amount.received{color:var(--success);}
         .transfer-card .transfer-body .note{color:var(--text3);font-style:italic;margin-top:4px;}
-        .transfer-card .transfer-actions{display:flex;gap:8px;margin-top:10px;}
-        .transfer-card .transfer-actions button{padding:6px 14px;border-radius:10px;font-weight:700;font-size:0.7rem;cursor:pointer;border:none;font-family:'Cairo',sans-serif;}
-        .transfer-card .transfer-actions .accept-btn{background:linear-gradient(135deg,var(--success),#00a07a);color:#fff;}
-        .transfer-card .transfer-actions .reject-btn{background:rgba(200,16,46,0.15);color:var(--red);}
-        .transfer-card .transfer-actions .cancel-btn{background:rgba(200,16,46,0.15);color:var(--red);}
+        .gems-balance-card{background:linear-gradient(135deg,rgba(245,166,35,0.1),rgba(200,16,46,0.05));border:1px solid rgba(245,166,35,0.2);border-radius:16px;padding:16px;margin-bottom:16px;text-align:center;}
+        .gems-balance-card .amount{font-size:2.2rem;font-weight:900;background:linear-gradient(135deg,#FFD700,#FFA500);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .gems-balance-card .label{font-size:0.7rem;color:var(--text3);margin-top:2px;}
+        .gems-balance-card .subtitle{font-size:0.65rem;color:var(--text2);margin-top:6px;padding:5px 10px;background:rgba(245,166,35,0.08);border-radius:8px;display:inline-block;}
+        .send-form-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:14px;}
+        .receiver-selected{background:rgba(0,200,150,0.1);border:1px solid rgba(0,200,150,0.25);border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+        .receiver-selected .r-avatar{width:36px;height:36px;background:linear-gradient(135deg,var(--success),#00a07a);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.9rem;flex-shrink:0;}
+        .receiver-selected .r-info{flex:1;}
+        .receiver-selected .r-info .r-name{font-weight:700;font-size:0.85rem;}
+        .receiver-selected .r-info .r-username{font-size:0.62rem;color:var(--text3);}
+        .receiver-selected .r-clear{background:rgba(200,16,46,0.1);border:none;color:var(--red);width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;justify-content:center;}
         .search-user-box{background:var(--bg3);border-radius:14px;padding:14px;margin-bottom:14px;}
         .search-user-box label{display:block;font-size:0.75rem;font-weight:600;color:var(--text2);margin-bottom:8px;}
         .search-user-row{display:flex;gap:8px;}
@@ -378,19 +383,6 @@
         .search-result .result-info .username{font-size:0.65rem;color:var(--text3);}
         .search-result .result-info .stage{font-size:0.62rem;color:var(--success);}
         .search-result .select-btn{padding:7px 14px;background:var(--success);color:#fff;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;}
-        .gems-balance-card{background:linear-gradient(135deg,rgba(245,166,35,0.1),rgba(200,16,46,0.05));border:1px solid rgba(245,166,35,0.2);border-radius:16px;padding:16px;margin-bottom:16px;text-align:center;}
-        .gems-balance-card .amount{font-size:2.2rem;font-weight:900;background:linear-gradient(135deg,#FFD700,#FFA500);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-        .gems-balance-card .label{font-size:0.7rem;color:var(--text3);margin-top:2px;}
-        .gems-balance-card .subtitle{font-size:0.65rem;color:var(--text2);margin-top:6px;padding:5px 10px;background:rgba(245,166,35,0.08);border-radius:8px;display:inline-block;}
-        .send-form-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:14px;}
-        .receiver-selected{background:rgba(0,200,150,0.1);border:1px solid rgba(0,200,150,0.25);border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px;margin-bottom:14px;}
-        .receiver-selected .r-avatar{width:36px;height:36px;background:linear-gradient(135deg,var(--success),#00a07a);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.9rem;flex-shrink:0;}
-        .receiver-selected .r-info{flex:1;}
-        .receiver-selected .r-info .r-name{font-weight:700;font-size:0.85rem;}
-        .receiver-selected .r-info .r-username{font-size:0.62rem;color:var(--text3);}
-        .receiver-selected .r-clear{background:rgba(200,16,46,0.1);border:none;color:var(--red);width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;justify-content:center;}
-        .transfer-amount-row{display:flex;gap:10px;align-items:flex-end;margin-bottom:14px;}
-        .transfer-amount-row .form-group{flex:1;margin-bottom:0;}
         .quick-amounts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
         .quick-amount-btn{padding:5px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text2);font-size:0.7rem;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;transition:all 0.2s;}
         .quick-amount-btn:hover,.quick-amount-btn.active{background:rgba(200,16,46,0.12);border-color:var(--red);color:var(--red);}
@@ -401,21 +393,10 @@
         .send-gems-btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--gold),#e67e22);color:#1a1a2e;border:none;border-radius:14px;font-weight:800;font-size:1rem;cursor:pointer;font-family:'Cairo',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform 0.15s;box-shadow:0 6px 20px rgba(245,166,35,0.3);}
         .send-gems-btn:active{transform:scale(0.97);}
         .send-gems-btn:disabled{opacity:0.5;cursor:not-allowed;}
-        .request-gems-btn{width:100%;padding:13px;background:var(--card);border:1.5px solid var(--border);color:var(--text2);border-radius:14px;font-weight:700;font-size:0.88rem;cursor:pointer;font-family:'Cairo',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s;margin-top:10px;}
-        .request-gems-btn:hover{border-color:var(--gold);color:var(--gold);}
-        .history-filter{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px;}
-        .history-filter::-webkit-scrollbar{display:none;}
-        .filter-btn{padding:6px 14px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text3);font-size:0.7rem;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;white-space:nowrap;transition:all 0.2s;flex-shrink:0;}
-        .filter-btn.active{background:rgba(200,16,46,0.12);border-color:var(--red);color:var(--red);}
         .transfer-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
         .stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;}
         .stat-card .stat-value{font-size:1.2rem;font-weight:800;color:var(--gold);}
         .stat-card .stat-label{font-size:0.6rem;color:var(--text3);margin-top:2px;}
-        .notification-dot{position:absolute;top:-3px;right:-3px;width:8px;height:8px;background:var(--red);border-radius:50%;border:2px solid var(--bg2);}
-        .empty-transfer{text-align:center;padding:40px 20px;}
-        .empty-transfer i{font-size:3rem;color:var(--text3);opacity:0.3;margin-bottom:16px;display:block;}
-        .empty-transfer h4{font-size:0.95rem;color:var(--text2);margin-bottom:6px;}
-        .empty-transfer p{font-size:0.72rem;color:var(--text3);}
         /* الذكاء الاصطناعي */
         .ai-chat-modal{display:none;position:fixed;inset:0;z-index:20000;justify-content:center;align-items:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);animation:fadeIn 0.3s ease;}
         .ai-chat-modal.show{display:flex;}
@@ -653,18 +634,16 @@
         <div id="userRankContainer"></div>
     </div>
 
-    <!-- === نظام تحويل الجواهر المحسّن === -->
+    <!-- === نظام تحويل الجواهر - بدون طلبات ولا سجل === -->
     <div class="transfer-section" id="transferView">
         <div class="back-bar" id="transferBackBar">
             <div class="back-btn"><i class="fas fa-chevron-right"></i></div>
             <div class="back-bar-title">💎 تحويل الجواهر</div>
         </div>
 
-        <!-- التبويبات -->
+        <!-- تبويبات: إرسال + إحصائيات فقط -->
         <div class="transfer-tabs">
             <button class="transfer-tab active" data-transfer-tab="send">إرسال</button>
-            <button class="transfer-tab" data-transfer-tab="requests">الطلبات <span id="pendingRequestsBadge" style="display:none;background:var(--red);color:#fff;padding:1px 6px;border-radius:8px;font-size:0.6rem;margin-right:3px;"></span></button>
-            <button class="transfer-tab" data-transfer-tab="history">السجل</button>
             <button class="transfer-tab" data-transfer-tab="stats">الإحصائيات</button>
         </div>
 
@@ -739,33 +718,6 @@
                 <button class="send-gems-btn" id="sendGemsBtn">
                     <i class="fas fa-paper-plane"></i> إرسال الجواهر
                 </button>
-
-                <!-- زر طلب جواهر -->
-                <button class="request-gems-btn" id="requestGemsBtn">
-                    <i class="fas fa-hand-holding-heart"></i> طلب جواهر من مستخدم آخر
-                </button>
-            </div>
-        </div>
-
-        <!-- تبويب الطلبات المعلقة -->
-        <div class="transfer-content" id="requestsTransfer" style="display:none;">
-            <div id="requestsContainer">
-                <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><h4>جاري التحميل</h4></div>
-            </div>
-        </div>
-
-        <!-- تبويب السجل -->
-        <div class="transfer-content" id="historyTransfer" style="display:none;">
-            <div class="history-filter">
-                <button class="filter-btn active" data-filter="all">الكل</button>
-                <button class="filter-btn" data-filter="sent">مُرسَل</button>
-                <button class="filter-btn" data-filter="received">مستلَم</button>
-                <button class="filter-btn" data-filter="completed">مكتمل</button>
-                <button class="filter-btn" data-filter="pending">قيد الانتظار</button>
-                <button class="filter-btn" data-filter="cancelled">ملغي</button>
-            </div>
-            <div id="historyContainer">
-                <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><h4>جاري التحميل</h4></div>
             </div>
         </div>
 
@@ -880,7 +832,7 @@
     </div>
 </div>
 
-<!-- نوافذ الإعلانات والمواعيد -->
+<!-- نوافذ الإعلانات والمواعيد (تظهر من الأسفل للأعلى) -->
 <div class="modal-overlay" id="announcementModal">
     <div class="modal-sheet">
         <div class="modal-handle"></div>
@@ -1007,7 +959,6 @@ let popupAdData={isActive:false,imageUrl:'',link:''};
 let popupShown=false;
 const colorsC=['c0','c1','c2','c3','c4','c5'];
 let pendingAction=null;
-let currentHistoryFilter='all';
 let gemsUnsubscribe=null;
 let lastSubscriptionAlert=new Map();
 
@@ -1502,7 +1453,7 @@ async function loadLeaderboard(){
     }catch(e){container.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h4>خطأ في التحميل</h4></div>';}
 }
 
-// =================== نظام تحويل الجواهر المحسّن ===================
+// =================== نظام تحويل الجواهر المحسّن (بدون طلبات وسجل) ===================
 
 // البحث عن مستخدم
 let searchDebounce=null;
@@ -1605,11 +1556,9 @@ document.getElementById('sendGemsBtn')?.addEventListener('click',async function(
     if(!amount||amount<1){showModalMessage('تنبيه','الرجاء إدخال عدد صحيح من الجواهر (1 على الأقل)','warning');return;}
     if(amount>1000000){showModalMessage('تنبيه','الحد الأقصى لتحويل واحد هو مليون جوهرة','warning');return;}
     const btn=this;
-    // التحقق من الرصيد قبل التأكيد
     let currentGems=0;
     try{const userDoc=await db.collection("students").doc(currentUser.id).get();currentGems=userDoc.data().gems||0;}catch(e){showModalMessage('خطأ','تعذر التحقق من رصيدك','error');return;}
     if(currentGems<amount){showModalMessage('رصيد غير كافٍ',`⚠️ رصيدك الحالي: ${currentGems} جوهرة\n💰 المبلغ المطلوب: ${amount} جوهرة\n\nالرجاء شحن رصيدك من الإعدادات`,'error');return;}
-    // التحقق من المستخدم مرة أخرى
     try{
         const receiverDoc=await db.collection("students").doc(selectedReceiverId).get();
         if(!receiverDoc.exists){showModalMessage('خطأ','المستخدم المستلم غير موجود','error');return;}
@@ -1619,14 +1568,12 @@ document.getElementById('sendGemsBtn')?.addEventListener('click',async function(
     showConfirmation('تأكيد إرسال الجواهر',`💎 إرسال ${amount} جوهرة\n👤 إلى: ${selectedReceiverName}\n💰 رصيدك بعد التحويل: ${currentGems-amount} جوهرة\n\nهل أنت متأكد؟`,async()=>{
         btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
         try{
-            // تحويل حقيقي بعملية واحدة
             const batch=db.batch();
             const senderRef=db.collection("students").doc(currentUser.id);
             const receiverRef=db.collection("students").doc(selectedReceiverId);
             batch.update(senderRef,{gems:firebase.firestore.FieldValue.increment(-amount)});
             batch.update(receiverRef,{gems:firebase.firestore.FieldValue.increment(amount)});
             await batch.commit();
-            // تسجيل التحويل
             const transferRef=await db.collection("transfers").add({
                 fromUserId:currentUser.id,fromUserName:currentUser.name||currentUser.username,fromUsername:currentUser.username,
                 toUserId:selectedReceiverId,toUserName:selectedReceiverName,toUsername:selectedReceiverUsername?.replace('@',''),
@@ -1634,14 +1581,12 @@ document.getElementById('sendGemsBtn')?.addEventListener('click',async function(
                 timestamp:firebase.firestore.FieldValue.serverTimestamp(),
                 date:new Date().toISOString()
             });
-            // إشعار للمستلم
             await db.collection("notifications").add({
                 userId:selectedReceiverId,
                 message:`💎 استلمت ${amount} جوهرة من ${currentUser.name||currentUser.username}${note?'\n📝 '+note:''}`,
                 transferId:transferRef.id,read:false,
                 createdAt:firebase.firestore.FieldValue.serverTimestamp()
             });
-            // إعادة تعيين الواجهة
             document.getElementById('transferAmountInput').value=1;
             document.getElementById('transferNoteInput').value='';
             document.getElementById('transferSummary').style.display='none';
@@ -1651,180 +1596,11 @@ document.getElementById('sendGemsBtn')?.addEventListener('click',async function(
             selectedReceiverId=null;selectedReceiverName=null;selectedReceiverUsername=null;
             await updateGemsDisplay();
             showModalMessage('تم الإرسال بنجاح',`✅ تم إرسال ${amount} جوهرة إلى ${selectedReceiverName}\n💎 رصيدك الآن: ${currentGems-amount} جوهرة`,'success');
-            // تحديث السجل تلقائياً
-            await loadTransferHistory();
             await loadTransferStats();
         }catch(err){
             console.error("Transfer error:",err);
             showModalMessage('خطأ في التحويل','❌ حدث خطأ أثناء تنفيذ التحويل\n\nالسبب: '+err.message+'\n\nلم يتم خصم أي رصيد. يرجى المحاولة مجدداً','error');
         }finally{btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> إرسال الجواهر';}
-    });
-});
-
-// طلب جواهر
-document.getElementById('requestGemsBtn')?.addEventListener('click',async function(){
-    if(!currentUser){showModalMessage('تنبيه','الرجاء تسجيل الدخول أولاً','warning');return;}
-    const username=prompt('👤 أدخل اسم المستخدم الذي تريد طلب جواهر منه:');
-    if(!username||!username.trim()){return;}
-    try{
-        const snapshot=await db.collection("students").where("username","==",username.trim()).limit(1).get();
-        if(snapshot.empty){showModalMessage('خطأ','اسم المستخدم غير موجود','error');return;}
-        const doc=snapshot.docs[0];const data=doc.data();
-        if(doc.id===currentUser.id){showModalMessage('تنبيه','لا يمكنك طلب جواهر من نفسك','warning');return;}
-        if(data.isBlocked){showModalMessage('تنبيه','هذا المستخدم محظور','error');return;}
-        const amountStr=prompt(`💎 كم جوهرة تريد طلبها من ${data.name||data.username}؟`);
-        if(!amountStr)return;
-        const amount=parseInt(amountStr);
-        if(!amount||amount<1){showModalMessage('تنبيه','الرجاء إدخال عدد صحيح من الجواهر','warning');return;}
-        if(amount>1000000){showModalMessage('تنبيه','الكمية كبيرة جداً','warning');return;}
-        const note=prompt('📝 ملاحظة أو سبب الطلب (اختياري):')??'';
-        await db.collection("transfers").add({
-            fromUserId:doc.id,fromUserName:data.name||data.username,fromUsername:data.username,
-            toUserId:currentUser.id,toUserName:currentUser.name||currentUser.username,toUsername:currentUser.username,
-            amount:amount,note:note,status:'pending',type:'request',
-            timestamp:firebase.firestore.FieldValue.serverTimestamp(),date:new Date().toISOString()
-        });
-        await db.collection("notifications").add({
-            userId:doc.id,
-            message:`📩 ${currentUser.name||currentUser.username} طلب منك ${amount} جوهرة 💎${note?'\n📝 '+note:''}`,
-            read:false,createdAt:firebase.firestore.FieldValue.serverTimestamp()
-        });
-        showModalMessage('تم إرسال الطلب',`✅ تم إرسال طلبك بـ ${amount} جوهرة إلى ${data.name||data.username}\n⏳ في انتظار الموافقة`,'success');
-        await loadTransferRequests();
-        await loadTransferHistory();
-    }catch(e){console.error(e);showModalMessage('خطأ','حدث خطأ أثناء إرسال الطلب: '+e.message,'error');}
-});
-
-// قبول طلب
-async function acceptTransferRequest(transferId,fromUserId,fromUserName,amount){
-    if(!currentUser)return;
-    let currentGems=0;
-    try{const userDoc=await db.collection("students").doc(currentUser.id).get();currentGems=userDoc.data().gems||0;}catch(e){showModalMessage('خطأ','تعذر التحقق من رصيدك','error');return;}
-    if(currentGems<amount){showModalMessage('رصيد غير كافٍ',`⚠️ رصيدك: ${currentGems} جوهرة\n💰 المطلوب: ${amount} جوهرة\n\nلا يمكنك قبول هذا الطلب`,'error');return;}
-    showConfirmation('قبول طلب الجواهر',`هل تريد إرسال ${amount} جوهرة إلى ${fromUserName}؟\n💰 رصيدك بعد القبول: ${currentGems-amount} جوهرة`,async()=>{
-        try{
-            const batch=db.batch();
-            batch.update(db.collection("students").doc(currentUser.id),{gems:firebase.firestore.FieldValue.increment(-amount)});
-            batch.update(db.collection("students").doc(fromUserId),{gems:firebase.firestore.FieldValue.increment(amount)});
-            batch.update(db.collection("transfers").doc(transferId),{status:'completed',completedAt:firebase.firestore.FieldValue.serverTimestamp()});
-            await batch.commit();
-            await db.collection("notifications").add({userId:fromUserId,message:`✅ ${currentUser.name||currentUser.username} قبل طلبك وأرسل لك ${amount} جوهرة 💎`,read:false,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-            showModalMessage('تم القبول',`✅ تم قبول الطلب وإرسال ${amount} جوهرة إلى ${fromUserName}`,'success');
-            await updateGemsDisplay();await loadTransferRequests();await loadTransferHistory();
-        }catch(e){console.error(e);showModalMessage('خطأ','حدث خطأ أثناء القبول: '+e.message,'error');}
-    });
-}
-window.acceptTransferRequest=acceptTransferRequest;
-
-// رفض طلب
-async function rejectTransferRequest(transferId,fromUserName){
-    showConfirmation('رفض الطلب',`هل أنت متأكد من رفض طلب ${fromUserName}؟`,async()=>{
-        try{
-            await db.collection("transfers").doc(transferId).update({status:'cancelled',rejectedAt:firebase.firestore.FieldValue.serverTimestamp()});
-            showMessage('❌ تم رفض الطلب');await loadTransferRequests();await loadTransferHistory();
-        }catch(e){showModalMessage('خطأ','حدث خطأ: '+e.message,'error');}
-    });
-}
-window.rejectTransferRequest=rejectTransferRequest;
-
-// إلغاء تحويل
-async function cancelTransferItem(transferId){
-    showConfirmation('إلغاء التحويل','هل أنت متأكد من إلغاء هذا التحويل المعلق؟',async()=>{
-        try{
-            await db.collection("transfers").doc(transferId).update({status:'cancelled',cancelledAt:firebase.firestore.FieldValue.serverTimestamp()});
-            showMessage('❌ تم الإلغاء');await loadTransferHistory();
-        }catch(e){showModalMessage('خطأ','حدث خطأ: '+e.message,'error');}
-    });
-}
-window.cancelTransferItem=cancelTransferItem;
-
-// تحميل الطلبات المعلقة
-async function loadTransferRequests(){
-    const container=document.getElementById('requestsContainer');if(!container)return;
-    container.innerHTML='<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><h4>جاري التحميل</h4></div>';
-    try{
-        const snapshot=await db.collection("transfers").where("fromUserId","==",currentUser.id).where("type","==","request").where("status","==","pending").orderBy("timestamp","desc").get();
-        const myRequests=[];snapshot.forEach(doc=>myRequests.push({id:doc.id,...doc.data(),dir:'sent_request'}));
-        const snap2=await db.collection("transfers").where("toUserId","==",currentUser.id).where("type","==","request").where("status","==","pending").orderBy("timestamp","desc").get();
-        const receivedRequests=[];snap2.forEach(doc=>receivedRequests.push({id:doc.id,...doc.data(),dir:'received_request'}));
-        container.innerHTML='';
-        const pendingBadge=document.getElementById('pendingRequestsBadge');
-        const total=myRequests.length+receivedRequests.length;
-        if(pendingBadge){if(total>0){pendingBadge.style.display='inline';pendingBadge.textContent=total;}else{pendingBadge.style.display='none';}}
-        if(myRequests.length===0&&receivedRequests.length===0){
-            container.innerHTML=`<div class="empty-transfer"><i class="fas fa-inbox"></i><h4>لا توجد طلبات معلقة</h4><p>ستظهر هنا طلبات الجواهر الواردة والصادرة</p></div>`;return;
-        }
-        if(receivedRequests.length>0){
-            const h=document.createElement('div');h.style.cssText='font-size:0.8rem;font-weight:700;color:var(--text2);padding:8px 0 4px;';h.textContent='📥 طلبات واردة (تحتاج موافقتك)';container.appendChild(h);
-            receivedRequests.forEach(t=>{
-                const card=document.createElement('div');card.className='transfer-card';
-                card.innerHTML=`<div class="transfer-header"><div class="user"><i class="fas fa-user" style="color:var(--gold);"></i><span>${san(t.fromUserName)}</span></div><span class="status pending">⏳ بانتظار موافقتك</span></div><div class="transfer-body"><div>يطلب منك <span class="amount">${t.amount} 💎 جوهرة</span></div>${t.note?`<div class="note">📝 ${san(t.note)}</div>`:''}<div style="font-size:0.6rem;color:var(--text3);margin-top:4px;">${t.timestamp?.toDate?.()?.toLocaleString('ar-IQ')||'الآن'}</div></div><div class="transfer-actions"><button class="accept-btn" onclick="acceptTransferRequest('${t.id}','${t.fromUserId}','${san(t.fromUserName)}',${t.amount})"><i class="fas fa-check"></i> قبول</button><button class="reject-btn" onclick="rejectTransferRequest('${t.id}','${san(t.fromUserName)}')"><i class="fas fa-times"></i> رفض</button></div>`;
-                container.appendChild(card);
-            });
-        }
-        if(myRequests.length>0){
-            const h=document.createElement('div');h.style.cssText='font-size:0.8rem;font-weight:700;color:var(--text2);padding:12px 0 4px;';h.textContent='📤 طلبات أرسلتها (بانتظار الطرف الآخر)';container.appendChild(h);
-            myRequests.forEach(t=>{
-                const card=document.createElement('div');card.className='transfer-card';
-                card.innerHTML=`<div class="transfer-header"><div class="user"><i class="fas fa-user" style="color:var(--text3);"></i><span>طلب من ${san(t.toUserName)}</span></div><span class="status pending">⏳ قيد الانتظار</span></div><div class="transfer-body"><div>طلبت <span class="amount">${t.amount} 💎 جوهرة</span></div>${t.note?`<div class="note">📝 ${san(t.note)}</div>`:''}<div style="font-size:0.6rem;color:var(--text3);margin-top:4px;">${t.timestamp?.toDate?.()?.toLocaleString('ar-IQ')||'الآن'}</div></div><div class="transfer-actions"><button class="cancel-btn" onclick="cancelTransferItem('${t.id}')"><i class="fas fa-times"></i> إلغاء الطلب</button></div>`;
-                container.appendChild(card);
-            });
-        }
-    }catch(e){console.error("Error loading requests:",e);container.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h4>خطأ في التحميل</h4><p>'+e.message+'</p></div>';}
-}
-
-// تحميل سجل التحويلات
-async function loadTransferHistory(){
-    const container=document.getElementById('historyContainer');if(!container)return;
-    container.innerHTML='<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><h4>جاري التحميل</h4></div>';
-    try{
-        const [sentSnap,receivedSnap]=await Promise.all([
-            db.collection("transfers").where("fromUserId","==",currentUser.id).orderBy("timestamp","desc").limit(100).get(),
-            db.collection("transfers").where("toUserId","==",currentUser.id).orderBy("timestamp","desc").limit(100).get()
-        ]);
-        const all=new Map();
-        sentSnap.forEach(doc=>all.set(doc.id,{id:doc.id,...doc.data(),direction:'sent'}));
-        receivedSnap.forEach(doc=>{if(!all.has(doc.id))all.set(doc.id,{id:doc.id,...doc.data(),direction:'received'});});
-        allTransferHistory=Array.from(all.values()).sort((a,b)=>{const at=a.timestamp?.toDate?.()?.getTime()||0;const bt=b.timestamp?.toDate?.()?.getTime()||0;return bt-at;});
-        renderTransferHistory(currentHistoryFilter);
-    }catch(e){console.error("Error loading history:",e);container.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h4>خطأ في التحميل</h4><p>'+e.message+'</p></div>';}
-}
-
-function renderTransferHistory(filter){
-    currentHistoryFilter=filter;
-    const container=document.getElementById('historyContainer');if(!container)return;
-    let filtered=allTransferHistory;
-    if(filter==='sent')filtered=allTransferHistory.filter(t=>t.direction==='sent');
-    else if(filter==='received')filtered=allTransferHistory.filter(t=>t.direction==='received');
-    else if(filter==='completed')filtered=allTransferHistory.filter(t=>t.status==='completed');
-    else if(filter==='pending')filtered=allTransferHistory.filter(t=>t.status==='pending');
-    else if(filter==='cancelled')filtered=allTransferHistory.filter(t=>t.status==='cancelled');
-    container.innerHTML='';
-    if(filtered.length===0){container.innerHTML=`<div class="empty-transfer"><i class="fas fa-history"></i><h4>لا توجد تحويلات</h4><p>لا توجد تحويلات تطابق هذا الفلتر</p></div>`;return;}
-    filtered.forEach(data=>{
-        const card=document.createElement('div');card.className='transfer-card';
-        const statusClass=data.status==='completed'?'completed':data.status==='cancelled'?'cancelled':'pending';
-        const statusText=data.status==='completed'?'✅ مكتمل':data.status==='cancelled'?'❌ ملغي':'⏳ قيد الانتظار';
-        const isSent=data.direction==='sent';
-        const isRequest=data.type==='request';
-        const arrowIcon=isSent?'fa-arrow-up':'fa-arrow-down';
-        const arrowColor=isSent?'var(--red)':'var(--success)';
-        const amountPrefix=isSent?'-':'+';
-        const amountClass=isSent?'sent':'received';
-        const otherName=isSent?data.toUserName:data.fromUserName;
-        const dirText=isSent?(isRequest?'طلبت من':'أرسلت إلى'):(isRequest?'طلب منك':'أرسل لك');
-        const dateStr=data.timestamp?.toDate?.()?.toLocaleString('ar-IQ',{dateStyle:'short',timeStyle:'short'})||'غير محدد';
-        card.innerHTML=`<div class="transfer-header"><div class="user"><i class="fas ${arrowIcon}" style="color:${arrowColor};font-size:0.9rem;"></i><span>${dirText}: <strong>${san(otherName)}</strong></span></div><span class="status ${statusClass}">${statusText}</span></div><div class="transfer-body"><div><span class="amount ${amountClass}">${amountPrefix}${data.amount} 💎</span></div>${data.note?`<div class="note">📝 ${san(data.note)}</div>`:''}<div style="font-size:0.58rem;color:var(--text3);margin-top:5px;"><i class="far fa-clock"></i> ${san(dateStr)}</div></div>${data.status==='pending'&&isSent?`<div class="transfer-actions"><button class="cancel-btn" onclick="cancelTransferItem('${data.id}')"><i class="fas fa-times"></i> إلغاء</button></div>`:''}`;
-        container.appendChild(card);
-    });
-}
-
-// فلاتر السجل
-document.querySelectorAll('.filter-btn').forEach(btn=>{
-    btn.addEventListener('click',function(){
-        document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-        this.classList.add('active');
-        renderTransferHistory(this.dataset.filter);
     });
 });
 
@@ -1847,7 +1623,6 @@ async function loadTransferStats(){
         const statToday=document.getElementById('statTodaySent');if(statToday)statToday.textContent=todaySent;
         const gems=parseInt(document.getElementById('transferGemsBalance').textContent)||0;
         const statBal=document.getElementById('statBalance');if(statBal)statBal.textContent=gems;
-        // أكثر المتعاملين
         const partners=new Map();
         sentSnap.forEach(doc=>{const d=doc.data();const k=d.toUserName||'مجهول';partners.set(k,(partners.get(k)||0)+d.amount);});
         receivedSnap.forEach(doc=>{const d=doc.data();const k=d.fromUserName||'مجهول';partners.set(k,(partners.get(k)||0)+d.amount);});
@@ -1858,28 +1633,25 @@ async function loadTransferStats(){
     }catch(e){console.error("Stats error:",e);}
 }
 
-// تحميل كل بيانات التحويل
+// تحميل بيانات التحويل
 async function loadTransferData(){
     if(!currentUser)return;
     await updateGemsDisplay();
-    // تحميل الطلبات والسجل بالتوازي
-    await Promise.all([loadTransferRequests(),loadTransferHistory(),loadTransferStats()]);
+    await loadTransferStats();
 }
 
-// تبديل تبويبات التحويل
+// تبديل تبويبات التحويل (إرسال + إحصائيات فقط)
 document.querySelectorAll('.transfer-tab').forEach(tab=>{
     tab.addEventListener('click',function(){
         document.querySelectorAll('.transfer-tab').forEach(t=>t.classList.remove('active'));
         this.classList.add('active');
         const tabName=this.dataset.transferTab;
         document.querySelectorAll('.transfer-content').forEach(c=>c.style.display='none');
-        const contentMap={'send':'sendTransfer','requests':'requestsTransfer','history':'historyTransfer','stats':'statsTransfer'};
+        const contentMap={'send':'sendTransfer','stats':'statsTransfer'};
         const content=document.getElementById(contentMap[tabName]);
         if(content){
             content.style.display='block';
-            if(tabName==='requests')loadTransferRequests();
-            else if(tabName==='history')loadTransferHistory();
-            else if(tabName==='stats')loadTransferStats();
+            if(tabName==='stats')loadTransferStats();
         }
     });
 });
@@ -1929,12 +1701,23 @@ document.getElementById('leaderboardBackBar').addEventListener('click',()=>showS
 document.getElementById('transferBackBar').addEventListener('click',()=>showSection('home'));
 document.getElementById('settingsBack').addEventListener('click',()=>showSection('home'));
 document.getElementById('avatarBackBtn').addEventListener('click',()=>showSection('home'));
-document.getElementById('bellBtn').addEventListener('click',()=>document.getElementById('announcementModal').classList.add('show'));
+
+// ====== زر الإعلانات والمواعيد: ظهور مباشر من الأسفل للأعلى ======
+document.getElementById('bellBtn').addEventListener('click',function(e){
+    e.stopPropagation();
+    document.getElementById('announcementModal').classList.add('show');
+});
+
+document.getElementById('calendarBtn').addEventListener('click',function(e){
+    e.stopPropagation();
+    document.getElementById('datesModal').classList.add('show');
+});
+
 document.getElementById('closeAnnModal').addEventListener('click',()=>document.getElementById('announcementModal').classList.remove('show'));
 document.getElementById('announcementModal').addEventListener('click',e=>{if(e.target===document.getElementById('announcementModal'))document.getElementById('announcementModal').classList.remove('show');});
-document.getElementById('calendarBtn').addEventListener('click',()=>document.getElementById('datesModal').classList.add('show'));
 document.getElementById('closeDatesModal').addEventListener('click',()=>document.getElementById('datesModal').classList.remove('show'));
 document.getElementById('datesModal').addEventListener('click',e=>{if(e.target===document.getElementById('datesModal'))document.getElementById('datesModal').classList.remove('show');});
+
 document.getElementById('logoutSidebar').addEventListener('click',logout);
 document.querySelectorAll('.auth-tab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.auth-form').forEach(f=>f.classList.remove('active'));tab.classList.add('active');document.getElementById(tab.dataset.authTab+'FormContainer').classList.add('active');document.getElementById('loginError').classList.remove('show');document.getElementById('registerError').classList.remove('show');});});
 document.getElementById('userAvatar').addEventListener('click',()=>{document.getElementById('sidebar').classList.remove('active');document.getElementById('sidebarOverlay').classList.remove('active');showSection('settings');});
