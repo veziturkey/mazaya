@@ -1026,10 +1026,12 @@
         #qr-reader__scan_region {
             border-radius: 16px;
             background: #000;
+            min-height: 250px;
         }
         #qr-reader video {
             border-radius: 16px;
             width: 100%;
+            height: auto;
         }
         #qr-reader__dashboard {
             background: var(--card);
@@ -1061,6 +1063,15 @@
         }
         .qr-result .result-text strong {
             color: var(--gold);
+        }
+        /* تحسينات للآيفون */
+        @supports (-webkit-touch-callout: none) {
+            #qr-reader__scan_region {
+                min-height: 300px;
+            }
+            #qr-reader video {
+                object-fit: cover;
+            }
         }
     </style>
 </head>
@@ -2401,12 +2412,27 @@ function logout(){
     showSection('home');
     showMessage('تم تسجيل الخروج');
 }
-// ========== QR SCANNER FUNCTIONALITY - FIXED ==========
+
+// ========== QR SCANNER FIXED FOR iOS ==========
 async function startQRScanner() {
     if (!currentUser) {
         showModalMessage('تسجيل الدخول مطلوب', 'الرجاء تسجيل الدخول أولاً لاستخدام ماسح QR', 'warning');
         return;
     }
+
+    // التحقق من دعم الكاميرا على iOS
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (isIOS) {
+        // التحقق من إذن الكاميرا على iOS
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            stream.getTracks().forEach(track => track.stop());
+        } catch (err) {
+            showModalMessage('إذن الكاميرا', 'يرجى السماح بالوصول إلى الكاميرا من إعدادات الجهاز', 'error');
+            return;
+        }
+    }
+
     const modalHtml = `
         <div id="qrScanModal" class="modal-overlay" style="display:flex; z-index:10001;">
             <div class="modal-sheet" style="max-width:500px; width:100%;">
@@ -2428,39 +2454,61 @@ async function startQRScanner() {
             </div>
         </div>
     `;
+    
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     const modal = document.getElementById('qrScanModal');
     const resultDiv = document.getElementById('qr-result');
     const resultText = document.getElementById('qrResultText');
+    
     document.getElementById('closeQrScanModal').addEventListener('click', () => {
         stopQRScanner();
         modal.remove();
     });
+    
     modal.addEventListener('click', (e) => {
         if (e.target === modal) {
             stopQRScanner();
             modal.remove();
         }
     });
+
     try {
         html5QrCode = new Html5Qrcode("qr-reader");
+        
+        // تكوين الماسح مع إعدادات محسنة للآيفون
         const config = {
-            fps: 10,
+            fps: 15,
             qrbox: { width: 250, height: 250 },
-            aspectRatio: 1.0
+            aspectRatio: 1.0,
+            formatsToSupport: [ 
+                Html5QrcodeSupportedFormats.QR_CODE,
+                Html5QrcodeSupportedFormats.CODE_128,
+                Html5QrcodeSupportedFormats.CODE_39,
+                Html5QrcodeSupportedFormats.DATA_MATRIX,
+                Html5QrcodeSupportedFormats.EAN_13
+            ]
         };
+
+        // استخدام الكاميرا الخلفية مع fallback
+        let cameraId = "environment";
+        if (isIOS) {
+            // على iOS نستخدم facingMode مباشرة
+            cameraId = "environment";
+        }
+
         await html5QrCode.start(
-            { facingMode: "environment" },
+            { facingMode: cameraId },
             config,
             (decodedText, decodedResult) => {
                 console.log("QR Code detected:", decodedText);
                 resultText.textContent = decodedText;
                 resultDiv.classList.add('show');
-                // Stop scanner immediately
+                
+                // إيقاف الماسح فوراً
                 stopQRScanner();
-                // Close modal
                 modal.remove();
-                // Open URL directly - فتح الرابط مباشرة بدون تأخير
+                
+                // فتح الرابط مباشرة
                 if (decodedText.startsWith('http://') || decodedText.startsWith('https://')) {
                     window.open(decodedText, '_blank');
                 } else if (decodedText.match(/^[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}/)) {
@@ -2470,23 +2518,30 @@ async function startQRScanner() {
                 }
                 showMessage('✅ تم فتح الرابط بنجاح!');
             },
-            (errorMessage) => {}
+            (errorMessage) => {
+                // تجاهل أخطاء المسح المؤقتة
+                console.log("Scanning...");
+            }
         );
         isScanning = true;
     } catch (err) {
         console.error("Error starting QR scanner:", err);
-        showModalMessage('خطأ في الكاميرا', 'تعذر الوصول إلى الكاميرا. يرجى التأكد من منح الإذن.', 'error');
+        showModalMessage('خطأ في الكاميرا', 'تعذر الوصول إلى الكاميرا. يرجى:\n1. التأكد من منح الإذن\n2. إعادة المحاولة', 'error');
         modal.remove();
     }
 }
+
 function stopQRScanner() {
     if (html5QrCode && html5QrCode.isScanning) {
-        html5QrCode.stop().catch(err => console.error("Error stopping scanner:", err));
+        try {
+            html5QrCode.stop().catch(err => console.error("Error stopping scanner:", err));
+        } catch(e) {}
         html5QrCode = null;
     }
     isScanning = false;
 }
 // ========== END QR SCANNER ==========
+
 document.getElementById('loginForm').addEventListener('submit',async e=>{
     e.preventDefault();
     const u=document.getElementById('loginUsername').value.trim();
