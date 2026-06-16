@@ -421,14 +421,18 @@
         .modal-overlay{
             display:none;position:fixed;inset:0;
             background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);
-            z-index:2000;justify-content:flex-end;flex-direction:column;align-items:center;
+            z-index:2000;justify-content:center;align-items:center;
         }
         .modal-overlay.show{display:flex;}
         .modal-sheet{
-            background:var(--card);border-radius:24px 24px 0 0;
-            width:100%;max-width:520px;max-height:75vh;overflow:hidden;
-            display:flex;flex-direction:column;animation:slideUp 0.3s ease;
-            border-top:1px solid var(--border);
+            background:var(--card);
+            border-radius:28px;
+            width:90%;max-width:480px;max-height:80vh;
+            overflow:hidden;
+            display:flex;
+            flex-direction:column;
+            animation:slideUp 0.3s ease;
+            border:1px solid var(--border);
         }
         .modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:10px auto 0;}
         .modal-head{
@@ -454,7 +458,9 @@
         .dates-item{
             padding:14px;border-bottom:1px solid var(--border);
             display:flex;align-items:center;justify-content:space-between;
+            cursor:pointer;
         }
+        .dates-item:active{background:var(--bg3);}
         .dates-item-title{font-size:0.85rem;font-weight:700;}
         .dates-item-desc{font-size:0.68rem;color:var(--text3);margin-top:2px;}
         .dates-badge{background:rgba(200,16,46,0.12);color:var(--red);padding:5px 12px;border-radius:10px;font-size:0.65rem;font-weight:700;white-space:nowrap;}
@@ -1011,7 +1017,6 @@
             .main-content { margin-top: calc(var(--nav-h) + env(safe-area-inset-top)); }
             .toast { top: calc(var(--nav-h) + env(safe-area-inset-top) + 12px); }
         }
-        /* تحسين ماسح QR */
         #qr-reader {
             width: 100%;
             border: none !important;
@@ -2396,7 +2401,7 @@ function logout(){
     showSection('home');
     showMessage('تم تسجيل الخروج');
 }
-// ========== QR SCANNER FUNCTIONALITY ==========
+// ========== QR SCANNER FUNCTIONALITY - FIXED ==========
 async function startQRScanner() {
     if (!currentUser) {
         showModalMessage('تسجيل الدخول مطلوب', 'الرجاء تسجيل الدخول أولاً لاستخدام ماسح QR', 'warning');
@@ -2451,18 +2456,19 @@ async function startQRScanner() {
                 console.log("QR Code detected:", decodedText);
                 resultText.textContent = decodedText;
                 resultDiv.classList.add('show');
+                // Stop scanner immediately
                 stopQRScanner();
-                setTimeout(() => {
-                    modal.remove();
-                    if (decodedText.startsWith('http://') || decodedText.startsWith('https://')) {
-                        window.open(decodedText, '_blank');
-                    } else if (decodedText.match(/^[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}/)) {
-                        window.open('https://' + decodedText, '_blank');
-                    } else {
-                        showMessage('تم مسح: ' + decodedText.substring(0, 50));
-                    }
-                    showMessage('✅ تم مسح الرمز بنجاح!');
-                }, 1000);
+                // Close modal
+                modal.remove();
+                // Open URL directly - فتح الرابط مباشرة بدون تأخير
+                if (decodedText.startsWith('http://') || decodedText.startsWith('https://')) {
+                    window.open(decodedText, '_blank');
+                } else if (decodedText.match(/^[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}/)) {
+                    window.open('https://' + decodedText, '_blank');
+                } else {
+                    showMessage('تم مسح: ' + decodedText.substring(0, 50));
+                }
+                showMessage('✅ تم فتح الرابط بنجاح!');
             },
             (errorMessage) => {}
         );
