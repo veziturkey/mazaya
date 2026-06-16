@@ -15,7 +15,6 @@
     <meta name="apple-mobile-web-app-title" content="CET Mazaya">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
         :root{
@@ -101,6 +100,8 @@
         .loading-pct{color:var(--gold);font-weight:700;font-size:1.1rem;margin-top:12px;}
         @keyframes spin{to{transform:rotate(360deg);}}
         @keyframes slideUp{from{transform:translateX(-50%) translateY(20px);opacity:0;}to{transform:translateX(-50%) translateY(0);opacity:1;}}
+        @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+        @keyframes scaleIn{from{transform:scale(0.7);opacity:0;}to{transform:scale(1);opacity:1;}}
         .auth-modal{
             display:flex;position:fixed;inset:0;
             background:linear-gradient(160deg,#1a0008 0%,#0a0a0f 60%);
@@ -925,7 +926,6 @@
             position:relative;width:85%;max-width:360px;z-index:1;
             animation:scaleIn 0.35s cubic-bezier(0.175,0.885,0.32,1.275);
         }
-        @keyframes scaleIn{from{transform:scale(0.7);opacity:0;}to{transform:scale(1);opacity:1;}}
         .popup-ad-box a{display:block;}
         .popup-ad-box img{width:100%;border-radius:20px;box-shadow:0 16px 50px rgba(0,0,0,0.5);}
         .popup-close-btn{
@@ -1001,7 +1001,6 @@
         .empty-state h4{font-size:0.9rem;color:var(--text2);margin-bottom:4px;}
         .empty-state p{font-size:0.72rem;}
         .main-content{padding-bottom:calc(var(--bottom-h) + var(--safe-bottom) + 16px);margin-top:var(--nav-h);}
-        @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
         @media(min-width:480px){
             .subjects-grid{grid-template-columns:repeat(4,1fr);}
             .videos-grid{grid-template-columns:repeat(3,1fr);}
@@ -1017,62 +1016,136 @@
             .main-content { margin-top: calc(var(--nav-h) + env(safe-area-inset-top)); }
             .toast { top: calc(var(--nav-h) + env(safe-area-inset-top) + 12px); }
         }
-        #qr-reader {
-            width: 100%;
-            border: none !important;
-            border-radius: 16px;
-            overflow: hidden;
+        /* نافذة الذكاء الاصطناعي */
+        .ai-chat-modal{
+            display:none;position:fixed;inset:0;z-index:20000;justify-content:center;align-items:center;
+            background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);
+            animation:fadeIn 0.3s ease;
         }
-        #qr-reader__scan_region {
-            border-radius: 16px;
-            background: #000;
-            min-height: 250px;
+        .ai-chat-modal.show{display:flex;}
+        .ai-chat-box{
+            background:var(--card);border-radius:24px;width:92%;max-width:420px;
+            height:80vh;max-height:600px;display:flex;flex-direction:column;
+            border:1px solid var(--border);animation:scaleIn 0.3s ease;
+            overflow:hidden;
         }
-        #qr-reader video {
-            border-radius: 16px;
-            width: 100%;
-            height: auto;
+        .ai-chat-header{
+            padding:16px 18px;background:linear-gradient(135deg,var(--red),var(--red-dark));
+            display:flex;justify-content:space-between;align-items:center;flex-shrink:0;
         }
-        #qr-reader__dashboard {
-            background: var(--card);
-            padding: 12px;
-            border-radius: 0 0 16px 16px;
+        .ai-chat-header h3{
+            color:#fff;font-size:0.95rem;font-weight:800;display:flex;align-items:center;gap:8px;
         }
-        .qr-result {
-            margin-top: 15px;
-            padding: 12px;
-            background: rgba(0,200,150,0.1);
-            border-radius: 12px;
-            display: none;
-            align-items: center;
-            gap: 8px;
-            word-break: break-all;
+        .ai-chat-header h3 i{font-size:1.2rem;}
+        .ai-chat-close{
+            background:rgba(255,255,255,0.2);border:none;border-radius:50%;
+            width:32px;height:32px;color:#fff;font-size:0.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;
         }
-        .qr-result.show {
-            display: flex;
+        .ai-chat-close:active{transform:scale(0.9);}
+        .ai-chat-messages{
+            flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;
+            background:var(--bg);
         }
-        .qr-result i {
-            color: var(--success);
-            font-size: 1.2rem;
-            flex-shrink: 0;
+        .ai-msg{
+            max-width:85%;padding:10px 14px;border-radius:16px;font-size:0.8rem;line-height:1.6;
+            word-wrap:break-word;animation:fadeIn 0.3s ease;
         }
-        .qr-result .result-text {
-            font-size: 0.75rem;
-            color: var(--text2);
-            line-height: 1.4;
+        .ai-msg.bot{
+            background:var(--card2);color:var(--text);align-self:flex-start;border-radius:16px 16px 16px 4px;
         }
-        .qr-result .result-text strong {
-            color: var(--gold);
+        .ai-msg.user{
+            background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff;align-self:flex-end;border-radius:16px 16px 4px 16px;
         }
-        /* تحسينات للآيفون */
-        @supports (-webkit-touch-callout: none) {
-            #qr-reader__scan_region {
-                min-height: 300px;
-            }
-            #qr-reader video {
-                object-fit: cover;
-            }
+        .ai-msg .typing{
+            display:inline-block;font-size:1.2rem;animation:typing 1s infinite;
         }
+        @keyframes typing{0%,100%{opacity:0.3;}50%{opacity:1;}}
+        .ai-chat-input{
+            display:flex;gap:8px;padding:12px 14px;background:var(--bg2);border-top:1px solid var(--border);
+            flex-shrink:0;
+        }
+        .ai-chat-input input{
+            flex:1;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:14px;
+            color:var(--text);font-family:'Cairo',sans-serif;font-size:0.8rem;outline:none;
+        }
+        .ai-chat-input input:focus{border-color:var(--red);}
+        .ai-chat-input button{
+            padding:10px 18px;background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff;
+            border:none;border-radius:14px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;
+            display:flex;align-items:center;gap:6px;
+        }
+        .ai-chat-input button:active{transform:scale(0.95);}
+        .ai-chat-input button:disabled{opacity:0.5;cursor:not-allowed;}
+        .ai-welcome{
+            text-align:center;padding:30px 20px;color:var(--text3);
+        }
+        .ai-welcome i{font-size:2.5rem;color:var(--gold);margin-bottom:12px;display:block;}
+        .ai-welcome h4{color:var(--text);font-size:0.95rem;margin-bottom:4px;}
+        .ai-welcome p{font-size:0.7rem;}
+        .ai-msg .loading-dots span{animation:dotPulse 1.5s infinite;display:inline-block;}
+        .ai-msg .loading-dots span:nth-child(2){animation-delay:0.2s;}
+        .ai-msg .loading-dots span:nth-child(3){animation-delay:0.4s;}
+        @keyframes dotPulse{0%,80%,100%{opacity:0.2;}40%{opacity:1;}}
+        .ai-msg .loading-dots span{font-size:1.2rem;}
+        .ai-msg .loading-dots{display:inline-block;}
+        .ai-chat-footer{font-size:0.55rem;color:var(--text3);text-align:center;padding:6px;flex-shrink:0;}
+        /* جدول المتصدرين */
+        .leaderboard-section{display:none;min-height:100vh;padding:0 16px 16px;padding-bottom:calc(var(--bottom-h) + var(--safe-bottom) + 20px);}
+        .leaderboard-section.show{display:block;}
+        .leaderboard-title{text-align:center;padding:16px 0;font-size:1.1rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;}
+        .leaderboard-title i{color:var(--gold);}
+        .leaderboard-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:12px;margin-bottom:8px;transition:all 0.2s;}
+        .leaderboard-item.current-user{border:2px solid var(--gold);background:rgba(245,166,35,0.08);box-shadow:0 4px 16px rgba(245,166,35,0.1);}
+        .leaderboard-rank{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;flex-shrink:0;background:var(--bg3);color:var(--text2);}
+        .leaderboard-rank.gold{background:linear-gradient(135deg,#FFD700,#F5A623);color:#1a1a2e;}
+        .leaderboard-rank.silver{background:linear-gradient(135deg,#E8E8E8,#C0C0C0);color:#1a1a2e;}
+        .leaderboard-rank.bronze{background:linear-gradient(135deg,#CD7F32,#B87333);color:#fff;}
+        .leaderboard-rank.top4{background:rgba(200,16,46,0.12);color:var(--red);}
+        .leaderboard-info{flex:1;}
+        .leaderboard-info h4{font-size:0.85rem;font-weight:700;color:var(--text);}
+        .leaderboard-info p{font-size:0.6rem;color:var(--text3);margin-top:1px;}
+        .leaderboard-points{background:rgba(200,16,46,0.08);color:var(--red);padding:4px 12px;border-radius:10px;font-weight:700;font-size:0.7rem;white-space:nowrap;}
+        .user-rank-box{background:var(--card);border:2px solid var(--gold);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;margin-top:16px;box-shadow:0 4px 16px rgba(245,166,35,0.1);}
+        .user-rank-box .rank-icon{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#F5A623);display:flex;align-items:center;justify-content:center;color:#1a1a2e;font-weight:800;font-size:0.9rem;flex-shrink:0;}
+        .user-rank-box .rank-info{flex:1;}
+        .user-rank-box .rank-info .label{font-size:0.6rem;color:var(--text3);}
+        .user-rank-box .rank-info .value{font-weight:800;font-size:0.9rem;color:var(--gold);}
+        .user-rank-box .rank-points{text-align:left;}
+        .user-rank-box .rank-points .label{font-size:0.6rem;color:var(--text3);}
+        .user-rank-box .rank-points .value{font-weight:800;font-size:0.9rem;color:var(--gold);}
+        /* تحويل الجواهر */
+        .transfer-section{display:none;min-height:100vh;padding:0 16px 16px;padding-bottom:calc(var(--bottom-h) + var(--safe-bottom) + 20px);}
+        .transfer-section.show{display:block;}
+        .transfer-tabs{display:flex;gap:6px;margin-bottom:16px;background:var(--card);border-radius:14px;padding:4px;}
+        .transfer-tab{flex:1;padding:10px;background:none;border:none;color:var(--text3);font-family:'Cairo',sans-serif;font-weight:700;font-size:0.75rem;border-radius:10px;cursor:pointer;transition:all 0.2s;}
+        .transfer-tab.active{background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff;}
+        .transfer-tab:active{transform:scale(0.95);}
+        .transfer-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;}
+        .transfer-card .transfer-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+        .transfer-card .transfer-header .user{display:flex;align-items:center;gap:8px;font-weight:700;font-size:0.9rem;}
+        .transfer-card .transfer-header .user i{color:var(--gold);}
+        .transfer-card .transfer-header .status{font-size:0.65rem;padding:2px 10px;border-radius:8px;font-weight:700;}
+        .transfer-card .transfer-header .status.completed{background:rgba(0,200,150,0.15);color:var(--success);}
+        .transfer-card .transfer-header .status.pending{background:rgba(245,166,35,0.15);color:var(--gold);}
+        .transfer-card .transfer-header .status.cancelled{background:rgba(200,16,46,0.15);color:var(--red);}
+        .transfer-card .transfer-body{font-size:0.75rem;color:var(--text2);}
+        .transfer-card .transfer-body .amount{color:var(--gold);font-weight:800;font-size:1rem;}
+        .transfer-card .transfer-body .note{color:var(--text3);font-style:italic;margin-top:4px;}
+        .transfer-card .transfer-actions{display:flex;gap:8px;margin-top:10px;}
+        .transfer-card .transfer-actions button{padding:6px 14px;border-radius:10px;font-weight:700;font-size:0.7rem;cursor:pointer;border:none;font-family:'Cairo',sans-serif;}
+        .transfer-card .transfer-actions .accept-btn{background:linear-gradient(135deg,var(--success),#00a07a);color:#fff;}
+        .transfer-card .transfer-actions .reject-btn{background:rgba(200,16,46,0.15);color:var(--red);}
+        .transfer-card .transfer-actions .cancel-btn{background:rgba(200,16,46,0.15);color:var(--red);}
+        .search-result{background:var(--bg3);border-radius:12px;padding:12px;display:none;margin-top:8px;align-items:center;gap:12px;}
+        .search-result.show{display:flex;}
+        .search-result .result-info{flex:1;}
+        .search-result .result-info .name{font-weight:700;font-size:0.85rem;}
+        .search-result .result-info .username{font-size:0.65rem;color:var(--text3);}
+        .search-result .select-btn{padding:6px 14px;background:var(--success);color:#fff;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;}
+        .gems-balance{text-align:center;padding:12px;background:linear-gradient(135deg,rgba(200,16,46,0.08),rgba(245,166,35,0.08));border-radius:14px;margin-bottom:16px;border:1px solid var(--border);}
+        .gems-balance .amount{font-size:1.8rem;font-weight:900;color:var(--gold);}
+        .gems-balance .label{font-size:0.7rem;color:var(--text3);}
+        .gems-balance .transfers-left{font-size:0.65rem;color:var(--text2);margin-top:4px;}
     </style>
 </head>
 <body>
@@ -1146,6 +1219,8 @@
         <div class="sidebar-item" data-nav="gallery"><i class="fas fa-images"></i><span>معرض الصور</span></div>
         <div class="sidebar-item" data-nav="videos"><i class="fas fa-play-circle"></i><span>الفيديوهات</span></div>
         <div class="sidebar-item" data-nav="channels"><i class="fas fa-satellite-dish"></i><span>القنوات الرسمية</span></div>
+        <div class="sidebar-item" data-nav="leaderboard"><i class="fas fa-trophy"></i><span>🏆 المتصدرين</span></div>
+        <div class="sidebar-item" data-nav="transfer"><i class="fas fa-exchange-alt"></i><span>💎 تحويل الجواهر</span></div>
         <div class="sidebar-item" data-nav="settings"><i class="fas fa-cog"></i><span>الإعدادات</span></div>
         <div class="sidebar-item" data-nav="developer"><i class="fas fa-code"></i><span>المطور</span></div>
         <div class="sidebar-item green-item" id="installAppBtn" style="display:none;"><i class="fas fa-download"></i><span>تثبيت التطبيق</span></div>
@@ -1245,6 +1320,77 @@
             <div class="dev-name">محمد علاء</div>
             <div class="dev-role">مطور تطبيق CET Mazaya</div>
             <div class="dev-phone"><i class="fas fa-phone"></i> 07821531234</div>
+        </div>
+    </div>
+    <!-- جدول المتصدرين -->
+    <div class="leaderboard-section" id="leaderboardView">
+        <div class="back-bar" id="leaderboardBackBar">
+            <div class="back-btn"><i class="fas fa-chevron-right"></i></div>
+            <div class="back-bar-title">🏆 المتصدرين</div>
+        </div>
+        <div class="leaderboard-title">
+            <i class="fas fa-trophy"></i>
+            أفضل 10 طلاب
+        </div>
+        <div id="leaderboardContainer">
+            <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><h4>جاري التحميل</h4></div>
+        </div>
+        <div id="userRankContainer"></div>
+    </div>
+    <!-- تحويل الجواهر -->
+    <div class="transfer-section" id="transferView">
+        <div class="back-bar" id="transferBackBar">
+            <div class="back-btn"><i class="fas fa-chevron-right"></i></div>
+            <div class="back-bar-title">💎 تحويل الجواهر</div>
+        </div>
+        <div class="transfer-tabs">
+            <button class="transfer-tab active" data-transfer-tab="send">إرسال جواهر</button>
+            <button class="transfer-tab" data-transfer-tab="requests">طلبات الجواهر</button>
+            <button class="transfer-tab" data-transfer-tab="history">سجل التحويلات</button>
+        </div>
+        <!-- تبويب الإرسال -->
+        <div class="transfer-content" id="sendTransfer">
+            <div class="gems-balance">
+                <div class="label">💎 رصيدك الحالي</div>
+                <div class="amount" id="userGemsBalance">0</div>
+                <div class="transfers-left" id="transfersLeft">تبقى لك 3 تحويلات اليوم</div>
+            </div>
+            <div class="transfer-card">
+                <div class="form-group">
+                    <label>👤 اسم المستخدم للمستلم</label>
+                    <input type="text" id="receiverUsername" class="form-control" placeholder="أدخل اسم المستخدم">
+                </div>
+                <div id="searchResult" class="search-result">
+                    <div class="result-info">
+                        <div class="name" id="resultName"></div>
+                        <div class="username" id="resultUsername"></div>
+                    </div>
+                    <button class="select-btn" onclick="selectReceiver()">اختيار</button>
+                </div>
+                <div class="form-group" style="margin-top:12px;">
+                    <label>💎 عدد الجواهر</label>
+                    <input type="number" id="transferAmount" class="form-control" placeholder="أدخل عدد الجواهر" min="1" max="50" value="1">
+                </div>
+                <div class="form-group">
+                    <label>📝 ملاحظة (اختياري)</label>
+                    <input type="text" id="transferNote" class="form-control" placeholder="سبب الإرسال..." maxlength="100">
+                </div>
+                <button class="save-btn" id="sendGemsBtn" style="margin-top:8px;">
+                    <i class="fas fa-paper-plane"></i> إرسال الجواهر
+                </button>
+            </div>
+        </div>
+        <!-- تبويب الطلبات -->
+        <div class="transfer-content" id="requestsTransfer" style="display:none;">
+            <div id="requestsContainer">
+                <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><h4>جاري التحميل</h4></div>
+            </div>
+        </div>
+        <!-- تبويب السجل -->
+        <div class="transfer-content" id="historyTransfer" style="display:none;">
+            <div id="historyContainer">
+                <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><h4>جاري التحميل</h4></div>
+            </div>
         </div>
     </div>
 </div>
@@ -1392,10 +1538,31 @@
     <span>تثبيت التطبيق على الجهاز</span>
     <button class="install-x" id="closeInstallBar"><i class="fas fa-times"></i></button>
 </div>
+<!-- نافذة الذكاء الاصطناعي -->
+<div class="ai-chat-modal" id="aiChatModal">
+    <div class="ai-chat-box">
+        <div class="ai-chat-header">
+            <h3><i class="fas fa-brain"></i> مساعد CET الذكي</h3>
+            <button class="ai-chat-close" id="closeAiChat"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="ai-chat-messages" id="aiMessages">
+            <div class="ai-welcome" id="aiWelcome">
+                <i class="fas fa-robot"></i>
+                <h4>مرحباً بك في مساعد CET الذكي</h4>
+                <p>اسألني أي شيء عن المواد الدراسية، المحاضرات، أو أي استفسار تعليمي</p>
+            </div>
+        </div>
+        <div class="ai-chat-input">
+            <input type="text" id="aiInput" placeholder="اكتب سؤالك هنا..." maxlength="500">
+            <button id="aiSendBtn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+        <div class="ai-chat-footer">مدعوم من Google Gemini - مجاني للجميع</div>
+    </div>
+</div>
 <nav class="bottom-nav" id="bottomNav">
     <button class="bn-item active" data-nav="home"><i class="fas fa-home"></i><span>الرئيسية</span></button>
     <button class="bn-item" data-nav="subjects"><i class="fas fa-book-open"></i><span>المواد</span></button>
-    <button class="bn-center" id="qrCenterBtn"><i class="fas fa-qrcode"></i></button>
+    <button class="bn-center" id="transferBtn"><i class="fas fa-exchange-alt"></i></button>
     <button class="bn-item" data-nav="videos"><i class="fas fa-play-circle"></i><span>فيديو</span></button>
     <button class="bn-item" data-nav="channels"><i class="fas fa-satellite-dish"></i><span>قنوات</span></button>
 </nav>
@@ -1422,8 +1589,6 @@ let popupAdData={isActive:false,imageUrl:'',link:''};
 let popupShown=false;
 const colorsC=['c0','c1','c2','c3','c4','c5'];
 let pendingAction = null;
-let html5QrCode = null;
-let isScanning = false;
 const loadingBar=document.getElementById('loadingBar');
 const loadingPct=document.getElementById('loadingPct');
 function setProgress(p){p=Math.min(p,100);loadingBar.style.width=p+'%';loadingPct.textContent=p+'%';}
@@ -1826,7 +1991,7 @@ function goTo(i){slides.forEach(s=>s.classList.remove('active'));slides[i].class
 initSlider();
 function showSection(section){
     currentSection=section;
-    const views=['homeView','subjectsView','lecturesContainer','videosView','galleryView','channelsView','developerView'];
+    const views=['homeView','subjectsView','lecturesContainer','videosView','galleryView','channelsView','developerView','leaderboardView','transferView'];
     views.forEach(id=>{const el=document.getElementById(id);if(el){el.style.display='none';el.classList&&el.classList.remove('show');}});
     document.getElementById('settingsView').classList.remove('show');
     if(section==='home'){
@@ -1847,6 +2012,16 @@ function showSection(section){
     }else if(section==='developer'){
         document.getElementById('developerView').style.display='block';
         updateBottomNav('developer');
+    }else if(section==='leaderboard'){
+        document.getElementById('leaderboardView').style.display='block';
+        document.getElementById('leaderboardView').classList.add('show');
+        updateBottomNav('leaderboard');
+        loadLeaderboard();
+    }else if(section==='transfer'){
+        document.getElementById('transferView').style.display='block';
+        document.getElementById('transferView').classList.add('show');
+        updateBottomNav('transfer');
+        loadTransferData();
     }else if(section==='settings'){
         document.getElementById('settingsView').classList.add('show');
         loadSubscriptions();
@@ -1895,6 +2070,8 @@ document.getElementById('videosBackBar').addEventListener('click',()=>showSectio
 document.getElementById('galleryBackBar').addEventListener('click',()=>showSection('home'));
 document.getElementById('channelsBackBar').addEventListener('click',()=>showSection('home'));
 document.getElementById('developerBackBar').addEventListener('click',()=>showSection('home'));
+document.getElementById('leaderboardBackBar').addEventListener('click',()=>showSection('home'));
+document.getElementById('transferBackBar').addEventListener('click',()=>showSection('home'));
 document.getElementById('settingsBack').addEventListener('click',()=>{showSection('home');});
 document.getElementById('avatarBackBtn').addEventListener('click',()=>{showSection('home');});
 const themeSwitch=document.getElementById('themeSwitch');
@@ -1963,7 +2140,7 @@ function removeAvatar(){saveAvatar(null);updateAvatarUI();showMessage('تم إز
 function clearEl(el){if(el)while(el.firstChild)el.removeChild(el.firstChild);}
 function emptyState(container,type){
     if(!container)return;
-    const msgs={subjects:{icon:'fa-book',title:'لا توجد مواد'},lectures:{icon:'fa-file-pdf',title:'لا توجد محاضرات'},dates:{icon:'fa-calendar-alt',title:'لا توجد مواعيد'},channels:{icon:'fa-satellite-dish',title:'لا توجد قنوات'},gallery:{icon:'fa-images',title:'لا توجد صور'},videos:{icon:'fa-video',title:'لا توجد فيديوهات'},announcements:{icon:'fa-bell',title:'لا توجد إعلانات'},homeButtons:{icon:'fa-bars',title:'لا توجد أزرار'}};
+    const msgs={subjects:{icon:'fa-book',title:'لا توجد مواد'},lectures:{icon:'fa-file-pdf',title:'لا توجد محاضرات'},dates:{icon:'fa-calendar-alt',title:'لا توجد مواعيد'},channels:{icon:'fa-satellite-dish',title:'لا توجد قنوات'},gallery:{icon:'fa-images',title:'لا توجد صور'},videos:{icon:'fa-video',title:'لا توجد فيديوهات'},announcements:{icon:'fa-bell',title:'لا توجد إعلانات'},homeButtons:{icon:'fa-bars',title:'لا توجد أزرار'},leaderboard:{icon:'fa-trophy',title:'لا يوجد طلاب'},history:{icon:'fa-history',title:'لا توجد تحويلات'},requests:{icon:'fa-inbox',title:'لا توجد طلبات'}};
     const m=msgs[type]||msgs.subjects;
     container.innerHTML=`<div class="empty-state"><i class="fas ${san(m.icon)}"></i><h4>${san(m.title)}</h4><p>سيتم الإضافة قريباً</p></div>`;
 }
@@ -2160,6 +2337,9 @@ function setupGemsListener(){
             const gems = doc.data().gems || 0;
             document.getElementById('userGemsCount').textContent = gems;
             document.getElementById('sidebarGemsCount').textContent = gems;
+            const balanceEl = document.getElementById('userGemsBalance');
+            if(balanceEl) balanceEl.textContent = gems;
+            updateTransfersLeft();
         }
     });
     return unsubscribe;
@@ -2174,6 +2354,8 @@ async function loadUserGems(){
             const gems = docSnap.data().gems || 0;
             document.getElementById('userGemsCount').textContent = gems;
             document.getElementById('sidebarGemsCount').textContent = gems;
+            const balanceEl = document.getElementById('userGemsBalance');
+            if(balanceEl) balanceEl.textContent = gems;
             return gems;
         }
     }catch(e){console.error("Error loading gems:",e);}
@@ -2188,6 +2370,8 @@ async function updateGemsDisplay(){
             const gems = docSnap.data().gems || 0;
             document.getElementById('userGemsCount').textContent = gems;
             document.getElementById('sidebarGemsCount').textContent = gems;
+            const balanceEl = document.getElementById('userGemsBalance');
+            if(balanceEl) balanceEl.textContent = gems;
         }
     }catch(e){console.error("Error updating gems display:",e);}
 }
@@ -2379,6 +2563,602 @@ function showPopupAd(){
 }
 document.getElementById('popupAdClose').addEventListener('click',()=>{document.getElementById('popupAdModal').style.display='none';});
 document.getElementById('popupAdModal').addEventListener('click',e=>{if(e.target===document.getElementById('popupAdModal')||e.target.classList.contains('popup-ad-bg'))document.getElementById('popupAdModal').style.display='none';});
+
+// ========== جدول المتصدرين ==========
+async function updateUserPointsOnOpen() {
+    if (!currentUser) return;
+    try {
+        const userDoc = await db.collection("students").doc(currentUser.id).get();
+        const lastLogin = userDoc.data()?.lastLogin?.toDate();
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        if (!lastLogin || lastLogin.toDateString() !== today.toDateString()) {
+            await db.collection("students").doc(currentUser.id).update({
+                points: firebase.firestore.FieldValue.increment(1),
+                lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            console.log("✅ تم إضافة نقطة للدخول اليوم");
+        }
+    } catch (e) {
+        console.error("Error updating points:", e);
+    }
+}
+async function getTopStudents() {
+    try {
+        const snapshot = await db.collection("students")
+            .orderBy("points", "desc")
+            .limit(10)
+            .get();
+        const topStudents = [];
+        snapshot.forEach(doc => {
+            topStudents.push({
+                id: doc.id,
+                ...doc.data()
+            });
+        });
+        return topStudents;
+    } catch (e) {
+        console.error("Error getting top students:", e);
+        return [];
+    }
+}
+async function getUserRank(userId) {
+    try {
+        const snapshot = await db.collection("students")
+            .orderBy("points", "desc")
+            .get();
+        let rank = 0;
+        let userPoints = 0;
+        snapshot.forEach((doc, index) => {
+            if (doc.id === userId) {
+                rank = index + 1;
+                userPoints = doc.data().points || 0;
+            }
+        });
+        return { rank, points: userPoints };
+    } catch (e) {
+        console.error("Error getting user rank:", e);
+        return { rank: 0, points: 0 };
+    }
+}
+async function loadLeaderboard() {
+    const container = document.getElementById('leaderboardContainer');
+    container.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><h4>جاري التحميل</h4></div>';
+    const topStudents = await getTopStudents();
+    container.innerHTML = '';
+    if (topStudents.length === 0) {
+        emptyState(container, 'leaderboard');
+        return;
+    }
+    const medals = ['🥇', '🥈', '🥉'];
+    const rankClasses = ['gold', 'silver', 'bronze'];
+    topStudents.forEach((student, index) => {
+        const rank = index + 1;
+        const medal = index < 3 ? medals[index] : `${rank}️⃣`;
+        const rankClass = index < 3 ? rankClasses[index] : 'top4';
+        const isCurrentUser = currentUser && student.id === currentUser.id;
+        const div = document.createElement('div');
+        div.className = `leaderboard-item ${isCurrentUser ? 'current-user' : ''}`;
+        div.innerHTML = `
+            <div class="leaderboard-rank ${rankClass}">${medal}</div>
+            <div class="leaderboard-info">
+                <h4>${san(student.name || student.username)}</h4>
+                <p>${student.stage || ''}</p>
+            </div>
+            <div class="leaderboard-points">${student.points || 0} نقطة</div>
+        `;
+        container.appendChild(div);
+    });
+    if (currentUser) {
+        const { rank, points } = await getUserRank(currentUser.id);
+        const rankContainer = document.getElementById('userRankContainer');
+        if (rank === 0) {
+            rankContainer.innerHTML = `
+                <div class="user-rank-box">
+                    <div class="rank-icon"><i class="fas fa-user"></i></div>
+                    <div class="rank-info">
+                        <div class="label">موقعك</div>
+                        <div class="value">غير محدد</div>
+                    </div>
+                    <div class="rank-points">
+                        <div class="label">نقاطك</div>
+                        <div class="value">${points} نقطة</div>
+                    </div>
+                </div>
+            `;
+        } else {
+            const medal = rank <= 3 ? ['🥇', '🥈', '🥉'][rank - 1] : `#${rank}`;
+            rankContainer.innerHTML = `
+                <div class="user-rank-box">
+                    <div class="rank-icon">${medal}</div>
+                    <div class="rank-info">
+                        <div class="label">موقعك</div>
+                        <div class="value">${rank <= 3 ? medal : `#${rank}`}</div>
+                    </div>
+                    <div class="rank-points">
+                        <div class="label">نقاطك</div>
+                        <div class="value">${points} نقطة</div>
+                    </div>
+                </div>
+            `;
+        }
+    }
+}
+// ========== نهاية جدول المتصدرين ==========
+
+// ========== تحويل الجواهر ==========
+let selectedReceiverId = null;
+let selectedReceiverName = null;
+let transferUnsubscribe = null;
+
+// تحديث عدد التحويلات المتبقية
+async function updateTransfersLeft() {
+    if (!currentUser) return;
+    try {
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        const snapshot = await db.collection("transfers")
+            .where("fromUserId", "==", currentUser.id)
+            .where("timestamp", ">=", today)
+            .get();
+        const count = snapshot.size;
+        const left = Math.max(0, 3 - count);
+        const el = document.getElementById('transfersLeft');
+        if (el) el.textContent = `تبقى لك ${left} تحويلات اليوم`;
+    } catch (e) {
+        console.error("Error updating transfers left:", e);
+    }
+}
+
+// البحث عن المستخدم
+let searchTimeout = null;
+const receiverInput = document.getElementById('receiverUsername');
+if (receiverInput) {
+    receiverInput.addEventListener('input', function() {
+        const username = this.value.trim();
+        const resultDiv = document.getElementById('searchResult');
+        if (!username || username.length < 2) {
+            if (resultDiv) resultDiv.classList.remove('show');
+            selectedReceiverId = null;
+            selectedReceiverName = null;
+            return;
+        }
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(async () => {
+            try {
+                const snapshot = await db.collection("students")
+                    .where("username", "==", username)
+                    .limit(1)
+                    .get();
+                if (snapshot.empty) {
+                    if (resultDiv) resultDiv.classList.remove('show');
+                    selectedReceiverId = null;
+                    selectedReceiverName = null;
+                    return;
+                }
+                const doc = snapshot.docs[0];
+                if (doc.id === currentUser.id) {
+                    if (resultDiv) resultDiv.classList.remove('show');
+                    showModalMessage('تنبيه', 'لا يمكنك إرسال الجواهر لنفسك', 'warning');
+                    selectedReceiverId = null;
+                    selectedReceiverName = null;
+                    return;
+                }
+                const data = doc.data();
+                selectedReceiverId = doc.id;
+                selectedReceiverName = data.name || data.username;
+                const nameEl = document.getElementById('resultName');
+                const usernameEl = document.getElementById('resultUsername');
+                if (nameEl) nameEl.textContent = selectedReceiverName;
+                if (usernameEl) usernameEl.textContent = '@' + data.username;
+                if (resultDiv) resultDiv.classList.add('show');
+            } catch (e) {
+                console.error("Error searching user:", e);
+            }
+        }, 500);
+    });
+}
+
+function selectReceiver() {
+    if (selectedReceiverId) {
+        const resultDiv = document.getElementById('searchResult');
+        const receiverInput = document.getElementById('receiverUsername');
+        if (resultDiv) resultDiv.classList.remove('show');
+        if (receiverInput) receiverInput.value = selectedReceiverName;
+        showMessage('✅ تم اختيار ' + selectedReceiverName);
+    }
+}
+
+// إرسال الجواهر
+const sendGemsBtn = document.getElementById('sendGemsBtn');
+if (sendGemsBtn) {
+    sendGemsBtn.addEventListener('click', async function() {
+        if (!currentUser) {
+            showModalMessage('تنبيه', 'الرجاء تسجيل الدخول أولاً', 'warning');
+            return;
+        }
+        if (!selectedReceiverId) {
+            showModalMessage('تنبيه', 'الرجاء البحث عن مستلم صحيح', 'warning');
+            return;
+        }
+        const amount = parseInt(document.getElementById('transferAmount').value);
+        if (!amount || amount < 1) {
+            showModalMessage('تنبيه', 'الرجاء إدخال عدد صحيح من الجواهر (1 على الأقل)', 'warning');
+            return;
+        }
+        if (amount > 50) {
+            showModalMessage('تنبيه', 'الحد الأقصى للتحويل هو 50 جوهرة في المرة الواحدة', 'warning');
+            return;
+        }
+        const userDoc = await db.collection("students").doc(currentUser.id).get();
+        const userGems = userDoc.data().gems || 0;
+        if (userGems < amount) {
+            showModalMessage('رصيد غير كافٍ', `⚠️ رصيدك الحالي: ${userGems} جوهرة\n💰 المطلوب: ${amount} جوهرة`, 'error');
+            return;
+        }
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        const transfersSnapshot = await db.collection("transfers")
+            .where("fromUserId", "==", currentUser.id)
+            .where("timestamp", ">=", today)
+            .get();
+        if (transfersSnapshot.size >= 3) {
+            showModalMessage('تنبيه', 'لقد وصلت إلى الحد الأقصى للتحويلات اليوم (3 تحويلات)', 'warning');
+            return;
+        }
+        const note = document.getElementById('transferNote').value.trim() || '';
+        showConfirmation('تأكيد التحويل', `هل أنت متأكد من إرسال ${amount} جوهرة إلى ${selectedReceiverName}؟`, async () => {
+            try {
+                await db.collection("students").doc(currentUser.id).update({
+                    gems: firebase.firestore.FieldValue.increment(-amount)
+                });
+                await db.collection("students").doc(selectedReceiverId).update({
+                    gems: firebase.firestore.FieldValue.increment(amount)
+                });
+                await db.collection("transfers").add({
+                    fromUserId: currentUser.id,
+                    fromUserName: currentUser.name || currentUser.username,
+                    toUserId: selectedReceiverId,
+                    toUserName: selectedReceiverName,
+                    amount: amount,
+                    note: note,
+                    status: 'completed',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    type: 'send'
+                });
+                await db.collection("notifications").add({
+                    userId: selectedReceiverId,
+                    message: `📩 ${currentUser.name || currentUser.username} أرسل لك ${amount} جوهرة 💎`,
+                    note: note,
+                    read: false,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                showMessage(`✅ تم إرسال ${amount} جوهرة إلى ${selectedReceiverName}`);
+                await updateGemsDisplay();
+                await updateTransfersLeft();
+                const amountInput = document.getElementById('transferAmount');
+                const noteInput = document.getElementById('transferNote');
+                const receiverInput = document.getElementById('receiverUsername');
+                const resultDiv = document.getElementById('searchResult');
+                if (amountInput) amountInput.value = 1;
+                if (noteInput) noteInput.value = '';
+                if (receiverInput) receiverInput.value = '';
+                if (resultDiv) resultDiv.classList.remove('show');
+                selectedReceiverId = null;
+                selectedReceiverName = null;
+                loadTransferHistory();
+            } catch (e) {
+                console.error("Error sending gems:", e);
+                showModalMessage('خطأ', 'حدث خطأ أثناء إرسال الجواهر', 'error');
+            }
+        });
+    });
+}
+
+// طلب جواهر
+async function requestGemsFromUser() {
+    const username = prompt('👤 أدخل اسم المستخدم الذي تريد طلب جواهر منه:');
+    if (!username || username.trim() === '') {
+        showModalMessage('تنبيه', 'الرجاء إدخال اسم المستخدم', 'warning');
+        return;
+    }
+    try {
+        const snapshot = await db.collection("students")
+            .where("username", "==", username.trim())
+            .limit(1)
+            .get();
+        if (snapshot.empty) {
+            showModalMessage('خطأ', 'اسم المستخدم غير موجود', 'error');
+            return;
+        }
+        const doc = snapshot.docs[0];
+        if (doc.id === currentUser.id) {
+            showModalMessage('تنبيه', 'لا يمكنك طلب جواهر من نفسك', 'warning');
+            return;
+        }
+        const data = doc.data();
+        const amount = parseInt(prompt('💎 كم جوهرة تريد طلبها؟ (الحد الأقصى 50)'));
+        if (!amount || amount < 1) {
+            showModalMessage('تنبيه', 'الرجاء إدخال عدد صحيح', 'warning');
+            return;
+        }
+        if (amount > 50) {
+            showModalMessage('تنبيه', 'الحد الأقصى هو 50 جوهرة', 'warning');
+            return;
+        }
+        const note = prompt('📝 ملاحظة (اختياري):') || '';
+        await db.collection("transfers").add({
+            fromUserId: doc.id,
+            fromUserName: data.name || data.username,
+            toUserId: currentUser.id,
+            toUserName: currentUser.name || currentUser.username,
+            amount: amount,
+            note: note,
+            status: 'pending',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            type: 'request'
+        });
+        await db.collection("notifications").add({
+            userId: doc.id,
+            message: `📩 ${currentUser.name || currentUser.username} طلب ${amount} جوهرة منك 💎`,
+            note: note,
+            read: false,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        showMessage(`✅ تم إرسال طلب ${amount} جوهرة إلى ${data.name || data.username}`);
+        loadTransferRequests();
+    } catch (e) {
+        console.error("Error requesting gems:", e);
+        showModalMessage('خطأ', 'حدث خطأ أثناء إرسال الطلب', 'error');
+    }
+}
+
+// قبول طلب جواهر
+async function acceptTransfer(transferId, fromUserId, amount) {
+    if (!currentUser) return;
+    showConfirmation('تأكيد القبول', `هل أنت متأكد من إرسال ${amount} جوهرة إلى هذا الطالب؟`, async () => {
+        try {
+            const userDoc = await db.collection("students").doc(currentUser.id).get();
+            const userGems = userDoc.data().gems || 0;
+            if (userGems < amount) {
+                showModalMessage('رصيد غير كافٍ', `⚠️ رصيدك الحالي: ${userGems} جوهرة\n💰 المطلوب: ${amount} جوهرة`, 'error');
+                return;
+            }
+            await db.collection("students").doc(currentUser.id).update({
+                gems: firebase.firestore.FieldValue.increment(-amount)
+            });
+            await db.collection("students").doc(fromUserId).update({
+                gems: firebase.firestore.FieldValue.increment(amount)
+            });
+            await db.collection("transfers").doc(transferId).update({
+                status: 'completed'
+            });
+            showMessage(`✅ تم قبول الطلب وإرسال ${amount} جوهرة`);
+            await updateGemsDisplay();
+            loadTransferRequests();
+            loadTransferHistory();
+        } catch (e) {
+            console.error("Error accepting transfer:", e);
+            showModalMessage('خطأ', 'حدث خطأ أثناء قبول الطلب', 'error');
+        }
+    });
+}
+
+// رفض طلب جواهر
+async function rejectTransfer(transferId) {
+    if (!currentUser) return;
+    showConfirmation('تأكيد الرفض', 'هل أنت متأكد من رفض هذا الطلب؟', async () => {
+        try {
+            await db.collection("transfers").doc(transferId).update({
+                status: 'cancelled'
+            });
+            showMessage('❌ تم رفض الطلب');
+            loadTransferRequests();
+        } catch (e) {
+            console.error("Error rejecting transfer:", e);
+            showModalMessage('خطأ', 'حدث خطأ أثناء رفض الطلب', 'error');
+        }
+    });
+}
+
+// إلغاء تحويل
+async function cancelTransfer(transferId) {
+    if (!currentUser) return;
+    showConfirmation('تأكيد الإلغاء', 'هل أنت متأكد من إلغاء هذا التحويل؟', async () => {
+        try {
+            await db.collection("transfers").doc(transferId).update({
+                status: 'cancelled'
+            });
+            showMessage('❌ تم إلغاء التحويل');
+            loadTransferHistory();
+        } catch (e) {
+            console.error("Error cancelling transfer:", e);
+            showModalMessage('خطأ', 'حدث خطأ أثناء إلغاء التحويل', 'error');
+        }
+    });
+}
+
+// تحميل طلبات الجواهر
+async function loadTransferRequests() {
+    const container = document.getElementById('requestsContainer');
+    if (!container) return;
+    container.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><h4>جاري التحميل</h4></div>';
+    try {
+        const snapshot = await db.collection("transfers")
+            .where("toUserId", "==", currentUser.id)
+            .where("type", "==", "request")
+            .where("status", "==", "pending")
+            .orderBy("timestamp", "desc")
+            .get();
+        container.innerHTML = '';
+        if (snapshot.empty) {
+            const requestBtn = document.createElement('button');
+            requestBtn.className = 'save-btn';
+            requestBtn.style.marginTop = '12px';
+            requestBtn.innerHTML = '<i class="fas fa-hand-holding-heart"></i> طلب جواهر من مستخدم';
+            requestBtn.onclick = requestGemsFromUser;
+            container.appendChild(requestBtn);
+            emptyState(container, 'requests');
+            return;
+        }
+        const requestBtn = document.createElement('button');
+        requestBtn.className = 'save-btn';
+        requestBtn.style.marginBottom = '12px';
+        requestBtn.innerHTML = '<i class="fas fa-hand-holding-heart"></i> طلب جواهر من مستخدم';
+        requestBtn.onclick = requestGemsFromUser;
+        container.appendChild(requestBtn);
+        
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const card = document.createElement('div');
+            card.className = 'transfer-card';
+            card.innerHTML = `
+                <div class="transfer-header">
+                    <div class="user">
+                        <i class="fas fa-user"></i>
+                        <span>${san(data.fromUserName)} طلب منك</span>
+                    </div>
+                    <span class="status pending">⏳ قيد الانتظار</span>
+                </div>
+                <div class="transfer-body">
+                    <div><span class="amount">${data.amount} جوهرة</span></div>
+                    ${data.note ? `<div class="note">📝 ${san(data.note)}</div>` : ''}
+                    <div style="font-size:0.6rem;color:var(--text3);margin-top:4px;">${data.timestamp?.toDate?.()?.toLocaleString('ar-IQ') || ''}</div>
+                </div>
+                <div class="transfer-actions">
+                    <button class="accept-btn" onclick="acceptTransfer('${doc.id}','${data.fromUserId}',${data.amount})"><i class="fas fa-check"></i> قبول</button>
+                    <button class="reject-btn" onclick="rejectTransfer('${doc.id}')"><i class="fas fa-times"></i> رفض</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    } catch (e) {
+        console.error("Error loading requests:", e);
+        container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h4>خطأ في التحميل</h4></div>';
+    }
+}
+
+// تحميل سجل التحويلات
+async function loadTransferHistory() {
+    const container = document.getElementById('historyContainer');
+    if (!container) return;
+    container.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><h4>جاري التحميل</h4></div>';
+    try {
+        const sentSnapshot = await db.collection("transfers")
+            .where("fromUserId", "==", currentUser.id)
+            .orderBy("timestamp", "desc")
+            .limit(50)
+            .get();
+        const receivedSnapshot = await db.collection("transfers")
+            .where("toUserId", "==", currentUser.id)
+            .where("type", "==", "send")
+            .orderBy("timestamp", "desc")
+            .limit(50)
+            .get();
+        container.innerHTML = '';
+        const allTransfers = [];
+        sentSnapshot.forEach(doc => {
+            allTransfers.push({ id: doc.id, ...doc.data(), direction: 'sent' });
+        });
+        receivedSnapshot.forEach(doc => {
+            if (!allTransfers.some(t => t.id === doc.id)) {
+                allTransfers.push({ id: doc.id, ...doc.data(), direction: 'received' });
+            }
+        });
+        allTransfers.sort((a, b) => {
+            const aTime = a.timestamp?.toDate?.() || new Date(0);
+            const bTime = b.timestamp?.toDate?.() || new Date(0);
+            return bTime - aTime;
+        });
+        if (allTransfers.length === 0) {
+            emptyState(container, 'history');
+            return;
+        }
+        allTransfers.forEach(data => {
+            const card = document.createElement('div');
+            card.className = 'transfer-card';
+            const statusClass = data.status === 'completed' ? 'completed' : data.status === 'cancelled' ? 'cancelled' : 'pending';
+            const statusText = data.status === 'completed' ? '✅ مكتمل' : data.status === 'cancelled' ? '❌ ملغي' : '⏳ قيد الانتظار';
+            const isSent = data.direction === 'sent';
+            const icon = isSent ? 'fa-arrow-up' : 'fa-arrow-down';
+            const iconColor = isSent ? 'var(--red)' : 'var(--success)';
+            const amountPrefix = isSent ? '-' : '+';
+            const otherName = isSent ? data.toUserName : data.fromUserName;
+            card.innerHTML = `
+                <div class="transfer-header">
+                    <div class="user">
+                        <i class="fas ${icon}" style="color:${iconColor};"></i>
+                        <span>${isSent ? 'إلى' : 'من'} ${san(otherName)}</span>
+                    </div>
+                    <span class="status ${statusClass}">${statusText}</span>
+                </div>
+                <div class="transfer-body">
+                    <div><span class="amount">${amountPrefix}${data.amount} جوهرة</span></div>
+                    ${data.note ? `<div class="note">📝 ${san(data.note)}</div>` : ''}
+                    <div style="font-size:0.6rem;color:var(--text3);margin-top:4px;">${data.timestamp?.toDate?.()?.toLocaleString('ar-IQ') || ''}</div>
+                </div>
+                ${data.status === 'pending' && isSent ? `
+                    <div class="transfer-actions">
+                        <button class="cancel-btn" onclick="cancelTransfer('${data.id}')"><i class="fas fa-times"></i> إلغاء</button>
+                    </div>
+                ` : ''}
+            `;
+            container.appendChild(card);
+        });
+    } catch (e) {
+        console.error("Error loading history:", e);
+        container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h4>خطأ في التحميل</h4></div>';
+    }
+}
+
+// تحميل كل بيانات التحويل
+async function loadTransferData() {
+    if (!currentUser) return;
+    await updateGemsDisplay();
+    await updateTransfersLeft();
+    await loadTransferRequests();
+    await loadTransferHistory();
+}
+
+// تبديل تبويبات التحويل
+document.querySelectorAll('.transfer-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+        document.querySelectorAll('.transfer-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        const tabName = this.dataset.transferTab;
+        document.querySelectorAll('.transfer-content').forEach(c => c.style.display = 'none');
+        const contentMap = {
+            'send': 'sendTransfer',
+            'requests': 'requestsTransfer',
+            'history': 'historyTransfer'
+        };
+        const content = document.getElementById(contentMap[tabName]);
+        if (content) {
+            content.style.display = 'block';
+            if (tabName === 'requests') loadTransferRequests();
+            if (tabName === 'history') loadTransferHistory();
+        }
+    });
+});
+
+// زر تحويل الجواهر في الأسفل
+const transferBtn = document.getElementById('transferBtn');
+if (transferBtn) {
+    transferBtn.addEventListener('click', function() {
+        showSection('transfer');
+    });
+}
+
+// زر المتصدرين في الأسفل
+const leaderboardBtn = document.getElementById('leaderboardBtn');
+if (leaderboardBtn) {
+    leaderboardBtn.addEventListener('click', function() {
+        showSection('leaderboard');
+    });
+}
+
+// ========== نهاية تحويل الجواهر ==========
+
 function showMainContent(){
     document.getElementById('sidebarUsername').textContent=currentUser.name||currentUser.username;
     document.getElementById('sidebarInfo').textContent=`${currentUser.stage||''} - ${currentUser.shift||''}`;
@@ -2400,6 +3180,11 @@ function showMainContent(){
         setTimeout(showPopupAd,3000);
         await updateGemsDisplay();
         await loadSubscriptions();
+        await updateUserPointsOnOpen();
+        await updateTransfersLeft();
+        if (currentSection === 'transfer') {
+            loadTransferData();
+        }
     });
 }
 function logout(){
@@ -2412,136 +3197,121 @@ function logout(){
     showSection('home');
     showMessage('تم تسجيل الخروج');
 }
-
-// ========== QR SCANNER FIXED FOR iOS ==========
-async function startQRScanner() {
+// ========== الذكاء الاصطناعي - Google Gemini ==========
+let isProcessing = false;
+let conversationHistory = [];
+const aiModal = document.getElementById('aiChatModal');
+const aiMessages = document.getElementById('aiMessages');
+const aiInput = document.getElementById('aiInput');
+const aiSendBtn = document.getElementById('aiSendBtn');
+const aiWelcome = document.getElementById('aiWelcome');
+const GEMINI_API_KEY = 'AIzaSyBFdxj6p-DAGrr-To_WZBxIk_FDX67Ygm0';
+document.getElementById('aiCenterBtn')?.addEventListener('click', function() {
     if (!currentUser) {
-        showModalMessage('تسجيل الدخول مطلوب', 'الرجاء تسجيل الدخول أولاً لاستخدام ماسح QR', 'warning');
+        showModalMessage('تسجيل الدخول مطلوب', 'الرجاء تسجيل الدخول أولاً لاستخدام المساعد الذكي', 'warning');
         return;
     }
-
-    // التحقق من دعم الكاميرا على iOS
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    if (isIOS) {
-        // التحقق من إذن الكاميرا على iOS
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            stream.getTracks().forEach(track => track.stop());
-        } catch (err) {
-            showModalMessage('إذن الكاميرا', 'يرجى السماح بالوصول إلى الكاميرا من إعدادات الجهاز', 'error');
-            return;
-        }
+    aiModal.classList.add('show');
+    if (aiMessages.querySelectorAll('.ai-msg').length === 0) {
+        aiWelcome.style.display = 'block';
     }
-
-    const modalHtml = `
-        <div id="qrScanModal" class="modal-overlay" style="display:flex; z-index:10001;">
-            <div class="modal-sheet" style="max-width:500px; width:100%;">
-                <div class="modal-handle"></div>
-                <div class="modal-head">
-                    <h3><i class="fas fa-qrcode"></i> مسح رمز QR</h3>
-                    <button class="modal-close" id="closeQrScanModal"><i class="fas fa-times"></i></button>
-                </div>
-                <div class="modal-body" style="padding:16px;">
-                    <div id="qr-reader" style="width:100%;"></div>
-                    <div id="qr-result" class="qr-result">
-                        <i class="fas fa-check-circle"></i>
-                        <div class="result-text">تم المسح: <strong id="qrResultText"></strong></div>
-                    </div>
-                    <p style="margin-top:15px; font-size:0.7rem; color:var(--text3); text-align:center;">
-                        <i class="fas fa-info-circle"></i> قرب الكاميرا من رمز QR للمسح الضوئي
-                    </p>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    document.body.insertAdjacentHTML('beforeend', modalHtml);
-    const modal = document.getElementById('qrScanModal');
-    const resultDiv = document.getElementById('qr-result');
-    const resultText = document.getElementById('qrResultText');
-    
-    document.getElementById('closeQrScanModal').addEventListener('click', () => {
-        stopQRScanner();
-        modal.remove();
-    });
-    
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            stopQRScanner();
-            modal.remove();
-        }
-    });
-
+});
+document.getElementById('closeAiChat')?.addEventListener('click', function() {
+    aiModal.classList.remove('show');
+});
+aiModal?.addEventListener('click', function(e) {
+    if (e.target === aiModal) {
+        aiModal.classList.remove('show');
+    }
+});
+aiInput?.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        sendAIMessage();
+    }
+});
+aiSendBtn?.addEventListener('click', function() {
+    sendAIMessage();
+});
+async function sendAIMessage() {
+    const text = aiInput.value.trim();
+    if (!text || isProcessing) return;
+    if (text.length < 2) {
+        showModalMessage('تنبيه', 'الرجاء كتابة سؤال أطول', 'warning');
+        return;
+    }
+    aiInput.value = '';
+    aiInput.disabled = true;
+    aiSendBtn.disabled = true;
+    isProcessing = true;
+    aiWelcome.style.display = 'none';
+    addAIMessage(text, 'user');
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'ai-msg bot';
+    loadingDiv.innerHTML = '<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>';
+    aiMessages.appendChild(loadingDiv);
+    aiMessages.scrollTop = aiMessages.scrollHeight;
     try {
-        html5QrCode = new Html5Qrcode("qr-reader");
-        
-        // تكوين الماسح مع إعدادات محسنة للآيفون
-        const config = {
-            fps: 15,
-            qrbox: { width: 250, height: 250 },
-            aspectRatio: 1.0,
-            formatsToSupport: [ 
-                Html5QrcodeSupportedFormats.QR_CODE,
-                Html5QrcodeSupportedFormats.CODE_128,
-                Html5QrcodeSupportedFormats.CODE_39,
-                Html5QrcodeSupportedFormats.DATA_MATRIX,
-                Html5QrcodeSupportedFormats.EAN_13
-            ]
-        };
-
-        // استخدام الكاميرا الخلفية مع fallback
-        let cameraId = "environment";
-        if (isIOS) {
-            // على iOS نستخدم facingMode مباشرة
-            cameraId = "environment";
-        }
-
-        await html5QrCode.start(
-            { facingMode: cameraId },
-            config,
-            (decodedText, decodedResult) => {
-                console.log("QR Code detected:", decodedText);
-                resultText.textContent = decodedText;
-                resultDiv.classList.add('show');
-                
-                // إيقاف الماسح فوراً
-                stopQRScanner();
-                modal.remove();
-                
-                // فتح الرابط مباشرة
-                if (decodedText.startsWith('http://') || decodedText.startsWith('https://')) {
-                    window.open(decodedText, '_blank');
-                } else if (decodedText.match(/^[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}/)) {
-                    window.open('https://' + decodedText, '_blank');
-                } else {
-                    showMessage('تم مسح: ' + decodedText.substring(0, 50));
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: `أنت مساعد ذكي متخصص في التعليم الجامعي. اسمك "مساعد CET". تتحدث بالعربية الفصحى. ساعد الطلاب في المواد الدراسية والمحاضرات. أجب باختصار ووضوح (2-4 جمل).\n\nسؤال المستخدم: ${text}`
+                    }]
+                }],
+                generationConfig: {
+                    temperature: 0.7,
+                    maxOutputTokens: 500,
+                    topP: 0.9
                 }
-                showMessage('✅ تم فتح الرابط بنجاح!');
-            },
-            (errorMessage) => {
-                // تجاهل أخطاء المسح المؤقتة
-                console.log("Scanning...");
-            }
-        );
-        isScanning = true;
-    } catch (err) {
-        console.error("Error starting QR scanner:", err);
-        showModalMessage('خطأ في الكاميرا', 'تعذر الوصول إلى الكاميرا. يرجى:\n1. التأكد من منح الإذن\n2. إعادة المحاولة', 'error');
-        modal.remove();
+            })
+        });
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error?.message || 'خطأ في الاتصال');
+        }
+        const data = await response.json();
+        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'عذراً، لم أتمكن من الإجابة حالياً';
+        if (loadingDiv.parentNode) loadingDiv.remove();
+        addAIMessage(reply, 'bot');
+        conversationHistory.push({ role: 'user', content: text });
+        conversationHistory.push({ role: 'assistant', content: reply });
+        if (conversationHistory.length > 20) conversationHistory = conversationHistory.slice(-20);
+    } catch (error) {
+        console.error('AI Error:', error);
+        if (loadingDiv.parentNode) loadingDiv.remove();
+        addAIMessage('عذراً، حدث خطأ في الاتصال بالمساعد الذكي. يرجى المحاولة مرة أخرى.', 'bot');
+        showModalMessage('خطأ في الاتصال', 'تعذر الاتصال بالمساعد الذكي\nيرجى:\n1- التحقق من اتصال الإنترنت\n2- التأكد من مفتاح API', 'error');
+    } finally {
+        aiInput.disabled = false;
+        aiSendBtn.disabled = false;
+        isProcessing = false;
+        aiInput.focus();
+        aiMessages.scrollTop = aiMessages.scrollHeight;
     }
 }
-
-function stopQRScanner() {
-    if (html5QrCode && html5QrCode.isScanning) {
-        try {
-            html5QrCode.stop().catch(err => console.error("Error stopping scanner:", err));
-        } catch(e) {}
-        html5QrCode = null;
-    }
-    isScanning = false;
+function addAIMessage(text, type) {
+    const div = document.createElement('div');
+    div.className = `ai-msg ${type}`;
+    div.textContent = text;
+    aiMessages.appendChild(div);
+    aiMessages.scrollTop = aiMessages.scrollHeight;
 }
-// ========== END QR SCANNER ==========
-
+document.getElementById('closeAiChat')?.addEventListener('click', function() {
+    if (conversationHistory.length > 0) {
+        conversationHistory = [];
+        aiMessages.innerHTML = '';
+        aiWelcome.style.display = 'block';
+        const welcomeClone = aiWelcome.cloneNode(true);
+        aiMessages.appendChild(welcomeClone);
+        aiWelcome.style.display = 'block';
+    }
+    aiModal.classList.remove('show');
+});
+// ========== نهاية الذكاء الاصطناعي ==========
 document.getElementById('loginForm').addEventListener('submit',async e=>{
     e.preventDefault();
     const u=document.getElementById('loginUsername').value.trim();
@@ -2598,13 +3368,6 @@ function checkAutoLogin(){
 }
 setProgress(10);
 setTimeout(()=>{setProgress(30);checkAutoLogin();},500);
-const qrCenterBtn = document.getElementById('qrCenterBtn');
-if (qrCenterBtn) {
-    qrCenterBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        startQRScanner();
-    });
-}
 </script>
 </body>
 </html>
