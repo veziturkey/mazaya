@@ -315,30 +315,6 @@
         @media(min-width:768px){.subjects-grid{grid-template-columns:repeat(5,1fr);}}
         @supports (padding-top: env(safe-area-inset-top)){body{padding-top:env(safe-area-inset-top);}.navbar{top:env(safe-area-inset-top);}.sidebar{top:env(safe-area-inset-top);height:calc(100vh - env(safe-area-inset-top));}.main-content{margin-top:calc(var(--nav-h) + env(safe-area-inset-top));}.toast{top:calc(var(--nav-h) + env(safe-area-inset-top) + 12px);}}
         /* === نظام تحويل الجواهر المحسّن - بدون طلبات وسجل === */
-        .leaderboard-section{display:none;min-height:100vh;padding:0 16px 16px;padding-bottom:calc(var(--bottom-h) + var(--safe-bottom) + 20px);}
-        .leaderboard-section.show{display:block;}
-        .leaderboard-title{text-align:center;padding:16px 0;font-size:1.1rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;}
-        .leaderboard-title i{color:var(--gold);}
-        .leaderboard-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:12px;margin-bottom:8px;transition:all 0.2s;}
-        .leaderboard-item.current-user{border:2px solid var(--gold);background:rgba(245,166,35,0.08);box-shadow:0 4px 16px rgba(245,166,35,0.1);}
-        .leaderboard-rank{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;flex-shrink:0;background:var(--bg3);color:var(--text2);}
-        .leaderboard-rank.gold{background:linear-gradient(135deg,#FFD700,#F5A623);color:#1a1a2e;}
-        .leaderboard-rank.silver{background:linear-gradient(135deg,#E8E8E8,#C0C0C0);color:#1a1a2e;}
-        .leaderboard-rank.bronze{background:linear-gradient(135deg,#CD7F32,#B87333);color:#fff;}
-        .leaderboard-rank.top4{background:rgba(200,16,46,0.12);color:var(--red);}
-        .leaderboard-info{flex:1;}
-        .leaderboard-info h4{font-size:0.85rem;font-weight:700;color:var(--text);}
-        .leaderboard-info p{font-size:0.6rem;color:var(--text3);margin-top:1px;}
-        .leaderboard-points{background:rgba(200,16,46,0.08);color:var(--red);padding:4px 12px;border-radius:10px;font-weight:700;font-size:0.7rem;white-space:nowrap;}
-        .user-rank-box{background:var(--card);border:2px solid var(--gold);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;margin-top:16px;box-shadow:0 4px 16px rgba(245,166,35,0.1);}
-        .user-rank-box .rank-icon{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#F5A623);display:flex;align-items:center;justify-content:center;color:#1a1a2e;font-weight:800;font-size:0.9rem;flex-shrink:0;}
-        .user-rank-box .rank-info{flex:1;}
-        .user-rank-box .rank-info .label{font-size:0.6rem;color:var(--text3);}
-        .user-rank-box .rank-info .value{font-weight:800;font-size:0.9rem;color:var(--gold);}
-        .user-rank-box .rank-points{text-align:left;}
-        .user-rank-box .rank-points .label{font-size:0.6rem;color:var(--text3);}
-        .user-rank-box .rank-points .value{font-weight:800;font-size:0.9rem;color:var(--gold);}
-        /* تحويل محسّن - بدون طلبات وسجل */
         .transfer-section{display:none;min-height:100vh;padding:0 16px 16px;padding-bottom:calc(var(--bottom-h) + var(--safe-bottom) + 20px);}
         .transfer-section.show{display:block;}
         .transfer-tabs{display:flex;gap:6px;margin-bottom:16px;background:var(--card);border-radius:14px;padding:4px;}
@@ -467,22 +443,23 @@
         </div>
         <div class="auth-form" id="registerFormContainer">
             <form id="registerForm">
-                <div class="form-group"><label>الاسم الثلاثي</label><input type="text" id="regFullName" class="form-control"></div>
-                <div class="form-group"><label>اسم المستخدم</label><input type="text" id="regUsername" class="form-control"></div>
-                <div class="form-group"><label>المرحلة</label>
-                    <select id="regStage" class="form-control">
+                <div class="form-group"><label>الاسم الثلاثي *</label><input type="text" id="regFullName" class="form-control" required></div>
+                <div class="form-group"><label>اسم المستخدم *</label><input type="text" id="regUsername" class="form-control" required></div>
+                <div class="form-group"><label>رقم الهاتف *</label><input type="tel" id="regPhone" class="form-control" placeholder="مثال: 07812345678" required></div>
+                <div class="form-group"><label>المرحلة *</label>
+                    <select id="regStage" class="form-control" required>
                         <option value="">اختر المرحلة</option>
                         <option>المرحلة الأولى</option><option>المرحلة الثانية</option>
                         <option>المرحلة الثالثة</option><option>المرحلة الرابعة</option>
                     </select>
                 </div>
-                <div class="form-group"><label>الدوام</label>
-                    <select id="regShift" class="form-control">
+                <div class="form-group"><label>الدوام *</label>
+                    <select id="regShift" class="form-control" required>
                         <option value="">اختر الدوام</option>
                         <option>صباحي</option><option>مسائي</option>
                     </select>
                 </div>
-                <div class="form-group"><label>الرقم السري</label><input type="password" id="regPassword" class="form-control" autocomplete="new-password"></div>
+                <div class="form-group"><label>الرقم السري *</label><input type="password" id="regPassword" class="form-control" autocomplete="new-password" required></div>
                 <button type="submit" class="auth-btn"><i class="fas fa-user-plus"></i> إنشاء حساب</button>
                 <div class="auth-error" id="registerError"></div>
             </form>
@@ -504,7 +481,6 @@
         <div class="sidebar-item" data-nav="gallery"><i class="fas fa-images"></i><span>معرض الصور</span></div>
         <div class="sidebar-item" data-nav="videos"><i class="fas fa-play-circle"></i><span>الفيديوهات</span></div>
         <div class="sidebar-item" data-nav="channels"><i class="fas fa-satellite-dish"></i><span>القنوات الرسمية</span></div>
-        <div class="sidebar-item" data-nav="leaderboard"><i class="fas fa-trophy"></i><span>🏆 المتصدرين</span></div>
         <div class="sidebar-item" data-nav="transfer"><i class="fas fa-exchange-alt"></i><span>💎 تحويل الجواهر</span></div>
         <div class="sidebar-item" data-nav="settings"><i class="fas fa-cog"></i><span>الإعدادات</span></div>
         <div class="sidebar-item" data-nav="developer"><i class="fas fa-code"></i><span>المطور</span></div>
@@ -621,17 +597,6 @@
             <div class="dev-role">مطور تطبيق CET Mazaya</div>
             <div class="dev-phone"><i class="fas fa-phone"></i> 07821531234</div>
         </div>
-    </div>
-
-    <!-- المتصدرين -->
-    <div class="leaderboard-section" id="leaderboardView">
-        <div class="back-bar" id="leaderboardBackBar">
-            <div class="back-btn"><i class="fas fa-chevron-right"></i></div>
-            <div class="back-bar-title">🏆 المتصدرين</div>
-        </div>
-        <div class="leaderboard-title"><i class="fas fa-trophy"></i> أفضل 10 طلاب</div>
-        <div id="leaderboardContainer"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i><h4>جاري التحميل</h4></div></div>
-        <div id="userRankContainer"></div>
     </div>
 
     <!-- === نظام تحويل الجواهر - بدون طلبات ولا سجل === -->
@@ -812,6 +777,7 @@
                 <div class="settings-section-label">المعلومات الشخصية</div>
                 <div class="form-group"><label>الاسم الكامل</label><input type="text" id="settingsFullName" class="form-control"></div>
                 <div class="form-group"><label>اسم المستخدم</label><input type="text" id="settingsUsername" class="form-control"></div>
+                <div class="form-group"><label>رقم الهاتف</label><input type="tel" id="settingsPhone" class="form-control"></div>
                 <div class="form-group"><label>المرحلة</label>
                     <select id="settingsStage" class="form-control">
                         <option>المرحلة الأولى</option><option>المرحلة الثانية</option>
@@ -1380,27 +1346,27 @@ async function handleLogin(username,password,stay){
     if(snap.empty)throw new Error("بيانات غير صحيحة");
     const doc=snap.docs[0];const data=doc.data();
     if(data.isBlocked)throw new Error(data.banReason||"حسابك موقوف");
-    currentUser={id:doc.id,name:san(data.name||username),username:san(data.username),stage:san(data.stage||'المرحلة الأولى'),shift:san(data.shift||'صباحي'),role:data.role||'student',password:data.password};
+    currentUser={id:doc.id,name:san(data.name||username),username:san(data.username),stage:san(data.stage||'المرحلة الأولى'),shift:san(data.shift||'صباحي'),role:data.role||'student',password:data.password,phone:data.phone||''};
     localStorage.setItem('loggedInUser',JSON.stringify(currentUser));
     if(stay)localStorage.setItem('stayLoggedIn','true');else localStorage.removeItem('stayLoggedIn');
     db.collection("loginLogs").add({username:u,action:"login",timestamp:firebase.firestore.FieldValue.serverTimestamp()}).catch(()=>{});
     checkBlockedTimer=setInterval(checkIfBlocked,10000);
     return true;
 }
-async function handleRegister(fullName,username,stage,shift,password){
-    const u=san(username);const n=san(fullName);
+async function handleRegister(fullName,username,phone,stage,shift,password){
+    const u=san(username);const n=san(fullName);const p=san(phone);
     const ex=await db.collection("students").where("username","==",u).get();
     if(!ex.empty)throw new Error("اسم المستخدم موجود بالفعل");
-    await db.collection("students").add({name:n,username:u,password,stage:san(stage),shift:san(shift),role:'student',isBlocked:false,gems:0,points:0,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    await db.collection("students").add({name:n,username:u,phone:p,password,stage:san(stage),shift:san(shift),role:'student',isBlocked:false,gems:0,points:0,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
     db.collection("loginLogs").add({username:u,action:"register",timestamp:firebase.firestore.FieldValue.serverTimestamp()}).catch(()=>{});
     return true;
 }
-async function updateUserProfile(fn,un,stage,shift,password){
+async function updateUserProfile(fn,un,phone,stage,shift,password){
     if(!currentUser)return;
-    const updates={name:san(fn),username:san(un),stage:san(stage),shift:san(shift)};
+    const updates={name:san(fn),username:san(un),phone:san(phone),stage:san(stage),shift:san(shift)};
     if(password&&password.trim())updates.password=password;
     await db.collection("students").doc(currentUser.id).update(updates);
-    currentUser.name=san(fn);currentUser.username=san(un);currentUser.stage=san(stage);currentUser.shift=san(shift);
+    currentUser.name=san(fn);currentUser.username=san(un);currentUser.phone=san(phone);currentUser.stage=san(stage);currentUser.shift=san(shift);
     if(password&&password.trim())currentUser.password=password;
     localStorage.setItem('loggedInUser',JSON.stringify(currentUser));
 }
@@ -1419,39 +1385,7 @@ document.getElementById('popupAdClose').addEventListener('click',()=>document.ge
 document.getElementById('popupAdModal').addEventListener('click',e=>{if(e.target===document.getElementById('popupAdModal')||e.target.classList.contains('popup-ad-bg'))document.getElementById('popupAdModal').style.display='none';});
 
 // =================== المتصدرين ===================
-async function updateUserPointsOnOpen(){
-    if(!currentUser)return;
-    try{
-        const userDoc=await db.collection("students").doc(currentUser.id).get();
-        const lastLogin=userDoc.data()?.lastLogin?.toDate();const today=new Date();today.setHours(0,0,0,0);
-        if(!lastLogin||lastLogin.toDateString()!==today.toDateString()){await db.collection("students").doc(currentUser.id).update({points:firebase.firestore.FieldValue.increment(1),lastLogin:firebase.firestore.FieldValue.serverTimestamp()});}
-    }catch(e){console.error("Error updating points:",e);}
-}
-async function loadLeaderboard(){
-    const container=document.getElementById('leaderboardContainer');container.innerHTML='<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><h4>جاري التحميل</h4></div>';
-    try{
-        const snapshot=await db.collection("students").orderBy("points","desc").limit(10).get();
-        const topStudents=[];snapshot.forEach(doc=>topStudents.push({id:doc.id,...doc.data()}));
-        container.innerHTML='';
-        if(topStudents.length===0){emptyState(container,'leaderboard');return;}
-        const medals=['🥇','🥈','🥉'];const rankClasses=['gold','silver','bronze'];
-        topStudents.forEach((student,index)=>{
-            const rank=index+1;const medal=index<3?medals[index]:`${rank}`;const rankClass=index<3?rankClasses[index]:'top4';
-            const isCurrentUser=currentUser&&student.id===currentUser.id;
-            const div=document.createElement('div');div.className=`leaderboard-item ${isCurrentUser?'current-user':''}`;
-            div.innerHTML=`<div class="leaderboard-rank ${rankClass}">${medal}</div><div class="leaderboard-info"><h4>${san(student.name||student.username)}</h4><p>${student.stage||''}</p></div><div class="leaderboard-points">${student.points||0} نقطة</div>`;
-            container.appendChild(div);
-        });
-        if(currentUser){
-            const allSnap=await db.collection("students").orderBy("points","desc").get();
-            let rank=0;let userPoints=0;
-            allSnap.forEach((doc,index)=>{if(doc.id===currentUser.id){rank=index+1;userPoints=doc.data().points||0;}});
-            const rankContainer=document.getElementById('userRankContainer');
-            const medal=rank<=3?['🥇','🥈','🥉'][rank-1]:rank>0?`#${rank}`:'?';
-            rankContainer.innerHTML=`<div class="user-rank-box"><div class="rank-icon">${medal}</div><div class="rank-info"><div class="label">موقعك في القائمة</div><div class="value">${rank>0?`المرتبة ${rank}`:'غير محدد'}</div></div><div class="rank-points"><div class="label">نقاطك</div><div class="value">${userPoints} نقطة</div></div></div>`;
-        }
-    }catch(e){container.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h4>خطأ في التحميل</h4></div>';}
-}
+// تم إلغاء المتصدرين بالكامل
 
 // =================== نظام تحويل الجواهر المحسّن (بدون طلبات وسجل) ===================
 
@@ -1662,7 +1596,7 @@ document.getElementById('transferBtn')?.addEventListener('click',()=>showSection
 // =================== التنقل والعرض ===================
 function showSection(section){
     currentSection=section;
-    const views=['homeView','subjectsView','lecturesContainer','videosView','galleryView','channelsView','developerView','leaderboardView','transferView'];
+    const views=['homeView','subjectsView','lecturesContainer','videosView','galleryView','channelsView','developerView','transferView'];
     views.forEach(id=>{const el=document.getElementById(id);if(el){el.style.display='none';el.classList&&el.classList.remove('show');}});
     document.getElementById('settingsView').classList.remove('show');
     if(section==='home'){document.getElementById('homeView').style.display='block';updateBottomNav('home');}
@@ -1671,7 +1605,6 @@ function showSection(section){
     else if(section==='gallery'){document.getElementById('galleryView').style.display='block';updateBottomNav('gallery');}
     else if(section==='channels'){document.getElementById('channelsView').style.display='block';updateBottomNav('channels');}
     else if(section==='developer'){document.getElementById('developerView').style.display='block';updateBottomNav('developer');}
-    else if(section==='leaderboard'){document.getElementById('leaderboardView').style.display='block';document.getElementById('leaderboardView').classList.add('show');updateBottomNav('leaderboard');loadLeaderboard();}
     else if(section==='transfer'){document.getElementById('transferView').style.display='block';document.getElementById('transferView').classList.add('show');updateBottomNav('transfer');loadTransferData();}
     else if(section==='settings'){document.getElementById('settingsView').classList.add('show');loadSubscriptions();updateBottomNav('settings');return;}
     document.getElementById('sidebar').classList.remove('active');document.getElementById('sidebarOverlay').classList.remove('active');
@@ -1697,7 +1630,6 @@ document.getElementById('videosBackBar').addEventListener('click',()=>showSectio
 document.getElementById('galleryBackBar').addEventListener('click',()=>showSection('home'));
 document.getElementById('channelsBackBar').addEventListener('click',()=>showSection('home'));
 document.getElementById('developerBackBar').addEventListener('click',()=>showSection('home'));
-document.getElementById('leaderboardBackBar').addEventListener('click',()=>showSection('home'));
 document.getElementById('transferBackBar').addEventListener('click',()=>showSection('home'));
 document.getElementById('settingsBack').addEventListener('click',()=>showSection('home'));
 document.getElementById('avatarBackBtn').addEventListener('click',()=>showSection('home'));
@@ -1802,12 +1734,13 @@ function showMainContent(){
     updateAvatarUI();
     document.getElementById('settingsFullName').value=currentUser.name||'';
     document.getElementById('settingsUsername').value=currentUser.username||'';
+    document.getElementById('settingsPhone').value=currentUser.phone||'';
     document.getElementById('settingsStage').value=currentUser.stage||'';
     document.getElementById('settingsShift').value=currentUser.shift||'';
     document.getElementById('settingsPassword').value='';document.getElementById('settingsConfirmPassword').value='';
     document.getElementById('navbar').classList.add('show');document.getElementById('bottomNav').classList.add('show');document.getElementById('authModal').style.display='none';
     showSection('home');
-    loadInitialData().then(async()=>{startListeners();hideLoading();showMessage('مرحباً '+san(currentUser.name||currentUser.username));await loadPopupAd();setTimeout(showPopupAd,3000);await updateGemsDisplay();await loadSubscriptions();await updateUserPointsOnOpen();});
+    loadInitialData().then(async()=>{startListeners();hideLoading();showMessage('مرحباً '+san(currentUser.name||currentUser.username));await loadPopupAd();setTimeout(showPopupAd,3000);await updateGemsDisplay();await loadSubscriptions();});
 }
 
 function logout(){
@@ -1825,15 +1758,16 @@ document.getElementById('loginForm').addEventListener('submit',async e=>{
     try{await handleLogin(u,p,stay);showMainContent();document.getElementById('loginForm').reset();}catch(e2){err.textContent=e2.message;err.classList.add('show');}
 });
 document.getElementById('registerForm').addEventListener('submit',async e=>{
-    e.preventDefault();const fn=document.getElementById('regFullName').value.trim();const un=document.getElementById('regUsername').value.trim();const stage=document.getElementById('regStage').value;const shift=document.getElementById('regShift').value;const pw=document.getElementById('regPassword').value;const err=document.getElementById('registerError');err.classList.remove('show');
-    if(!fn||!un||!stage||!shift||!pw){err.textContent='يرجى ملء جميع الحقول';err.classList.add('show');return;}
+    e.preventDefault();const fn=document.getElementById('regFullName').value.trim();const un=document.getElementById('regUsername').value.trim();const phone=document.getElementById('regPhone').value.trim();const stage=document.getElementById('regStage').value;const shift=document.getElementById('regShift').value;const pw=document.getElementById('regPassword').value;const err=document.getElementById('registerError');err.classList.remove('show');
+    if(!fn||!un||!phone||!stage||!shift||!pw){err.textContent='يرجى ملء جميع الحقول';err.classList.add('show');return;}
     if(pw.length<4){err.textContent='كلمة المرور قصيرة جداً';err.classList.add('show');return;}
-    try{await handleRegister(fn,un,stage,shift,pw);showMessage('تم إنشاء الحساب بنجاح! سجّل دخولك الآن');document.getElementById('registerForm').reset();document.querySelector('.auth-tab[data-auth-tab="login"]').click();}catch(e2){err.textContent=e2.message;err.classList.add('show');}
+    if(phone.length<10){err.textContent='رقم الهاتف غير صحيح (مطلوب 10 أرقام على الأقل)';err.classList.add('show');return;}
+    try{await handleRegister(fn,un,phone,stage,shift,pw);showMessage('تم إنشاء الحساب بنجاح! سجّل دخولك الآن');document.getElementById('registerForm').reset();document.querySelector('.auth-tab[data-auth-tab="login"]').click();}catch(e2){err.textContent=e2.message;err.classList.add('show');}
 });
 document.getElementById('settingsForm').addEventListener('submit',async e=>{
-    e.preventDefault();const fn=document.getElementById('settingsFullName').value.trim();const un=document.getElementById('settingsUsername').value.trim();const stage=document.getElementById('settingsStage').value;const shift=document.getElementById('settingsShift').value;const pw=document.getElementById('settingsPassword').value;const cpw=document.getElementById('settingsConfirmPassword').value;
+    e.preventDefault();const fn=document.getElementById('settingsFullName').value.trim();const un=document.getElementById('settingsUsername').value.trim();const phone=document.getElementById('settingsPhone').value.trim();const stage=document.getElementById('settingsStage').value;const shift=document.getElementById('settingsShift').value;const pw=document.getElementById('settingsPassword').value;const cpw=document.getElementById('settingsConfirmPassword').value;
     if(!fn||!un){showMessage('الاسم مطلوب');return;}if(pw!==cpw){showMessage('كلمات المرور غير متطابقة');return;}if(pw&&pw.length<4){showMessage('كلمة المرور قصيرة جداً');return;}
-    try{await updateUserProfile(fn,un,stage,shift,pw);document.getElementById('sidebarUsername').textContent=fn;document.getElementById('sidebarInfo').textContent=`${stage} - ${shift}`;showMessage('تم حفظ التغييرات!');showSection('home');await loadInitialData();}catch(e2){showMessage('خطأ: '+e2.message);}
+    try{await updateUserProfile(fn,un,phone,stage,shift,pw);document.getElementById('sidebarUsername').textContent=fn;document.getElementById('sidebarInfo').textContent=`${stage} - ${shift}`;showMessage('تم حفظ التغييرات!');showSection('home');await loadInitialData();}catch(e2){showMessage('خطأ: '+e2.message);}
 });
 
 // =================== التشغيل ===================
