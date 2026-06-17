@@ -32,6 +32,20 @@
         body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);direction:rtl;min-height:100vh;overflow-x:hidden;}
         .subscription-badge{position:absolute;top:-5px;left:-5px;background:linear-gradient(135deg,var(--success),#00a07a);color:#fff;font-size:0.5rem;font-weight:800;padding:2px 5px;border-radius:10px;display:flex;align-items:center;gap:2px;z-index:10;box-shadow:0 2px 5px rgba(0,0,0,0.2);}
         .subject-card,.dynamic-btn,.video-card,.channel-card,.gallery-card{position:relative;overflow:visible;}
+        /* الأزرار المضللة */
+        .dynamic-btn.home-btn-blurred{filter:blur(10px);opacity:0.4;pointer-events:none;position:relative;transition:all 0.3s ease;}
+        .dynamic-btn.home-btn-blurred::after{content:'🔒';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:2rem;z-index:10;color:rgba(255,255,255,0.7);text-shadow:0 2px 10px rgba(0,0,0,0.5);}
+        .dynamic-btn.home-btn-blurred .blur-click-area{position:absolute;inset:0;z-index:20;cursor:pointer;pointer-events:auto;}
+        .dynamic-btn.home-btn-normal{filter:none;opacity:1;pointer-events:auto;}
+        .dynamic-btn.home-btn-normal .blur-click-area{display:none;}
+        /* نافذة رسالة التضليل */
+        .blur-message-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:10000;display:none;justify-content:center;align-items:center;padding:20px;animation:fadeIn 0.3s ease;}
+        .blur-message-overlay.show{display:flex;}
+        .blur-message-box{background:var(--card);border-radius:20px;padding:30px;max-width:400px;width:100%;text-align:center;border:1px solid var(--border);}
+        .blur-message-box i{font-size:3rem;color:var(--warning);margin-bottom:15px;display:block;}
+        .blur-message-box h3{font-size:1.2rem;font-weight:800;margin-bottom:10px;color:var(--text);}
+        .blur-message-box p{font-size:0.9rem;color:var(--text2);line-height:1.7;margin-bottom:20px;white-space:pre-line;}
+        .blur-message-box button{background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff;border:none;padding:10px 30px;border-radius:12px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;}
         .loading-screen{position:fixed;inset:0;background:#0A0A0F;z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:center;transition:opacity 0.6s ease;}
         .loading-screen.hidden{opacity:0;pointer-events:none;}
         .loading-logo-wrap{position:relative;width:110px;height:110px;margin-bottom:28px;}
@@ -311,10 +325,6 @@
         .empty-state h4{font-size:0.9rem;color:var(--text2);margin-bottom:4px;}
         .empty-state p{font-size:0.72rem;}
         .main-content{padding-bottom:calc(var(--bottom-h) + var(--safe-bottom) + 16px);margin-top:var(--nav-h);}
-        /* أيقونات مضللة حسب الإعدادات من لوحة التحكم */
-        .icon-blurred{filter:blur(8px);pointer-events:none;opacity:0.5;transition:all 0.3s ease;}
-        .icon-normal{filter:none;pointer-events:auto;opacity:1;transition:all 0.3s ease;}
-        .blurred-icon{filter:blur(10px);opacity:0.4;pointer-events:none;}
         @media(min-width:480px){.subjects-grid{grid-template-columns:repeat(4,1fr);}.videos-grid{grid-template-columns:repeat(3,1fr);}.buttons-strip{justify-content:center;}}
         @media(min-width:768px){.subjects-grid{grid-template-columns:repeat(5,1fr);}}
         @supports (padding-top: env(safe-area-inset-top)){body{padding-top:env(safe-area-inset-top);}.navbar{top:env(safe-area-inset-top);}.sidebar{top:env(safe-area-inset-top);height:calc(100vh - env(safe-area-inset-top));}.main-content{margin-top:calc(var(--nav-h) + env(safe-area-inset-top));}.toast{top:calc(var(--nav-h) + env(safe-area-inset-top) + 12px);}}
@@ -377,7 +387,6 @@
         .stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;}
         .stat-card .stat-value{font-size:1.2rem;font-weight:800;color:var(--gold);}
         .stat-card .stat-label{font-size:0.6rem;color:var(--text3);margin-top:2px;}
-        /* الذكاء الاصطناعي */
         .ai-chat-modal{display:none;position:fixed;inset:0;z-index:20000;justify-content:center;align-items:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);animation:fadeIn 0.3s ease;}
         .ai-chat-modal.show{display:flex;}
         .ai-chat-box{background:var(--card);border-radius:24px;width:92%;max-width:420px;height:80vh;max-height:600px;display:flex;flex-direction:column;border:1px solid var(--border);animation:scaleIn 0.3s ease;overflow:hidden;}
@@ -407,8 +416,6 @@
         .ai-msg .loading-dots span{font-size:1.2rem;}
         .ai-msg .loading-dots{display:inline-block;}
         .ai-chat-footer{font-size:0.55rem;color:var(--text3);text-align:center;padding:6px;flex-shrink:0;}
-        /* تحميل بيانات التضليل من Firestore */
-        .blurred-icon{filter:blur(10px);opacity:0.4;pointer-events:none;}
     </style>
 </head>
 <body>
@@ -473,6 +480,16 @@
     </div>
 </div>
 
+<!-- نافذة رسالة التضليل -->
+<div class="blur-message-overlay" id="blurMessageOverlay">
+    <div class="blur-message-box">
+        <i class="fas fa-lock"></i>
+        <h3 id="blurMessageTitle">🔒 هذا الزر غير متاح حالياً</h3>
+        <p id="blurMessageText">هذا الزر تم تعطيله مؤقتاً من قبل الإدارة لأسباب تقنية.</p>
+        <button onclick="document.getElementById('blurMessageOverlay').classList.remove('show')">حسناً، فهمت</button>
+    </div>
+</div>
+
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 <div class="sidebar" id="sidebar">
     <div class="sidebar-top">
@@ -482,14 +499,14 @@
         <div class="sidebar-stage" id="sidebarInfo"></div>
     </div>
     <div class="sidebar-menu" id="sidebarMenu">
-        <div class="sidebar-item active" data-nav="home"><i class="fas fa-home" id="icon-home"></i><span>الرئيسية</span></div>
-        <div class="sidebar-item" data-nav="subjects"><i class="fas fa-book-open" id="icon-subjects"></i><span>المواد الدراسية</span></div>
-        <div class="sidebar-item" data-nav="gallery"><i class="fas fa-images" id="icon-gallery"></i><span>معرض الصور</span></div>
-        <div class="sidebar-item" data-nav="videos"><i class="fas fa-play-circle" id="icon-videos"></i><span>الفيديوهات</span></div>
-        <div class="sidebar-item" data-nav="channels"><i class="fas fa-satellite-dish" id="icon-channels"></i><span>القنوات الرسمية</span></div>
-        <div class="sidebar-item" data-nav="transfer"><i class="fas fa-exchange-alt" id="icon-transfer"></i><span>💎 تحويل الجواهر</span></div>
-        <div class="sidebar-item" data-nav="settings"><i class="fas fa-cog" id="icon-settings"></i><span>الإعدادات</span></div>
-        <div class="sidebar-item" data-nav="developer"><i class="fas fa-code" id="icon-developer"></i><span>المطور</span></div>
+        <div class="sidebar-item active" data-nav="home"><i class="fas fa-home"></i><span>الرئيسية</span></div>
+        <div class="sidebar-item" data-nav="subjects"><i class="fas fa-book-open"></i><span>المواد الدراسية</span></div>
+        <div class="sidebar-item" data-nav="gallery"><i class="fas fa-images"></i><span>معرض الصور</span></div>
+        <div class="sidebar-item" data-nav="videos"><i class="fas fa-play-circle"></i><span>الفيديوهات</span></div>
+        <div class="sidebar-item" data-nav="channels"><i class="fas fa-satellite-dish"></i><span>القنوات الرسمية</span></div>
+        <div class="sidebar-item" data-nav="transfer"><i class="fas fa-exchange-alt"></i><span>💎 تحويل الجواهر</span></div>
+        <div class="sidebar-item" data-nav="settings"><i class="fas fa-cog"></i><span>الإعدادات</span></div>
+        <div class="sidebar-item" data-nav="developer"><i class="fas fa-code"></i><span>المطور</span></div>
         <div class="sidebar-item green-item" id="installAppBtn" style="display:none;"><i class="fas fa-download"></i><span>تثبيت التطبيق</span></div>
     </div>
     <div class="sidebar-footer">
@@ -508,9 +525,9 @@
             <div class="nav-brand-text"><h1>CET Mazaya</h1><p>نظام المحاضرات الإلكتروني</p></div>
         </div>
         <div class="nav-actions">
-            <button class="nav-icon-btn" id="calendarBtn"><i class="fas fa-calendar-alt" id="icon-calendar"></i></button>
-            <button class="nav-icon-btn" id="bellBtn"><i class="fas fa-bell" id="icon-bell"></i><span class="nav-badge" id="announcementBadge" style="display:none;">0</span></button>
-            <button class="nav-icon-btn" id="menuToggle"><i class="fas fa-bars" id="icon-menu"></i></button>
+            <button class="nav-icon-btn" id="calendarBtn"><i class="fas fa-calendar-alt"></i></button>
+            <button class="nav-icon-btn" id="bellBtn"><i class="fas fa-bell"></i><span class="nav-badge" id="announcementBadge" style="display:none;">0</span></button>
+            <button class="nav-icon-btn" id="menuToggle"><i class="fas fa-bars"></i></button>
         </div>
     </div>
 </nav>
@@ -612,13 +629,11 @@
             <div class="back-bar-title">💎 تحويل الجواهر</div>
         </div>
 
-        <!-- تبويبات: إرسال + إحصائيات فقط -->
         <div class="transfer-tabs">
             <button class="transfer-tab active" data-transfer-tab="send">إرسال</button>
             <button class="transfer-tab" data-transfer-tab="stats">الإحصائيات</button>
         </div>
 
-        <!-- تبويب الإرسال -->
         <div class="transfer-content" id="sendTransfer">
             <div class="gems-balance-card">
                 <div class="label">💎 رصيدك الحالي</div>
@@ -684,7 +699,6 @@
             </div>
         </div>
 
-        <!-- تبويب الإحصائيات -->
         <div class="transfer-content" id="statsTransfer" style="display:none;">
             <div class="transfer-stats">
                 <div class="stat-card">
@@ -890,11 +904,11 @@
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
-    <button class="bn-item active" data-nav="home"><i class="fas fa-home" id="bicon-home"></i><span>الرئيسية</span></button>
-    <button class="bn-item" data-nav="subjects"><i class="fas fa-book-open" id="bicon-subjects"></i><span>المواد</span></button>
-    <button class="bn-center" id="transferBtn"><i class="fas fa-exchange-alt" id="bicon-transfer"></i></button>
-    <button class="bn-item" data-nav="videos"><i class="fas fa-play-circle" id="bicon-videos"></i><span>فيديو</span></button>
-    <button class="bn-item" data-nav="channels"><i class="fas fa-satellite-dish" id="bicon-channels"></i><span>قنوات</span></button>
+    <button class="bn-item active" data-nav="home"><i class="fas fa-home"></i><span>الرئيسية</span></button>
+    <button class="bn-item" data-nav="subjects"><i class="fas fa-book-open"></i><span>المواد</span></button>
+    <button class="bn-center" id="transferBtn"><i class="fas fa-exchange-alt"></i></button>
+    <button class="bn-item" data-nav="videos"><i class="fas fa-play-circle"></i><span>فيديو</span></button>
+    <button class="bn-item" data-nav="channels"><i class="fas fa-satellite-dish"></i><span>قنوات</span></button>
 </nav>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -925,7 +939,6 @@ const colorsC=['c0','c1','c2','c3','c4','c5'];
 let pendingAction=null;
 let gemsUnsubscribe=null;
 let lastSubscriptionAlert=new Map();
-let blurredIcons=[]; // قائمة الأيقونات المضللة
 
 // =================== تحويل الجواهر - متغيرات ===================
 let selectedReceiverId=null;
@@ -971,40 +984,6 @@ document.getElementById('confirmCancel').addEventListener('click',()=>{
     document.getElementById('confirmationModal').classList.remove('show');
     pendingAction=null;
 });
-
-// =================== تحميل إعدادات التضليل ===================
-async function loadBlurSettings(){
-    try{
-        const doc=await db.collection("settings").doc("iconBlur").get();
-        if(doc.exists){
-            blurredIcons=doc.data().blurredIcons||[];
-            applyBlurSettings();
-        }
-    }catch(e){console.error("Error loading blur settings:",e);}
-}
-
-function applyBlurSettings(){
-    // إزالة جميع التضليل أولاً
-    document.querySelectorAll('.blurred-icon').forEach(el=>el.classList.remove('blurred-icon'));
-    
-    // تطبيق التضليل على الأيقونات المحددة
-    blurredIcons.forEach(iconId=>{
-        const el=document.getElementById(iconId);
-        if(el){
-            el.classList.add('blurred-icon');
-        }
-    });
-}
-
-// الاستماع لتغييرات إعدادات التضليل
-function setupBlurListener(){
-    db.collection("settings").doc("iconBlur").onSnapshot((doc)=>{
-        if(doc.exists){
-            blurredIcons=doc.data().blurredIcons||[];
-            applyBlurSettings();
-        }
-    });
-}
 
 // =================== الاشتراكات ===================
 async function updateSubscriptionDays(){
@@ -1203,9 +1182,6 @@ async function loadInitialData(){
         await loadUserGems();await loadHomeButtons();
         if(gemsUnsubscribe)gemsUnsubscribe();gemsUnsubscribe=setupGemsListener();
         setupPersonalAnnouncementsListener();
-        // تحميل إعدادات التضليل
-        await loadBlurSettings();
-        setupBlurListener();
     }catch(e){console.error(e);}
 }
 
@@ -1234,19 +1210,67 @@ window.showLectures=async function(subjectCode){
     }catch(e){document.getElementById('lecturesList').innerHTML='<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h4>خطأ في التحميل</h4></div>';}
 };
 
-// =================== الأزرار الرئيسية ===================
+// =================== الأزرار الرئيسية (مع دعم التضليل) ===================
 function renderHomeButton(data){
-    const btnDiv=document.createElement('div');btnDiv.className='dynamic-btn';
-    btnDiv.onclick=function(){window.checkAndSubscribe(data.id,data.title,'homeButton',data.gemsRequired||0,data.subscriptionDays||30,function(){if(data.url&&data.url.trim())window.open(data.url,'_blank');});};
-    if(data.imageUrl&&data.imageUrl.trim())btnDiv.innerHTML=`<img class="dynamic-btn-img" src="${san(data.imageUrl)}" alt="${san(data.title)}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1998/1998672.png'"><span class="dynamic-btn-title">${san(data.title)}</span>`;
-    else btnDiv.innerHTML=`<div class="dynamic-btn-icon"><i class="fas ${san(data.icon||'fa-link')}"></i></div><span class="dynamic-btn-title">${san(data.title)}</span>`;
+    const btnDiv=document.createElement('div');
+    btnDiv.className='dynamic-btn';
+    
+    // التحقق من وجود خاصية التضليل
+    const isBlurred = data.isBlurred === true;
+    
+    // تعيين حدث النقر
+    if(isBlurred){
+        // زر مضلل - إضافة منطقة نقر تعرض رسالة
+        btnDiv.classList.add('home-btn-blurred');
+        // إضافة منطقة نقر للرسالة
+        const clickArea=document.createElement('div');
+        clickArea.className='blur-click-area';
+        clickArea.onclick=function(e){
+            e.stopPropagation();
+            showBlurMessage(data.blurMessage || 'هذا الزر غير متاح حالياً');
+        };
+        btnDiv.appendChild(clickArea);
+    }else{
+        btnDiv.classList.add('home-btn-normal');
+        btnDiv.onclick=function(){
+            window.checkAndSubscribe(
+                data.id,
+                data.title,
+                'homeButton',
+                data.gemsRequired||0,
+                data.subscriptionDays||30,
+                function(){
+                    if(data.url&&data.url.trim()) window.open(data.url,'_blank');
+                }
+            );
+        };
+    }
+    
+    // بناء محتوى الزر
+    if(data.imageUrl&&data.imageUrl.trim()){
+        btnDiv.innerHTML+=`<img class="dynamic-btn-img" src="${san(data.imageUrl)}" alt="${san(data.title)}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1998/1998672.png'">`;
+    }else{
+        btnDiv.innerHTML+=`<div class="dynamic-btn-icon"><i class="fas ${san(data.icon||'fa-link')}"></i></div>`;
+    }
+    btnDiv.innerHTML+=`<span class="dynamic-btn-title">${san(data.title)}</span>`;
+    
     return btnDiv;
 }
+
+function showBlurMessage(message){
+    document.getElementById('blurMessageText').textContent=message || 'هذا الزر غير متاح حالياً من قبل الإدارة.';
+    document.getElementById('blurMessageOverlay').classList.add('show');
+}
+
 function addHomeButton(id,data){
     if(!data||data.isActive===false||displayedHomeButtons.has(id)||!data.title)return;
     const container=document.getElementById('homeButtonsStrip');
-    if(container){container.appendChild(renderHomeButton(data));displayedHomeButtons.set(id,true);}
+    if(container){
+        container.appendChild(renderHomeButton(data));
+        displayedHomeButtons.set(id,true);
+    }
 }
+
 async function loadHomeButtons(){
     try{
         const snap=await db.collection("homeButtons").orderBy("order","asc").get();
@@ -1258,7 +1282,12 @@ async function loadHomeButtons(){
         if(displayedHomeButtons.size===0)container.innerHTML=defaultBtns();
     }catch(e){const container=document.getElementById('homeButtonsStrip');if(container)container.innerHTML=defaultBtns();}
 }
-function defaultBtns(){return`<div class="dynamic-btn"><div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div><span class="dynamic-btn-title">جوهرة VIP</span></div><div class="dynamic-btn"><div class="dynamic-btn-icon"><i class="fas fa-download"></i></div><span class="dynamic-btn-title">تحميل التطبيق</span></div>`;}
+
+function defaultBtns(){
+    return `<div class="dynamic-btn"><div class="dynamic-btn-icon"><i class="fas fa-gem"></i></div><span class="dynamic-btn-title">جوهرة VIP</span></div>
+            <div class="dynamic-btn"><div class="dynamic-btn-icon"><i class="fas fa-download"></i></div><span class="dynamic-btn-title">تحميل التطبيق</span></div>`;
+}
+
 function startHomeButtonsListener(){
     if(homeButtonsL)homeButtonsL();
     homeButtonsL=db.collection("homeButtons").onSnapshot(snap=>{
@@ -1696,7 +1725,7 @@ function removeAvatar(){saveAvatar(null);updateAvatarUI();showMessage('تم إز
 function clearEl(el){if(el)while(el.firstChild)el.removeChild(el.firstChild);}
 function emptyState(container,type){
     if(!container)return;
-    const msgs={subjects:{icon:'fa-book',title:'لا توجد مواد'},lectures:{icon:'fa-file-pdf',title:'لا توجد محاضرات'},dates:{icon:'fa-calendar-alt',title:'لا توجد مواعيد'},channels:{icon:'fa-satellite-dish',title:'لا توجد قنوات'},gallery:{icon:'fa-images',title:'لا توجد صور'},videos:{icon:'fa-video',title:'لا توجد فيديوهات'},announcements:{icon:'fa-bell',title:'لا توجد إعلانات'},leaderboard:{icon:'fa-trophy',title:'لا يوجد طلاب'}};
+    const msgs={subjects:{icon:'fa-book',title:'لا توجد مواد'},lectures:{icon:'fa-file-pdf',title:'لا توجد محاضرات'},dates:{icon:'fa-calendar-alt',title:'لا توجد مواعيد'},channels:{icon:'fa-satellite-dish',title:'لا توجد قنوات'},gallery:{icon:'fa-images',title:'لا توجد صور'},videos:{icon:'fa-video',title:'لا توجد فيديوهات'},announcements:{icon:'fa-bell',title:'لا توجد إعلانات'}};
     const m=msgs[type]||msgs.subjects;
     container.innerHTML=`<div class="empty-state"><i class="fas ${san(m.icon)}"></i><h4>${san(m.title)}</h4><p>سيتم الإضافة قريباً</p></div>`;
 }
