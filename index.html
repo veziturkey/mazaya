@@ -32,20 +32,171 @@
         body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);direction:rtl;min-height:100vh;overflow-x:hidden;}
         .subscription-badge{position:absolute;top:-5px;left:-5px;background:linear-gradient(135deg,var(--success),#00a07a);color:#fff;font-size:0.5rem;font-weight:800;padding:2px 5px;border-radius:10px;display:flex;align-items:center;gap:2px;z-index:10;box-shadow:0 2px 5px rgba(0,0,0,0.2);}
         .subject-card,.dynamic-btn,.video-card,.channel-card,.gallery-card{position:relative;overflow:visible;}
-        /* الأزرار المضللة */
-        .dynamic-btn.home-btn-blurred{filter:blur(10px);opacity:0.4;pointer-events:none;position:relative;transition:all 0.3s ease;}
-        .dynamic-btn.home-btn-blurred::after{content:'🔒';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:2rem;z-index:10;color:rgba(255,255,255,0.7);text-shadow:0 2px 10px rgba(0,0,0,0.5);}
-        .dynamic-btn.home-btn-blurred .blur-click-area{position:absolute;inset:0;z-index:20;cursor:pointer;pointer-events:auto;}
-        .dynamic-btn.home-btn-normal{filter:none;opacity:1;pointer-events:auto;}
-        .dynamic-btn.home-btn-normal .blur-click-area{display:none;}
-        /* نافذة رسالة التضليل */
-        .blur-message-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:10000;display:none;justify-content:center;align-items:center;padding:20px;animation:fadeIn 0.3s ease;}
-        .blur-message-overlay.show{display:flex;}
-        .blur-message-box{background:var(--card);border-radius:20px;padding:30px;max-width:400px;width:100%;text-align:center;border:1px solid var(--border);}
-        .blur-message-box i{font-size:3rem;color:var(--warning);margin-bottom:15px;display:block;}
-        .blur-message-box h3{font-size:1.2rem;font-weight:800;margin-bottom:10px;color:var(--text);}
-        .blur-message-box p{font-size:0.9rem;color:var(--text2);line-height:1.7;margin-bottom:20px;white-space:pre-line;}
-        .blur-message-box button{background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff;border:none;padding:10px 30px;border-radius:12px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;}
+        
+        /* ====== تصميم التضليل بالأبيض والأسود ====== */
+        .dynamic-btn.home-btn-blurred {
+            filter: grayscale(1) blur(2px) brightness(0.7);
+            opacity: 0.6;
+            pointer-events: none;
+            position: relative;
+            transition: all 0.4s ease;
+            border: 2px dashed rgba(255,255,255,0.2);
+        }
+        .dynamic-btn.home-btn-blurred::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.6));
+            border-radius: 16px;
+            z-index: 8;
+            backdrop-filter: blur(2px);
+        }
+        .dynamic-btn.home-btn-blurred .blur-overlay-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 12;
+            font-size: 2.5rem;
+            color: rgba(255,255,255,0.9);
+            text-shadow: 0 2px 15px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            pointer-events: none;
+        }
+        .dynamic-btn.home-btn-blurred .blur-overlay-icon i {
+            font-size: 2.8rem;
+            background: rgba(0,0,0,0.5);
+            padding: 12px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        .dynamic-btn.home-btn-blurred .blur-overlay-icon span {
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: rgba(255,255,255,0.8);
+            background: rgba(0,0,0,0.6);
+            padding: 4px 12px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .dynamic-btn.home-btn-blurred .blur-click-area {
+            position: absolute;
+            inset: 0;
+            z-index: 20;
+            cursor: pointer;
+            pointer-events: auto;
+            border-radius: 16px;
+        }
+        .dynamic-btn.home-btn-blurred .dynamic-btn-img {
+            filter: grayscale(1) contrast(0.5);
+        }
+        .dynamic-btn.home-btn-blurred .dynamic-btn-title {
+            color: rgba(255,255,255,0.5);
+            position: relative;
+            z-index: 10;
+        }
+        .dynamic-btn.home-btn-blurred .dynamic-btn-icon {
+            background: rgba(100,100,100,0.3);
+            color: rgba(255,255,255,0.3);
+            position: relative;
+            z-index: 10;
+        }
+        .dynamic-btn.home-btn-normal {
+            filter: none;
+            opacity: 1;
+            pointer-events: auto;
+            border: 1px solid var(--border);
+        }
+        .dynamic-btn.home-btn-normal .blur-click-area,
+        .dynamic-btn.home-btn-normal .blur-overlay-icon {
+            display: none !important;
+        }
+        
+        /* ====== نافذة رسالة التضليل ====== */
+        .blur-message-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.88);
+            z-index: 10000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+            backdrop-filter: blur(8px);
+        }
+        .blur-message-overlay.show {
+            display: flex;
+        }
+        .blur-message-box {
+            background: linear-gradient(145deg, #1a1a2e, #2d2d44);
+            border-radius: 24px;
+            padding: 35px 30px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            animation: scaleIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .blur-message-box .blur-icon-big {
+            font-size: 3.5rem;
+            color: #FFD700;
+            margin-bottom: 15px;
+            display: block;
+            text-shadow: 0 0 30px rgba(255,215,0,0.3);
+        }
+        .blur-message-box .blur-icon-big i {
+            background: rgba(255,215,0,0.1);
+            padding: 18px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,215,0,0.2);
+        }
+        .blur-message-box h3 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+        .blur-message-box .msg-divider {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--red), var(--gold));
+            margin: 0 auto 15px;
+            border-radius: 3px;
+        }
+        .blur-message-box p {
+            font-size: 0.9rem;
+            color: #c8c8d8;
+            line-height: 1.8;
+            margin-bottom: 22px;
+            white-space: pre-line;
+            padding: 0 5px;
+        }
+        .blur-message-box .msg-btn {
+            background: linear-gradient(135deg, var(--red), var(--red-dark));
+            color: #fff;
+            border: none;
+            padding: 12px 35px;
+            border-radius: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            box-shadow: 0 4px 20px rgba(200,16,46,0.3);
+        }
+        .blur-message-box .msg-btn:hover {
+            transform: scale(1.02);
+        }
+        .blur-message-box .msg-btn:active {
+            transform: scale(0.97);
+        }
+
         .loading-screen{position:fixed;inset:0;background:#0A0A0F;z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:center;transition:opacity 0.6s ease;}
         .loading-screen.hidden{opacity:0;pointer-events:none;}
         .loading-logo-wrap{position:relative;width:110px;height:110px;margin-bottom:28px;}
@@ -114,7 +265,7 @@
         .dynamic-btn:active{transform:scale(0.96);background:var(--card2);}
         .dynamic-btn-img{width:50px;height:50px;border-radius:12px;object-fit:cover;background:linear-gradient(135deg,var(--bg3),var(--card));}
         .dynamic-btn-icon{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:linear-gradient(135deg,rgba(200,16,46,0.15),rgba(200,16,46,0.05));color:var(--red);}
-        .dynamic-btn-title{font-size:0.7rem;font-weight:700;color:var(--text);text-align:center;line-height:1.3;}
+        .dynamic-btn-title{font-size:0.7rem;font-weight:700;color:var(--text);text-align:center;line-height:1.3;position:relative;z-index:10;}
         .section-header{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 10px;}
         .section-header h2{font-size:1rem;font-weight:800;color:var(--text);}
         .section-header-line{width:3px;height:18px;background:var(--red);border-radius:2px;margin-left:8px;flex-shrink:0;}
@@ -480,13 +631,16 @@
     </div>
 </div>
 
-<!-- نافذة رسالة التضليل -->
+<!-- نافذة رسالة التضليل المحسّنة -->
 <div class="blur-message-overlay" id="blurMessageOverlay">
     <div class="blur-message-box">
-        <i class="fas fa-lock"></i>
+        <span class="blur-icon-big"><i class="fas fa-lock"></i></span>
         <h3 id="blurMessageTitle">🔒 هذا الزر غير متاح حالياً</h3>
+        <div class="msg-divider"></div>
         <p id="blurMessageText">هذا الزر تم تعطيله مؤقتاً من قبل الإدارة لأسباب تقنية.</p>
-        <button onclick="document.getElementById('blurMessageOverlay').classList.remove('show')">حسناً، فهمت</button>
+        <button class="msg-btn" onclick="document.getElementById('blurMessageOverlay').classList.remove('show')">
+            <i class="fas fa-check-circle"></i> حسناً، فهمت
+        </button>
     </div>
 </div>
 
@@ -1222,6 +1376,11 @@ function renderHomeButton(data){
     if(isBlurred){
         // زر مضلل - إضافة منطقة نقر تعرض رسالة
         btnDiv.classList.add('home-btn-blurred');
+        // إضافة أيقونة القفل والرسالة
+        const overlayIcon=document.createElement('div');
+        overlayIcon.className='blur-overlay-icon';
+        overlayIcon.innerHTML=`<i class="fas fa-lock"></i><span>غير متاح</span>`;
+        btnDiv.appendChild(overlayIcon);
         // إضافة منطقة نقر للرسالة
         const clickArea=document.createElement('div');
         clickArea.className='blur-click-area';
