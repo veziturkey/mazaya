@@ -911,7 +911,7 @@
             <form id="loginForm">
                 <div class="form-group"><label>اسم المستخدم</label><input type="text" id="loginUsername" class="form-control" autocomplete="username"></div>
                 <div class="form-group"><label>الرقم السري</label><input type="password" id="loginPassword" class="form-control" autocomplete="current-password"></div>
-                <div class="form-group"><label class="stay-logged-label"><input type="checkbox" id="stayLoggedIn"> <span>ابقني متصلاً</span></label></div>
+                <div class="form-group"><label class="stay-logged-label"><input type="checkbox" id="stayLoggedIn" checked> <span>ابقني متصلاً</span></label></div>
                 <button type="submit" class="auth-btn"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</button>
                 <div class="auth-error" id="loginError"></div>
             </form>
@@ -1032,7 +1032,7 @@
     <!-- الرئيسية -->
     <div id="homeView">
         <div class="hero-slider" id="heroSlider">
-            <div class="slide" style="background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdCvtQNvzS6aDSqK2HX8BwTSftUHX7jmRvIQ&s')"></div>
+            <div class="slide" style="background-image:url('https://d26e3f10zvrezp.cloudfront.net/Gallery/509c7d24-345e-4bd3-b2a6-67e91d1f865a-1024x1024.webp')"></div>
             <div class="slide" style="background-image:url('https://blog.mostaql.com/wp-content/uploads/2015/05/%D9%85%D8%AC%D8%A7%D9%84%D8%A7%D8%AA-%D8%A7%D9%84%D8%A8%D8%B1%D9%85%D8%AC%D8%A9.jpg')"></div>
             <div class="slide" style="background-image:url('https://img.magnific.com/premium-vector/professional-programmer-working-code-screen-from-back-view_1310786-28387.jpg?semt=ais_hybrid&w=740&q=80')"></div>
             <div class="slide" style="background-image:url('https://cdn-jjfhf.nitrocdn.com/hwGdHsKTGpIHJSBirKPhKvQbhZYuIuNn/assets/images/optimized/rev-dc9b18f/almdrasa.com/wp-content/uploads/2022/11/software-developer-6521720-2048x1367.jpg')"></div>
@@ -1436,21 +1436,17 @@ function san(input) {
 }
 
 // ====== 3. منع حقن الـ DOM عبر innerHTML غير الآمن ======
-// جميع استخدامات innerHTML في الكود تستخدم san()، لكن نعزز الحماية:
 const originalInnerHTML = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML');
 if (originalInnerHTML) {
     // منع أي محاولة لتجاوز الحماية (اختياري)
 }
 
 // ====== 4. منع التلاعب بـ localStorage ======
-// نتحقق من صحة البيانات المخزنة قبل استخدامها
 function safeGetLocalStorage(key, fallback = null) {
     try {
         const value = localStorage.getItem(key);
         if (value === null) return fallback;
-        // نمنع تنفيذ أي كود عبر JSON.parse في حالة بيانات خبيثة
         if (key === 'loggedInUser' || key === 'theme' || key === 'stayLoggedIn' || key === 'readAnnouncements') {
-            // نمررها عبر san() للتأكد من عدم وجود أكواد خبيثة
             return value;
         }
         return value;
@@ -1461,7 +1457,6 @@ function safeGetLocalStorage(key, fallback = null) {
 
 function safeSetLocalStorage(key, value) {
     try {
-        // تنظيف القيمة قبل التخزين
         const cleanValue = typeof value === 'string' ? san(value) : value;
         localStorage.setItem(key, cleanValue);
     } catch (e) {
@@ -1470,11 +1465,9 @@ function safeSetLocalStorage(key, value) {
 }
 
 // ====== 5. منع هجمات XSS عبر خصائص DOM ======
-// تعطيل تقييم الـ URL في العناصر الديناميكية
 const originalSetAttribute = Element.prototype.setAttribute;
 Element.prototype.setAttribute = function(name, value) {
     if (name === 'href' || name === 'src' || name === 'onclick' || name === 'onload' || name === 'onerror') {
-        // تطهير القيمة
         const clean = typeof value === 'string' ? san(value) : value;
         return originalSetAttribute.call(this, name, clean);
     }
@@ -1482,14 +1475,11 @@ Element.prototype.setAttribute = function(name, value) {
 };
 
 // ====== 6. حماية الـ Firestore من حقن الاستعلامات ======
-// استخدام prepared queries فقط (يتم عبر Firestore أصلاً)
-// نضيف فلترة إضافية لكل الاستعلامات
 function safeFirestoreQuery(collection, filters) {
     let query = db.collection(collection);
     if (filters) {
         for (const filter of filters) {
             const [field, operator, value] = filter;
-            // نمنع أي قيمة تحتوي على أكواد خبيثة
             const cleanValue = typeof value === 'string' ? san(value) : value;
             query = query.where(field, operator, cleanValue);
         }
@@ -1498,22 +1488,17 @@ function safeFirestoreQuery(collection, filters) {
 }
 
 // ====== 7. حماية كلمة المرور ======
-// نمنع تخزينها في localStorage بشكل نصي (تم بالفعل)
-// نضيف تعقيد إضافي للتحقق من صحة الجلسة
 function validateSession(userData) {
     if (!userData || !userData.id || !userData.username) return false;
-    // التحقق من أن البيانات ليست مخترقة
     const required = ['id', 'username', 'name', 'stage', 'shift', 'role'];
     for (const key of required) {
         if (!userData[key]) return false;
-        // التأكد من أن القيم لا تحتوي على أكواد خبيثة
         if (typeof userData[key] === 'string' && userData[key].includes('<script>')) return false;
     }
     return true;
 }
 
 // ====== 8. حماية ضد هجمات CSRF ======
-// إضافة token عشوائي للجلسة
 function generateCSRFToken() {
     return 'csrf_' + Math.random().toString(36).substring(2, 15);
 }
@@ -1521,7 +1506,7 @@ function generateCSRFToken() {
 // ====== 9. حماية ضد هجمات القوة العمياء (Brute Force) ======
 const loginAttempts = new Map();
 const MAX_ATTEMPTS = 5;
-const BLOCK_DURATION = 15 * 60 * 1000; // 15 دقيقة
+const BLOCK_DURATION = 15 * 60 * 1000;
 
 function checkLoginAttempts(username) {
     const now = Date.now();
@@ -1548,10 +1533,8 @@ function recordLoginFailure(username) {
 }
 
 // ====== 10. حماية الـ Session ======
-// إعادة إنشاء الجلسة بشكل دوري
 function regenerateSession() {
     if (currentUser) {
-        // تحديث وقت الجلسة
         const sessionKey = 'session_' + currentUser.id;
         safeSetLocalStorage(sessionKey, Date.now().toString());
     }
@@ -1564,7 +1547,6 @@ if (window.top !== window.self) {
 }
 
 // ====== 12. منع تنفيذ أكواد غير مصرح بها ======
-// تعطيل تقييم الـ eval و new Function
 const originalEval = window.eval;
 window.eval = function() {
     console.warn('تنفيذ eval محظور لأسباب أمنية');
@@ -1576,7 +1558,6 @@ window.Function = function() {
 };
 
 // ====== 13. حماية الـ Cookies ======
-// نمنع قراءة الكوكيز من JavaScript (عبر إعدادات السيرفر، ولكن نعزز)
 Object.defineProperty(document, 'cookie', {
     get: function() {
         console.warn('محاولة قراءة الكوكيز محظورة');
@@ -1591,8 +1572,7 @@ Object.defineProperty(document, 'cookie', {
 // ====== 14. التحقق من صحة المدخلات ======
 function validateInput(input, type) {
     if (typeof input !== 'string') return false;
-    if (input.length > 1000) return false; // منع هجمات DoS
-    // منع الأحرف الخطيرة
+    if (input.length > 1000) return false;
     const dangerous = ['<', '>', '"', "'", '/', '`', '=', ';', '--', '/*', '*/'];
     for (const char of dangerous) {
         if (input.includes(char)) return false;
@@ -1601,7 +1581,6 @@ function validateInput(input, type) {
 }
 
 // ====== 15. تطبيق الحماية على Firebase ======
-// نمرر جميع البيانات عبر san() قبل الإرسال
 function safeFirestoreData(data) {
     const safe = {};
     for (const [key, value] of Object.entries(data)) {
@@ -1621,9 +1600,7 @@ function safeFirestoreData(data) {
 // ====== 16. منع هجمات التصيد عبر الـ Console ======
 console.log = function() {};
 console.warn = function() {};
-console.error = function() {
-    // نسمح بالأخطاء فقط للتطوير، ولكن نمنع عرضها للمستخدم
-};
+console.error = function() {};
 
 // ============================================================
 // 🛡️ نهاية القسم الأمني - يبدأ الكود الأصلي المحمي
@@ -2388,7 +2365,6 @@ async function checkIfBlocked(){
 // =================== المصادقة ===================
 async function handleLogin(username,password,stay){
     const u=san(username);
-    // التحقق من محاولات الدخول
     if (!checkLoginAttempts(u)) {
         throw new Error("تم حظر حسابك مؤقتاً بسبب كثرة المحاولات الفاشلة. يرجى المحاولة بعد 15 دقيقة.");
     }
@@ -2401,19 +2377,21 @@ async function handleLogin(username,password,stay){
     const doc=snap.docs[0];const data=doc.data();
     if(data.isBlocked)throw new Error(data.banReason||"حسابك موقوف");
     currentUser={id:doc.id,name:san(data.name||username),username:san(data.username),stage:san(data.stage||'المرحلة الأولى'),shift:san(data.shift||'صباحي'),role:data.role||'student',password:data.password,phone:data.phone||''};
-    // التحقق من صحة الجلسة
     if (!validateSession(currentUser)) {
         throw new Error("بيانات الجلسة غير صالحة");
     }
     safeSetLocalStorage('loggedInUser',JSON.stringify(currentUser));
-    if(stay)safeSetLocalStorage('stayLoggedIn','true');else localStorage.removeItem('stayLoggedIn');
+    if(stay){
+        safeSetLocalStorage('stayLoggedIn','true');
+    } else {
+        localStorage.removeItem('stayLoggedIn');
+    }
     db.collection("loginLogs").add({username:u,action:"login",timestamp:firebase.firestore.FieldValue.serverTimestamp()}).catch(()=>{});
     checkBlockedTimer=setInterval(checkIfBlocked,10000);
     return true;
 }
 async function handleRegister(fullName,username,phone,stage,shift,password){
     const u=san(username);const n=san(fullName);const p=san(phone);
-    // التحقق من صحة المدخلات
     if (!validateInput(u, 'username') || !validateInput(n, 'name')) {
         throw new Error("بيانات غير صالحة");
     }
@@ -2769,7 +2747,6 @@ async function sendAIMessage(){
     const loadingDiv=document.createElement('div');loadingDiv.className='ai-msg bot';loadingDiv.innerHTML='<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>';aiMessages.appendChild(loadingDiv);aiMessages.scrollTop=aiMessages.scrollHeight;
     try{
         const url=`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-        // نمرر النص عبر san() للحماية
         const safeText = san(text);
         const response=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:`أنت مساعد ذكي متخصص في التعليم الجامعي. اسمك "مساعد CET". تتحدث بالعربية الفصحى. ساعد الطلاب في المواد الدراسية والمحاضرات. أجب باختصار ووضوح.\n\nسؤال المستخدم: ${safeText}`}]}],generationConfig:{temperature:0.7,maxOutputTokens:500,topP:0.9}})});
         if(!response.ok)throw new Error('خطأ في الاتصال بالمساعد');
@@ -2825,10 +2802,44 @@ document.getElementById('settingsForm').addEventListener('submit',async e=>{
 
 // =================== التشغيل ===================
 function checkAutoLogin(){
-    const saved=safeGetLocalStorage('loggedInUser');const stay=localStorage.getItem('stayLoggedIn')==='true';
-    if(saved&&stay){try{currentUser=JSON.parse(saved);if(validateSession(currentUser)){checkIfBlocked().then(blocked=>{if(!blocked)showMainContent();});}else{document.getElementById('authModal').style.display='flex';hideLoading();}}catch(e){document.getElementById('authModal').style.display='flex';hideLoading();}}
-    else{document.getElementById('authModal').style.display='flex';hideLoading();}
+    const saved = localStorage.getItem('loggedInUser');
+    const stay = localStorage.getItem('stayLoggedIn') === 'true';
+    
+    console.log('🔍 محاولة استعادة الجلسة:', { saved: !!saved, stay });
+    
+    if (saved && stay) {
+        try {
+            const userData = JSON.parse(saved);
+            if (validateSession(userData)) {
+                currentUser = userData;
+                checkIfBlocked().then(blocked => {
+                    if (!blocked) {
+                        console.log('✅ تم استعادة الجلسة بنجاح للمستخدم:', currentUser.username);
+                        showMainContent();
+                    } else {
+                        document.getElementById('authModal').style.display='flex';
+                        hideLoading();
+                    }
+                });
+            } else {
+                localStorage.removeItem('loggedInUser');
+                localStorage.removeItem('stayLoggedIn');
+                document.getElementById('authModal').style.display='flex';
+                hideLoading();
+            }
+        } catch(e) {
+            console.error('❌ خطأ في استعادة الجلسة:', e);
+            localStorage.removeItem('loggedInUser');
+            localStorage.removeItem('stayLoggedIn');
+            document.getElementById('authModal').style.display='flex';
+            hideLoading();
+        }
+    } else {
+        document.getElementById('authModal').style.display='flex';
+        hideLoading();
+    }
 }
+
 setProgress(10);
 setTimeout(()=>{setProgress(30);checkAutoLogin();},500);
 
@@ -2846,7 +2857,6 @@ document.querySelectorAll('.auth-btn, .save-btn, .charging-btn, .send-gems-btn, 
 
 // ====== 20. حماية: تعطيل زر العودة في المتصفح لمنع التلاعب ======
 window.addEventListener('popstate', function(e) {
-    // منع العودة إلى صفحات حساسة
     if (document.getElementById('settingsView').classList.contains('show')) {
         document.getElementById('settingsView').classList.remove('show');
         showSection('home');
