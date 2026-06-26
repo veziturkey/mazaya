@@ -782,10 +782,41 @@
         .blocked-card button{background:var(--red);color:#fff;border:none;padding:12px 28px;border-radius:12px;font-family:'Cairo',sans-serif;font-weight:700;cursor:pointer;}
         .toast{position:fixed;top:calc(var(--nav-h) + 12px);left:50%;transform:translateX(-50%) translateY(-12px);background:var(--card);border:1px solid var(--border);color:var(--text);padding:10px 20px;border-radius:50px;font-size:0.78rem;font-weight:600;z-index:3000;box-shadow:0 8px 28px rgba(0,0,0,0.4);transition:transform 0.3s,opacity 0.3s;opacity:0;white-space:nowrap;max-width:85vw;}
         .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
-        .empty-state{text-align:center;padding:40px 20px;color:var(--text3);}
-        .empty-state i{font-size:2.5rem;margin-bottom:12px;opacity:0.4;display:block;}
-        .empty-state h4{font-size:0.9rem;color:var(--text2);margin-bottom:4px;}
-        .empty-state p{font-size:0.72rem;}
+        /* ====== أنماط الحالة الفارغة الموحدة ====== */
+        .empty-state-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px 40px;
+            text-align: center;
+            min-height: 40vh;
+            background: transparent;
+            width: 100%;
+        }
+        .empty-state-wrapper img {
+            max-width: 260px;
+            width: 80%;
+            height: auto;
+            margin-bottom: 18px;
+            opacity: 0.75;
+            filter: drop-shadow(0 4px 15px rgba(0,0,0,0.2));
+            border-radius: 16px;
+            background: rgba(255,255,255,0.02);
+            padding: 8px;
+        }
+        .empty-state-wrapper .empty-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--text2);
+            margin-bottom: 6px;
+        }
+        .empty-state-wrapper .empty-sub {
+            font-size: 0.8rem;
+            color: var(--text3);
+            max-width: 280px;
+            line-height: 1.6;
+        }
         .main-content{padding-bottom:calc(var(--bottom-h) + var(--safe-bottom) + 16px);margin-top:var(--nav-h);}
         @media(min-width:480px){.subjects-grid{grid-template-columns:repeat(4,1fr);}.videos-grid{grid-template-columns:repeat(3,1fr);}.buttons-strip{justify-content:center;}}
         @media(min-width:768px){.subjects-grid{grid-template-columns:repeat(5,1fr);}}
@@ -1502,7 +1533,7 @@ function createStoreButton(){
         btnDiv.classList.add('store-closed-btn');
     }
     btnDiv.innerHTML=`
-        <img class="store-btn-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtmc0tZWrs0uYNGYjWDsNm5DM2IGd6JnVkDfqLMk1kVhhzB1DJ3koSuoGp&s=10" alt="مزايا ستوري" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDUwIDUwIj48Y2lyY2xlIGN4PSIyNSIgY3k9IjI1IiByPSIyNSIgZmlsbD0iI0M4MTAyRSIvPjx0ZXh0IHg9IjI1IiB5PSIzMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE4IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC13ZWlnaHQ9ImJvbGQiPlM8L3RleHQ+PC9zdmc+'" loading="lazy">
+        <img class="store-btn-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtmc0tZWrs0uYNGYjWDsNm5DM2IGd6JnVkDfqLMk1kVhhzB1DJ3koSuoGp&s=10" alt="مزايا ستوري" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDUwIDUwIj48Y2lyY2xlIGN4PSIyNSIgY3k9IjI1IiByPSIyNSIgZmlsbD0iI0M4MTAyRSIvPjx0ZXh0IHg9IjI1IiB5PSIzMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE4IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC13ZWlnaHQ9ImJvbGQiPlM8L3RleHQ+PC9zdmc+'">
         <span class="dynamic-btn-title">🛍️ مزايا ستوري</span>
     `;
     btnDiv.onclick=function(e){
@@ -1912,6 +1943,19 @@ function setupPersonalAnnouncementsListener(){
     });
 }
 
+// =================== دالة الحالة الفارغة الموحدة ===================
+function createEmptyStateHTML(title, subtitle, imageUrl) {
+    const defaultImage = 'https://raw.githubusercontent.com/veziturkey/asharat/main/college%20entrance%20exam-bro.png';
+    const img = imageUrl || defaultImage;
+    return `
+        <div class="empty-state-wrapper">
+            <img src="${img}" alt="لا يوجد محتوى" loading="lazy">
+            <div class="empty-title">${san(title)}</div>
+            <div class="empty-sub">${san(subtitle)}</div>
+        </div>
+    `;
+}
+
 // =================== تحميل البيانات الأولية ===================
 async function loadInitialData(){
     try{
@@ -1922,17 +1966,27 @@ async function loadInitialData(){
         clearEl(document.getElementById('homeSubjectsList'));clearEl(document.getElementById('subjectsPageList'));displayedSubjects.clear();allSubjects=[];
         const sArr=[];sSnap.forEach(d=>sArr.push({id:d.id,...d.data()}));sArr.sort((a,b)=>(a.name||'').localeCompare(b.name||'','ar'));
         sArr.forEach((s)=>{allSubjects.push(s);addSubjectToGrids(s.id,s,true);});
-        if(!displayedSubjects.size){emptyState(document.getElementById('homeSubjectsList'),'subjects');emptyState(document.getElementById('subjectsPageList'),'subjects');}
+        if(!displayedSubjects.size){
+            const emptyHtml = createEmptyStateHTML('لا توجد مواد دراسية متاحة', 'سيتم إضافة المواد قريباً');
+            document.getElementById('homeSubjectsList').innerHTML = emptyHtml;
+            document.getElementById('subjectsPageList').innerHTML = emptyHtml;
+        }
         allImportantDates=[];dSnap.forEach(d=>allImportantDates.push({id:d.id,...d.data()}));renderDates();updateCalBadge();
         clearEl(document.getElementById('channelsContainer'));displayedChannels.clear();
         const cArr=[];cSnap.forEach(d=>cArr.push({id:d.id,...d.data()}));cArr.forEach(c=>addChannel(c.id,c));
-        if(!displayedChannels.size)emptyState(document.getElementById('channelsContainer'),'channels');
+        if(!displayedChannels.size){
+            document.getElementById('channelsContainer').innerHTML = createEmptyStateHTML('لا توجد قنوات متاحة', 'سيتم إضافة القنوات قريباً');
+        }
         clearEl(document.getElementById('galleryContainer'));displayedGallery.clear();
         const gArr=[];gSnap.forEach(d=>gArr.push({id:d.id,...d.data()}));gArr.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0));gArr.forEach(g=>addGalleryItem(g.id,g));
-        if(!displayedGallery.size)emptyState(document.getElementById('galleryContainer'),'gallery');
+        if(!displayedGallery.size){
+            document.getElementById('galleryContainer').innerHTML = createEmptyStateHTML('لا توجد صور في المعرض', 'سيتم إضافة الصور قريباً');
+        }
         clearEl(document.getElementById('videosContainer'));displayedVideos.clear();
         const vArr=[];vSnap.forEach(d=>vArr.push({id:d.id,...d.data()}));vArr.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0));vArr.forEach(v=>addVideoItem(v.id,v));
-        if(!displayedVideos.size)emptyState(document.getElementById('videosContainer'),'videos');
+        if(!displayedVideos.size){
+            document.getElementById('videosContainer').innerHTML = createEmptyStateHTML('لا توجد فيديوهات حالياً', 'سيتم إضافة فيديوهات تعليمية قريباً');
+        }
         allCustomButtons=[];btnSnap.forEach(d=>allCustomButtons.push({id:d.id,...d.data()}));renderCustomButtons();
         const saved=localStorage.getItem('readAnnouncements');if(saved){try{readAnnouncements=new Set(JSON.parse(saved));}catch(e){}}
         allAnnouncements=[];annSnap.forEach(d=>allAnnouncements.push({id:d.id,...d.data()}));
@@ -1958,7 +2012,10 @@ window.showLectures=async function(subjectCode){
         let q=db.collection("lectures").where("subjectCode","==",subjectCode);
         if(currentUser?.role!=='admin')q=q.where("stage","==",currentUser.stage);
         const snap=await q.get();const list=document.getElementById('lecturesList');list.innerHTML='';
-        if(snap.empty){list.innerHTML='<div class="empty-state"><i class="fas fa-file-pdf"></i><h4>لا توجد محاضرات</h4><p>سيتم الإضافة قريباً</p></div>';return;}
+        if(snap.empty){
+            list.innerHTML = createEmptyStateHTML('لا توجد محاضرات', 'سيتم إضافة المحاضرات قريباً');
+            return;
+        }
         const lecs=[];snap.forEach(d=>lecs.push({id:d.id,...d.data()}));lecs.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0));
         for(const lec of lecs){
             const hasSub=await checkUserSubscription(lec.id,'lecture');
@@ -2076,7 +2133,10 @@ function renderAnnouncements(){
     const userStage=currentUser?.stage;const isAdmin=currentUser?.role==='admin';
     let arr=allAnnouncements.filter(a=>isAdmin||!a.stage||a.stage==='الكل'||a.stage===userStage);
     arr.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0));
-    if(!arr.length){emptyState(list,'announcements');return;}
+    if(!arr.length){
+        list.innerHTML = createEmptyStateHTML('لا توجد إعلانات حالياً', 'سيتم نشر الإعلانات المهمة هنا');
+        return;
+    }
     arr.forEach(ann=>{
         const isUnread=!readAnnouncements.has(ann.id);const date=ann.createdAt?.toDate()||new Date();
         const item=document.createElement('div');item.className='ann-item'+(isUnread?' unread':'');
@@ -2089,7 +2149,10 @@ function renderDates(){
     const list=document.getElementById('datesList');if(!list)return;clearEl(list);
     const userStage=currentUser?.stage;const isAdmin=currentUser?.role==='admin';
     let arr=allImportantDates.filter(d=>isAdmin||!d.stage||d.stage==='الكل'||d.stage===userStage);arr.sort((a,b)=>new Date(a.date)-new Date(b.date));
-    if(!arr.length){emptyState(list,'dates');return;}
+    if(!arr.length){
+        list.innerHTML = createEmptyStateHTML('لا توجد مواعيد مهمة حالياً', 'سيتم إضافة المواعيد القادمة');
+        return;
+    }
     arr.forEach(date=>{const item=document.createElement('div');item.className='dates-item';item.innerHTML=`<div><div class="dates-item-title">${san(date.title||'موعد')}</div>${date.description?`<div class="dates-item-desc">${san(date.description)}</div>`:''}</div><div class="dates-badge">${san(new Date(date.date).toLocaleDateString('ar-IQ'))}</div>`;list.appendChild(item);});
 }
 function addSubjectToGrids(id,data,forceAdd){
@@ -2148,7 +2211,7 @@ function startListeners(){
     datesL=db.collection("importantDates").onSnapshot(snap=>{const isAdmin=currentUser?.role==='admin';const userStage=currentUser?.stage;allImportantDates=[];snap.forEach(d=>{const dat=d.data();if(!isAdmin&&userStage&&dat.stage&&dat.stage!=='الكل'&&dat.stage!==userStage)return;allImportantDates.push({id:d.id,...dat});});renderDates();updateCalBadge();});
     channelsL=db.collection("channels").onSnapshot(snap=>{snap.docChanges().forEach(c=>{if(c.type==='added')addChannel(c.doc.id,c.doc.data());});});
     galleryL=db.collection("gallery").onSnapshot(snap=>{snap.docChanges().forEach(c=>{if(c.type==='added')addGalleryItem(c.doc.id,c.doc.data());});});
-    videosL=db.collection("videos").onSnapshot(snap=>{const isAdmin=currentUser?.role==='admin';const userStage=currentUser?.stage;clearEl(document.getElementById('videosContainer'));displayedVideos.clear();const arr=[];snap.forEach(d=>{const dat=d.data();if(!isAdmin&&userStage&&dat.stage&&dat.stage!=='الكل'&&dat.stage!==userStage)return;arr.push({id:d.id,...dat});});arr.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0));arr.forEach(v=>addVideoItem(v.id,v));if(!displayedVideos.size)emptyState(document.getElementById('videosContainer'),'videos');});
+    videosL=db.collection("videos").onSnapshot(snap=>{const isAdmin=currentUser?.role==='admin';const userStage=currentUser?.stage;clearEl(document.getElementById('videosContainer'));displayedVideos.clear();const arr=[];snap.forEach(d=>{const dat=d.data();if(!isAdmin&&userStage&&dat.stage&&dat.stage!=='الكل'&&dat.stage!==userStage)return;arr.push({id:d.id,...dat});});arr.sort((a,b)=>(b.createdAt?.toDate()||0)-(a.createdAt?.toDate()||0));arr.forEach(v=>addVideoItem(v.id,v));if(!displayedVideos.size){document.getElementById('videosContainer').innerHTML = createEmptyStateHTML('لا توجد فيديوهات حالياً', 'سيتم إضافة فيديوهات تعليمية قريباً');}});
     announcementsL=db.collection("announcements").where("isActive","==",true).onSnapshot(snap=>{const isAdmin=currentUser?.role==='admin';const userStage=currentUser?.stage;allAnnouncements=allAnnouncements.filter(a=>!a.isPersonal);snap.forEach(d=>{const dat=d.data();if(!isAdmin&&userStage&&dat.stage&&dat.stage!=='الكل'&&dat.stage!==userStage)return;allAnnouncements.push({id:d.id,...dat});});renderAnnouncements();updateAnnBadge();const latest=allAnnouncements.find(a=>!readAnnouncements.has(a.id));if(latest)showMessage('📢 '+san(latest.title||'إعلان جديد'));});
     buttonsL=db.collection("customButtons").onSnapshot(snap=>{allCustomButtons=[];snap.forEach(d=>allCustomButtons.push({id:d.id,...d.data()}));renderCustomButtons();});
     startHomeButtonsListener();
@@ -2483,10 +2546,9 @@ function removeAvatar(){saveAvatar(null);updateAvatarUI();showMessage('تم إز
 // =================== المساعدات ===================
 function clearEl(el){if(el)while(el.firstChild)el.removeChild(el.firstChild);}
 function emptyState(container,type){
+    // هذه الدالة لم تعد مستخدمة في الأماكن المهمة، لكن تم الاحتفاظ بها للتوافق
     if(!container)return;
-    const msgs={subjects:{icon:'fa-book',title:'لا توجد مواد'},lectures:{icon:'fa-file-pdf',title:'لا توجد محاضرات'},dates:{icon:'fa-calendar-alt',title:'لا توجد مواعيد'},channels:{icon:'fa-satellite-dish',title:'لا توجد قنوات'},gallery:{icon:'fa-images',title:'لا توجد صور'},videos:{icon:'fa-video',title:'لا توجد فيديوهات'},announcements:{icon:'fa-bell',title:'لا توجد إعلانات'}};
-    const m=msgs[type]||msgs.subjects;
-    container.innerHTML=`<div class="empty-state"><i class="fas ${san(m.icon)}"></i><h4>${san(m.title)}</h4><p>سيتم الإضافة قريباً</p></div>`;
+    container.innerHTML = createEmptyStateHTML('لا يوجد محتوى', 'سيتم الإضافة قريباً');
 }
 
 // =================== السلايدر ===================
