@@ -517,6 +517,134 @@
         .auth-error.show{display:block;}
         .stay-logged-label{display:flex;align-items:center;gap:8px;font-size:0.75rem;color:var(--text2);cursor:pointer;}
         .stay-logged-label input{accent-color:var(--red);}
+        
+        /* ====== زر استرجاع كلمة السر ====== */
+        .forgot-password-link {
+            display: block;
+            text-align: center;
+            margin-top: 12px;
+            font-size: 0.75rem;
+            color: var(--text3);
+            cursor: pointer;
+            transition: color 0.2s;
+            font-weight: 600;
+        }
+        .forgot-password-link:hover {
+            color: var(--gold);
+        }
+        .forgot-password-link i {
+            margin-left: 4px;
+        }
+        
+        /* ====== نافذة استرجاع كلمة السر ====== */
+        .forgot-password-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(12px);
+            z-index: 5000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+        .forgot-password-modal.show {
+            display: flex;
+        }
+        .forgot-password-box {
+            background: linear-gradient(145deg, #1a1a2e, #2d2d44);
+            border-radius: 24px;
+            padding: 35px 30px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            border: 2px solid var(--gold);
+            animation: scaleIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        .forgot-password-box::before {
+            content: '🔐';
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            font-size: 4rem;
+            opacity: 0.08;
+        }
+        .forgot-password-box .fp-icon {
+            font-size: 3.5rem;
+            color: var(--success);
+            margin-bottom: 12px;
+            display: block;
+        }
+        .forgot-password-box h3 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        .forgot-password-box .fp-sub {
+            font-size: 0.8rem;
+            color: var(--text2);
+            margin-bottom: 18px;
+            line-height: 1.6;
+        }
+        .forgot-password-box .fp-details {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 18px;
+            text-align: right;
+            font-size: 0.75rem;
+            color: var(--text2);
+            line-height: 1.8;
+        }
+        .forgot-password-box .fp-details strong {
+            color: var(--text);
+        }
+        .forgot-password-box .fp-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--success), #00a07a);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s;
+            box-shadow: 0 6px 20px rgba(0,200,150,0.3);
+        }
+        .forgot-password-box .fp-btn:hover {
+            transform: scale(1.02);
+        }
+        .forgot-password-box .fp-btn:active {
+            transform: scale(0.97);
+        }
+        .forgot-password-box .fp-close-btn {
+            margin-top: 12px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border);
+            color: var(--text3);
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .forgot-password-box .fp-close-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
         .navbar{position:fixed;top:0;left:0;right:0;z-index:900;background:var(--bg2);border-bottom:1px solid var(--border);height:var(--nav-h);display:none;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);}
         .navbar.show{display:flex;align-items:center;}
         .nav-inner{display:flex;justify-content:space-between;align-items:center;padding:0 16px;width:100%;height:100%;}
@@ -782,6 +910,7 @@
         .blocked-card button{background:var(--red);color:#fff;border:none;padding:12px 28px;border-radius:12px;font-family:'Cairo',sans-serif;font-weight:700;cursor:pointer;}
         .toast{position:fixed;top:calc(var(--nav-h) + 12px);left:50%;transform:translateX(-50%) translateY(-12px);background:var(--card);border:1px solid var(--border);color:var(--text);padding:10px 20px;border-radius:50px;font-size:0.78rem;font-weight:600;z-index:3000;box-shadow:0 8px 28px rgba(0,0,0,0.4);transition:transform 0.3s,opacity 0.3s;opacity:0;white-space:nowrap;max-width:85vw;}
         .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+        
         /* ====== أنماط الحالة الفارغة الموحدة ====== */
         .empty-state-wrapper {
             display: flex;
@@ -946,6 +1075,10 @@
                 <button type="submit" class="auth-btn"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</button>
                 <div class="auth-error" id="loginError"></div>
             </form>
+            <!-- زر استرجاع كلمة السر -->
+            <div class="forgot-password-link" id="forgotPasswordLink">
+                <i class="fas fa-key"></i> هل نسيت كلمة السر؟
+            </div>
         </div>
         <div class="auth-form" id="registerFormContainer">
             <form id="registerForm">
@@ -970,6 +1103,24 @@
                 <div class="auth-error" id="registerError"></div>
             </form>
         </div>
+    </div>
+</div>
+
+<!-- نافذة استرجاع كلمة السر -->
+<div class="forgot-password-modal" id="forgotPasswordModal">
+    <div class="forgot-password-box">
+        <span class="fp-icon"><i class="fas fa-check-circle"></i></span>
+        <h3>🔐 استرجاع كلمة السر</h3>
+        <p class="fp-sub">هل تريد استرجاع كلمة السر الخاصة بحسابك؟</p>
+        <div class="fp-details">
+            <div><strong>👤 الاسم الكامل:</strong> <span id="fpFullName">-</span></div>
+            <div><strong>📛 اسم المستخدم:</strong> <span id="fpUsername">-</span></div>
+            <div><strong>📱 رقم الهاتف:</strong> <span id="fpPhone">-</span></div>
+        </div>
+        <button class="fp-btn" id="fpSendBtn">
+            <i class="fab fa-whatsapp"></i> اضغط للإرسال واسترجاع كلمة السر
+        </button>
+        <button class="fp-close-btn" id="fpCloseBtn"><i class="fas fa-times"></i> إلغاء</button>
     </div>
 </div>
 
@@ -1945,8 +2096,19 @@ function setupPersonalAnnouncementsListener(){
 
 // =================== دالة الحالة الفارغة الموحدة ===================
 function createEmptyStateHTML(title, subtitle, imageUrl) {
-    const defaultImage = 'https://raw.githubusercontent.com/veziturkey/asharat/main/college%20entrance%20exam-bro.png';
-    const img = imageUrl || defaultImage;
+    // الصورة الافتراضية للحالات العامة (مواد، محاضرات، فيديوهات، معرض، قنوات)
+    const defaultGeneralImage = 'https://raw.githubusercontent.com/veziturkey/photo/main/Exams-pana.png';
+    // الصورة الخاصة بالإعلانات والمواعيد
+    const announcementsImage = 'https://raw.githubusercontent.com/veziturkey/asharat/main/college%20entrance%20exam-bro.png';
+    
+    // تحديد الصورة بناءً على النص (إذا كان الإعلانات أو المواعيد)
+    let img = defaultGeneralImage;
+    if (title.includes('إعلانات') || title.includes('مواعيد')) {
+        img = announcementsImage;
+    }
+    // السماح بتجاوز الصورة عبر المعامل
+    if (imageUrl) img = imageUrl;
+    
     return `
         <div class="empty-state-wrapper">
             <img src="${img}" alt="لا يوجد محتوى" loading="lazy">
@@ -2271,6 +2433,83 @@ function showPopupAd(){
 document.getElementById('popupAdClose').addEventListener('click',()=>document.getElementById('popupAdModal').style.display='none');
 document.getElementById('popupAdModal').addEventListener('click',e=>{if(e.target===document.getElementById('popupAdModal')||e.target.classList.contains('popup-ad-bg'))document.getElementById('popupAdModal').style.display='none';});
 
+// =================== نظام استرجاع كلمة السر ===================
+const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+const forgotPasswordModal = document.getElementById('forgotPasswordModal');
+const fpCloseBtn = document.getElementById('fpCloseBtn');
+const fpSendBtn = document.getElementById('fpSendBtn');
+
+// عند الضغط على "هل نسيت كلمة السر؟"
+forgotPasswordLink?.addEventListener('click', function(e){
+    e.preventDefault();
+    // جلب البيانات من حقول تسجيل الدخول (إذا كان المستخدم قد بدأ بالكتابة)
+    const username = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+    
+    if (!username) {
+        showModalMessage('تنبيه', 'الرجاء إدخال اسم المستخدم أولاً', 'warning');
+        return;
+    }
+    
+    // البحث عن المستخدم في قاعدة البيانات
+    db.collection("students").where("username", "==", username).limit(1).get()
+        .then(snap => {
+            if (snap.empty) {
+                showModalMessage('خطأ', 'لا يوجد مستخدم بهذا الاسم', 'error');
+                return;
+            }
+            const doc = snap.docs[0];
+            const data = doc.data();
+            
+            // تعبئة البيانات في نافذة الاسترجاع
+            document.getElementById('fpFullName').textContent = data.name || 'غير متوفر';
+            document.getElementById('fpUsername').textContent = data.username || 'غير متوفر';
+            document.getElementById('fpPhone').textContent = data.phone || 'غير متوفر';
+            
+            // تخزين بيانات المستخدم مؤقتاً للإرسال
+            forgotPasswordModal.setAttribute('data-username', data.username);
+            forgotPasswordModal.setAttribute('data-fullname', data.name || '');
+            forgotPasswordModal.setAttribute('data-phone', data.phone || '');
+            
+            forgotPasswordModal.classList.add('show');
+        })
+        .catch(err => {
+            showModalMessage('خطأ', 'حدث خطأ أثناء البحث: ' + err.message, 'error');
+        });
+});
+
+// إغلاق نافذة استرجاع كلمة السر
+fpCloseBtn?.addEventListener('click', function(){
+    forgotPasswordModal.classList.remove('show');
+});
+
+// إغلاق عند النقر خارج المحتوى
+forgotPasswordModal?.addEventListener('click', function(e){
+    if (e.target === this) {
+        this.classList.remove('show');
+    }
+});
+
+// زر الإرسال عبر واتساب
+fpSendBtn?.addEventListener('click', function(){
+    const username = forgotPasswordModal.getAttribute('data-username') || '';
+    const fullname = forgotPasswordModal.getAttribute('data-fullname') || '';
+    const phone = forgotPasswordModal.getAttribute('data-phone') || '';
+    
+    // رسالة واتساب
+    const message = `🔐 *طلب استرجاع كلمة السر*\n\n👤 الاسم الكامل: ${fullname}\n📛 اسم المستخدم: ${username}\n📱 رقم الهاتف: ${phone}\n\n📝 الرجاء إعادة تعيين كلمة المرور لهذا الحساب.`;
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/9647821531234?text=${encodedMessage}`;
+    
+    window.open(whatsappUrl, '_blank');
+    
+    // إغلاق النافذة بعد الإرسال
+    setTimeout(() => {
+        forgotPasswordModal.classList.remove('show');
+        showModalMessage('✅ تم الإرسال', 'تم إرسال طلب استرجاع كلمة السر بنجاح عبر واتساب.\nسيتم التواصل معك قريباً.', 'success');
+    }, 500);
+});
+
 // =================== نظام تحويل الجواهر ===================
 let searchDebounce=null;
 document.getElementById('receiverSearchInput')?.addEventListener('input',function(){
@@ -2546,7 +2785,6 @@ function removeAvatar(){saveAvatar(null);updateAvatarUI();showMessage('تم إز
 // =================== المساعدات ===================
 function clearEl(el){if(el)while(el.firstChild)el.removeChild(el.firstChild);}
 function emptyState(container,type){
-    // هذه الدالة لم تعد مستخدمة في الأماكن المهمة، لكن تم الاحتفاظ بها للتوافق
     if(!container)return;
     container.innerHTML = createEmptyStateHTML('لا يوجد محتوى', 'سيتم الإضافة قريباً');
 }
